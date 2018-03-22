@@ -1,0 +1,121 @@
+{
+	"materials": [
+		{
+			"name": "GLASS",
+			"selected": false,
+			"stacks": [
+				{
+					"channels": [
+						"basecolor",
+						"height",
+						"opacity",
+						"roughness",
+						"metallic",
+						"normal"
+					],
+					"layers": [
+						{
+							"enabled": true,
+							"hasMask": false,
+							"maskSelected": false,
+							"name": "Fill layer 1",
+							"selected": false,
+							"uid": 1527
+						}
+					],
+					"name": "",
+					"selected": false
+				}
+			]
+		},
+		{
+			"name": "WEAPON",
+			"selected": false,
+			"stacks": [
+				{
+					"channels": [
+						"basecolor",
+						"height",
+						"roughness",
+						"metallic",
+						"normal"
+					],
+					"layers": [
+						{
+							"enabled": true,
+							"hasMask": false,
+							"maskSelected": false,
+							"name": "Layer 1",
+							"selected": false,
+							"uid": 1062
+						}
+					],
+					"name": "",
+					"selected": false
+				}
+			]
+		},
+		{
+			"name": "HEAD",
+			"selected": false,
+			"stacks": [
+				{
+					"channels": [
+						"basecolor",
+						"height",
+						"roughness",
+						"metallic",
+						"normal"
+					],
+					"layers": [
+						{
+							"enabled": true,
+							"hasMask": false,
+							"maskSelected": false,
+							"name": "Layer 1",
+							"selected": false,
+							"uid": 1075
+						},
+						{
+							"enabled": true,
+							"hasMask": false,
+							"maskSelected": false,
+							"name": "Fill layer 1",
+							"selected": false,
+							"uid": 1472
+						}
+					],
+					"name": "",
+					"selected": false
+				}
+			]
+		},
+		{
+			"name": "BODY",
+			"selected": true,
+			"stacks": [
+				{
+					"channels": [
+						"basecolor",
+						"height",
+						"roughness",
+						"metallic",
+						"normal"
+					],
+					"layers": [
+						{
+							"enabled": true,
+							"hasMask": false,
+							"maskSelected": false,
+							"name": "materials",
+							"selected": true,
+							"uid": 1608
+						}
+					],
+					"name": "",
+					"selected": true
+				}
+			]
+		}
+	]
+}

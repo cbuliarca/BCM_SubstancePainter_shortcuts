@@ -1,0 +1,197 @@
+{ 
+	"buttonsA": [
+		{
+			"name":"Normal",
+			"shortcut":"`",
+			"blendMode":"Normal",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Passthrough",
+			"shortcut":"1",
+			"blendMode":"Passthrough",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Multiply",
+			"shortcut":"2",
+			"blendMode":"Multiply",
+			"command":"setBlendMode"
+		},
+
+		{
+			"name":"Screen",
+			"shortcut":"3",
+			"blendMode":"Screen",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Soft light",
+			"shortcut":"4",
+			"blendMode":"Soft light",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Overlay",
+			"shortcut":"5",
+			"blendMode":"Overlay",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Disable",
+			"shortcut":"x",
+			"blendMode":"Disable",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Replace",
+			"shortcut":"r",
+			"blendMode":"Replace",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Divide",
+			"shortcut":"/",
+			"blendMode":"Divide",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Inverse divide",
+			"shortcut":"\\",
+			"blendMode":"Inverse divide",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Min",
+			"shortcut":"0",
+			"blendMode":"Min",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Max",
+			"shortcut":"9",
+			"blendMode":"Max",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Add",
+			"shortcut":"w",
+			"blendMode":"Add",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Substact",
+			"shortcut":"-",
+			"blendMode":"Substact",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Inverse substact",
+			"shortcut":"i",
+			"blendMode":"Inverse substact",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Diference",
+			"shortcut":"q",
+			"blendMode":"Diference",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Exclusion",
+			"shortcut":",",
+			"blendMode":"Exclusion",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"AddSub",
+			"shortcut":"f",
+			"blendMode":"AddSub",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Linear burn",
+			"shortcut":"a",
+			"blendMode":"Linear burn",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Color burn",
+			"shortcut":"k",
+			"blendMode":"Color burn",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Color dodge",
+			"shortcut":"d",
+			"blendMode":"Color dodge",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Hard light",
+			"shortcut":"h",
+			"blendMode":"Hard light",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Vivid light",
+			"shortcut":"u",
+			"blendMode":"Vivid light",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Linear light",
+			"shortcut":"l",
+			"blendMode":"Linear light",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Pin light",
+			"shortcut":";",
+			"blendMode":"Pin light",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Tint",
+			"shortcut":"z",
+			"blendMode":"Tint",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Saturation",
+			"shortcut":"t",
+			"blendMode":"Saturation",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Color",
+			"shortcut":"c",
+			"blendMode":"Color",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Value",
+			"shortcut":"v",
+			"blendMode":"Value",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Normal map combine",
+			"shortcut":"b",
+			"blendMode":"Normal map combine",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Normal map detail",
+			"shortcut":"n",
+			"blendMode":"Normal map detail",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Normal map inverse detail",
+			"shortcut":"m",
+			"blendMode":"Normal map inverse detail",
+			"command":"setBlendMode"
+	 	}
+	]
+}

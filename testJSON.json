@@ -1,0 +1,31 @@
+{ "materials": 
+	[
+		{
+			"name": "CivFemale_01_v1_eyes_mat",
+			"selected": "false",
+			"stacks": [
+				{
+					"channels": [
+						"basecolor",
+						"height",
+						"roughness",
+						"metallic",
+						"normal"
+					],
+					"layers": [
+						{
+							"enabled": "true",
+							"hasMask": "false",
+							"maskSelected": "false",
+							"name": "Layer 1",
+							"selected": "false",
+							"uid": "1049"
+						}
+					],
+					"name": "",
+					"selected": "false"
+				}
+			]
+		}
+	] 
+}

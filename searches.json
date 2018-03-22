@@ -1,0 +1,99 @@
+{ 
+	"buttonsA": [
+		{
+			"name":"Tool Default",
+			"toSearch":"tool myDefault!",
+			"shortcut":"1",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"True",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"Dirt 1",
+			"toSearch":"Brush Dirt 1 -Cement",
+			"shortcut":"2",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"True",
+			"command":"shelfSearchAndSelect"
+		},	
+		{
+			"name":"Ark_hair",
+			"toSearch":"Tool ark_hair",
+			"shortcut":"3",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"True",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"Proj Texture",
+			"toSearch":"Project Texture",
+			"shortcut":"t",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"Project",
+			"toSearch":"Project",
+			"shortcut":"p",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"Alpha Shape",
+			"toSearch":"alphas shape! -circle",
+			"shortcut":"a",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"BCM RGB",
+			"toSearch":"Smart BCM_RGB",
+			"shortcut":"r",
+			"selectFirst":"False",
+			"click":2,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"BCM smart",
+			"toSearch":"Smart BCM",
+			"shortcut":"b",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"BCM",
+			"toSearch":"BCM!",
+			"shortcut":"q",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"Transf with Mask",
+			"toSearch":"transform with mask",
+			"shortcut":"d",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"command":"shelfSearchAndSelect"
+		},
+		{
+			"name":"{Mask group}",
+			"shortcut":"`",
+			"command":"maskGroupUI"
+		}
+	]
+}

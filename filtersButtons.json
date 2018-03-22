@@ -1,0 +1,55 @@
+{ 
+	"buttonsA": [
+		{
+			"name":"Blur Create",
+			"toSearch":"u:filter blur! -BCM",
+			"shortcut":"b",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"False",
+			"var":"FxAddFilter",
+			"command":"filterSearchAndCreate"
+		},
+		{
+			"name":"Hue Create",
+			"toSearch":"u:filter HUE",
+			"shortcut":"h",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"False",
+			"var":"FxAddFilter",
+			"command":"filterSearchAndCreate"
+		},
+		{
+			"name":"Splatter Create",
+			"toSearch":"u:generator splatter_mater",
+			"shortcut":"s",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"False",
+			"var":"FxAddGenerator",
+			"command":"filterSearchAndCreate"
+		},
+		{
+			"name":"Transform mask",
+			"toSearch":"u:filter transform with",
+			"shortcut":"t",
+			"selectFirst":"True",
+			"click":1,
+			"clearAfter":"False",
+			"var":"FxAddFilter",
+			"command":"filterSearchAndCreate"
+		},
+		{
+			"name":"Reset search",
+			"toSearch":"u:filter ",
+			"shortcut":"`",
+			"selectFirst":"False",
+			"click":1,
+			"clearAfter":"False",
+			"var":"FxAddFilter",
+			"command":"filterSearchAndSelect"
+		}
+
+	]
+}
