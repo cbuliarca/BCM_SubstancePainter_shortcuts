@@ -1,55 +1,53 @@
-{ 
+{
 	"buttonsA": [
 		{
-			"name":"Blur Create",
-			"toSearch":"u:filter blur! -BCM",
-			"shortcut":"b",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Blur Create",
+			"selectFirst": "True",
+			"shortcut": "b",
+			"toSearch": "u:filter blur! -BCM",
+			"var": "FxAddFilter"
 		},
 		{
-			"name":"Hue Create",
-			"toSearch":"u:filter HUE",
-			"shortcut":"h",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Hue Create",
+			"selectFirst": "True",
+			"shortcut": "h",
+			"toSearch": "u:filter HUE",
+			"var": "FxAddFilter"
 		},
 		{
-			"name":"Splatter Create",
-			"toSearch":"u:generator splatter_mater",
-			"shortcut":"s",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddGenerator",
-			"command":"filterSearchAndCreate"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Splatter Create",
+			"selectFirst": "True",
+			"shortcut": "s",
+			"toSearch": "u:generator splatter_mater",
+			"var": "FxAddGenerator"
 		},
 		{
-			"name":"Transform mask",
-			"toSearch":"u:filter transform with",
-			"shortcut":"t",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Transform mask",
+			"selectFirst": "True",
+			"shortcut": "t",
+			"toSearch": "u:filter transform with",
+			"var": "FxAddFilter"
 		},
 		{
-			"name":"Reset search",
-			"toSearch":"u:filter ",
-			"shortcut":"`",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndSelect",
+			"name": "Reset search",
+			"selectFirst": "False",
+			"shortcut": "`",
+			"toSearch": ""
 		}
-
 	]
 }

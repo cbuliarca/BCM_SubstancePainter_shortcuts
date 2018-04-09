@@ -89,7 +89,7 @@ winPrecision_Create( sX, sY, sW, stitle) {
   Gui, 2: Add, Text, Center w%sW%, precision will be changed only if you press enter
   
 
-  Gui, 2: Show, W%sW% x%sX% y%sY%
+  Gui, 2: Show, W%sW% x%sX% y%sY% 
 
   GuiControl, 2:Hide, EnterBtn
 

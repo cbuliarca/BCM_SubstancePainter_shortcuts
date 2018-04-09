@@ -1,15 +1,18 @@
 
 #Include %A_ScriptDir%              ; Set working directory for #Include.
 #Include *i Jxon22.ahk
-#Include *i CornerNotify.ahk        ; Notifyer.
-#Include *i winSearches.ahk        ; Notifyer.
-#Include *i winPrecision.ahk        ; Notifyer.
+#Include *i CornerNotify.ahk
+#Include *i winSearches.ahk
+#Include *i winPrecision.ahk
+#Include *i winEditShortcuts.ahk
 ;#Include *i Eval.ahk
 
-
+#WinActivateForce
 
 toPerformAfterInfoGet := ""
 painterInfoObj := {}
+
+
 
 ;https://autohotkey.com/board/topic/122-automatic-reload-of-changed-script/page-2
 ~^s::
@@ -163,7 +166,7 @@ infoWasSent(){
 	;MsgBox, %painterInfo%
 	;val := Jxon_Load(painterInfo)
 
-
+	
 	painterInfoObj := Jxon_Load(painterInfo)
 
 	if( toPerformAfterInfoGet == "setChannelsToPassthrough"){
@@ -698,56 +701,63 @@ test( myObj ){
 
 
 getPropertiesPanel(){
-
+	prIc := getDockedIcon( "Properties" )
 	propPanel := {}
-	ImageSearch, propFoundX, propFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\Properies - Paint.png
-	if (ErrorLevel = 2)
-	{
-	    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
-	}
-	else if (ErrorLevel = 1)
-	{
-		ImageSearch, propIconFoundX, propIconFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\PropertiesDocked.png
-		if (ErrorLevel = 1)
+	if( prIc.isOn = 1){
+		propPanel.IconX := prIc.dockedIconX + 10
+		propPanel.IconY := prIc.dockedIconX + 10
+		propPanel := getWindowUnDocked( propPanel )
+		propPanel.IconXWasClicked := 0
+	}else{
+		ImageSearch, propFoundX, propFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\Properies - Paint.png
+		if (ErrorLevel = 2)
 		{
-	    	CornerNotify(1, "!!! 'Properties -' could not be found on the screen !!!", "", "r hc", 1)
-		}else{
-			propPanel.IconX := propIconFoundX + 10
-			propPanel.IconY := propIconFoundY + 10
-			propPanel := getWindowUnDocked( propPanel )
+		    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
 		}
-	}
-	else
-	{
-		propPanel.bLeft := propFoundX - 6
-		propPanel.bTop := propFoundY - 14
-		ImageSearch, propEndPanelDownX, propEndPanelDownY, propPanel.bLeft, propPanel.bTop, propPanel.bLeft + 100, %A_ScreenHeight%, %A_ScriptDir%\images\bottomPanel.png
-		if (ErrorLevel = 1)
+		else if (ErrorLevel = 1)
 		{
-		    CornerNotify(1, "!!! end of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
-		}
-		else{
-			propPanel.bBottom := propEndPanelDownY
-			ImageSearch, propClosePanelX, propClosePanelY, propPanel.bLeft, propPanel.bTop + 8, %A_ScreenWidth% , propPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
+			ImageSearch, propIconFoundX, propIconFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\PropertiesDocked.png
 			if (ErrorLevel = 1)
 			{
-			    CornerNotify(1, "!!! close of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
+		    	CornerNotify(1, "!!! 'Properties -' could not be found on the screen !!!", "", "r hc", 1)
+			}else{
+				propPanel.IconX := propIconFoundX + 10
+				propPanel.IconY := propIconFoundY + 10
+				propPanel := getWindowUnDocked( propPanel )
+			}
+		}
+		else
+		{
+			propPanel.bLeft := propFoundX - 6
+			propPanel.bTop := propFoundY - 14
+			;splashInfo( propFoundY - 14 ) 
+			ImageSearch, propEndPanelDownX, propEndPanelDownY, propPanel.bLeft, propPanel.bTop, propPanel.bLeft + 100, %A_ScreenHeight%, %A_ScriptDir%\images\bottomPanel.png
+			if (ErrorLevel = 1)
+			{
+			    CornerNotify(1, "!!! end of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
 			}
 			else{
-				propPanel.bRight := propClosePanelX + 21 
+				propPanel.bBottom := propEndPanelDownY
+				ImageSearch, propClosePanelX, propClosePanelY, propPanel.bLeft, propPanel.bTop + 8, %A_ScreenWidth% , propPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
+				if (ErrorLevel = 1)
+				{
+				    CornerNotify(1, "!!! close of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
+				}
+				else{
+					propPanel.bRight := propClosePanelX + 21 
 
-				;BlockInput, On
-				;MouseMove, propPanel.bLeft, propPanel.bTop, 10
-				;MouseMove, propPanel.bLeft, propPanel.bBottom, 10
-				;MouseMove, propPanel.bRight, propPanel.bBottom, 10
-				;MouseMove, propPanel.bRight, propPanel.bTop, 10
-				;BlockInput, Off
+					;BlockInput, On
+					;MouseMove, propPanel.bLeft, propPanel.bTop, 10
+					;MouseMove, propPanel.bLeft, propPanel.bBottom, 10
+					;MouseMove, propPanel.bRight, propPanel.bBottom, 10
+					;MouseMove, propPanel.bRight, propPanel.bTop, 10
+					;BlockInput, Off
 
-				
+					
+				}
 			}
 		}
 	}
-
 	return propPanel
 }
 
@@ -785,6 +795,7 @@ getWindowUnDocked( pr ){
 	mSpeed := 0.000001
 	BlockInput, on
 	Click, %cX%, %cY%
+	pr.IconXWasClicked := 1
 	Sleep, 50
 	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
@@ -964,6 +975,12 @@ getMaskButton( layersP ){
 	;tr.expMaskToClipboard := layersP.maskCfgButtonY + 237
 	return tr
 }
+
+
+;--------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------
+
  maskGroupUI(){
  	global searchesObj
  	searchesObj :={}
@@ -971,7 +988,7 @@ getMaskButton( layersP ){
  	;MsgBox, %wer%
  	Fileread, searches1, masksButtons.json
 	searchesObj := Jxon_Load(searches1)
-	custWindow( "Mask creations")
+	custWindow( "Mask creations", "masksButtons.json" )
 	Return
  }
  shelfSearchUI(){
@@ -981,9 +998,43 @@ getMaskButton( layersP ){
  	;MsgBox, %wer%
  	Fileread, searches1, searches.json
 	searchesObj := Jxon_Load(searches1)
-	custWindow( "Shelf Predefined Searches" )
+	custWindow( "Shelf Predefined Searches", "searches.json" )
 	Return
  }
+custWindow( ttl, opFile ){
+	global openedFile, winSerTitle
+	winSerTitle := ttl
+	openedFile := opFile
+	winSearches( ttl )
+}
+
+SH_GroupUI( myObj ){
+	global searchesObj, openedFile
+	isFile := FileExist( myObj.file)
+	if(isFile = ""){
+		jStrNew := "{`n`t""buttonsA"": [`n`t`t{`n`t`t`t""command"": """",`n`t`t`t""name"": """",`n`t`t`t""shortcut"": """"`n`t`t}`n`t]`n}"
+		openedFile := myObj.file
+		FileAppend, %jStrNew% , %openedFile%
+
+		Fileread, searches, %openedFile%
+	}else{
+		openedFile := myObj.file
+		Fileread, searches, %openedFile%
+	}
+
+	searchesObj := Jxon_Load(searches)
+	custWindow( myObj.title, myObj.file)
+	Return
+}
+
+
+
+
+;--------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------
+
+
 
  selectUpperLayStack(){
  	layPanel := getLayersPanel()
@@ -1530,22 +1581,27 @@ createFill( myObj ){
 		Click, %lx%, %ly%
 		Sleep, 300
 		if( myObj.var ){
-			mx := msk.x
-			my := msk.y 
-			Click, %mx%, %my%
-			Sleep, 100
-			if( myObj.var = "addBlackMask"){
-				my1 := msk.addBlackMask
-				Click, %mx%, %my1%
-			}else if(myObj.var = "addWhiteMask"){
-				my1 := msk.addWhiteMask
-				Click, %mx%, %my1%
-			}else if(myObj.var = "addBitmapMask"){
-				my1 := msk.addBitmapMask
-				Click, %mx%, %my1%
-			}else if(myObj.var = "addMaskWithCS"){
-				my1 := msk.addMaskWithCS
-				Click, %mx%, %my1%
+			if(myObj.var = "noMask"){
+				;my1 := msk.addMaskWithCS
+				;Click, %mx%, %my1%
+			}else{
+				mx := msk.x
+				my := msk.y 
+				Click, %mx%, %my%
+				Sleep, 100
+				if( myObj.var = "addBlackMask"){
+					my1 := msk.addBlackMask
+					Click, %mx%, %my1%
+				}else if(myObj.var = "addWhiteMask"){
+					my1 := msk.addWhiteMask
+					Click, %mx%, %my1%
+				}else if(myObj.var = "addBitmapMask"){
+					my1 := msk.addBitmapMask
+					Click, %mx%, %my1%
+				}else if(myObj.var = "addMaskWithCS"){
+					my1 := msk.addMaskWithCS
+					Click, %mx%, %my1%
+				}
 			}
 		}
 		MouseMove, xpos, ypos, mSpeed  
@@ -1568,12 +1624,12 @@ createEffects( myObj ){
 		BlockInput, on
 		Click, %mx%, %my%
 		Sleep, 100
-		Click, %mx%, %my1%
+		Click, %mx%, %my1%`
 	}else if(myObj.var = "FxAddPaint"){
 		my1 := lay.FxAddPaint
 		BlockInput, on
 		Click, %mx%, %my%
-		Sleep, 100
+		Sleep, 100`
 		Click, %mx%, %my1%
 	}else if(myObj.var = "FxAddFill"){
 		my1 := lay.FxAddFill
@@ -1871,108 +1927,9 @@ getLayContextWindow( lp ){
 	Return lp
 }
 
-custWindow( ttl ){
-	winSearches( ttl )
-}
 
-buttonPress( myObj ){
-	if(myObj.command){
 
-		if(myObj.command = "shelfSearchAndSelect"){
-			;putting defaults
-			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
-			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
-			myObj.click := myObj.click ? myObj.click : 1
-			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
-			shelfSearchAndSelect( myObj )
-		
-		}
-		else if(myObj.command = "filterSearchAndSelect"){
-			;putting defaults
-			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
-			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
-			myObj.click := myObj.click ? myObj.click : 1
-			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
-			filterSearchAndSelect( myObj )
-		
-		}
-		else if(myObj.command = "filterSearchAndCreate"){
-			;putting defaults
-			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
-			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
-			myObj.click := myObj.click ? myObj.click : 1
-			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
-			myObj.var := myObj.var? myObj.var : "FxAddFilter"
-			
-			filterSearchAndCreate( myObj )
-		
-		}
 
-		else if(myObj.command = "test"){
-			;putting defaults
-			myObj.var := myObj.var ? myObj.var : " deff "
-			test( myObj )
-		}
-		else if(myObj.command = "maskCreate"){
-			;putting defaults
-			myObj.var := myObj.var ? myObj.var : "addBlackMask"
-			maskCreate( myObj )
-		}
-		else if(myObj.command = "maskGroupUI"){
-			;putting defaults
-			maskGroupUI()
-		}
-		else if(myObj.command = "shelfSearchUI"){
-			;putting defaults
-			shelfSearchUI()
-		}
-		else if(myObj.command = "selectMask"){
-			;putting defaults
-			selectMask()
-		}
-		else if(myObj.command = "toggleMask"){
-			;putting defaults
-			toggleMask()
-		}
-		else if(myObj.command = "removeMask"){
-			;putting defaults
-			removeMask()
-		}
-		else if(myObj.command = "clearMask"){
-			;putting defaults
-			clearMask()
-		}
-		else if(myObj.command = "tglSelectCorOrMask"){
-			;putting defaults
-			tglSelectCorOrMask()
-		}
-		else if(myObj.command = "viewMask"){
-			;putting defaults
-			viewMask()
-		}
-		else if(myObj.command = "createFill"){
-			;putting defaults
-			createFill( myObj )
-		}
-		else if(myObj.command = "removeEffect"){
-			;putting defaults
-			removeEffect()
-		}
-		else if(myObj.command = "createEffects"){
-			;putting defaults
-			myObj.var := myObj.var ? myObj.var : "FxAddFilter"
-			createEffects( myObj )
-		}
-		else if(myObj.command = "setBlendMode"){
-			;putting defaults
-			myObj.blendMode := myObj.blendMode ? myObj.blendMode : "Normal"
-			setBlendMode( myObj )
-		}
-
-	}else{
-		CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
-	}
-}
 
 BrushTabInfo( startX, startY){
 	tr := {} 
@@ -2231,6 +2188,475 @@ getBrushFlow(){
 	return tr
 }
 
+getDockedIcon( whStr ){
+	tr :={}
+	strr := A_ScriptDir . "\images\" . whStr . "Docked.png"
+	strrB := A_ScriptDir . "\images\" . whStr . "DockedSelected.png"
+	ImageSearch, dockedX, dockedY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %strrB%
+	if(ErrorLevel = 1){
+		ImageSearch, dockedX, dockedY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %strr%
+		if(ErrorLevel = 1){
+		}else{
+			tr.isDocked := 1
+			tr.isOn := 0
+			tr.dockedIconX := dockedX
+			tr.dockedIconY := dockedY
+		}
+	}else{
+		tr.isDocked := 1
+		tr.isOn := 1
+		tr.dockedIconX := dockedX
+		tr.dockedIconY := dockedY
+	}
+	return tr
+}
+
+
+toggleDocked( whStr ){
+	;will press the docked panel opening it or closing it
+	st := getDockedIcon( whStr )
+	if(st.isDocked){
+		MouseGetPos, xpos, ypos 
+		mSpeed := 0.000001
+		BlockInput, On
+		
+		clX := st.dockedIconX
+		clY := st.dockedIconY
+		Click %clX% %clY%	
+		;Sleep 200
+		;if(st.isOn = 1){
+		;	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+		;	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+		;	WinGetClass, aClass, ahk_id %WinID%
+		;}
+
+		MouseMove, xpos, ypos, mSpeed  
+		BlockInput, Off
+	}
+}
+
+
+disableChannels( mobj ){
+	; this works only for the properties panel that  doesn't have scrollers
+	;the ones with scrollers have unpreictable errors when clicking on the 
+	;channels 
+	;if allegorithmic will repair the scroller juming
+	;then it will work
+
+	pr := getPropertiesPanel()
+	;msgBObj(pr)
+	pr := getScroll( pr )
+	pr := getPropsMatIcon( pr )
+	MouseGetPos, xpos, ypos 
+	mSpeed = 0.000001
+	if( pr.matIconX) 
+	{
+		;BlockInput, On
+		;cx := pr.matIconX
+		;cy := pr.matIconY
+		;Click, %cx%, %cy%
+		;pr := getPropsChannels( pr )
+
+
+		;for k,v in pr.channels{
+		;	;msgBObj( v )
+		;	if( v.isOn =  1){
+		;			cx1 := v.X
+		;			cy1 := v.Y
+		;			Click, %cx%, %cy%
+		;			Sleep, 500
+		;			Click, %cx1%, %cy1%
+
+		;		;pr2 := getScroll( pr )
+		;		}
+		;	}
+
+		;	MouseMove, xpos, ypos, mSpeed
+		;	BlockInput, Off
+		}else{
+			pr := getPropsChannels( pr )
+			BlockInput, On
+			for k,v in pr.channels{
+				if( v.isOn =  1){
+					cx1 := v.X
+					cy1 := v.Y
+
+					if( pr.IconX and k > 1){
+					; this means that the window last opened was the over one
+					; the coordinates were changed
+						cx1 := cx1 - pr.bLeft 
+						cy1 := cy1 - pr.bTop 
+					}
+					Click, %cx1%, %cy1%
+
+				}
+			}
+
+			if( pr.IconXWasClicked = 1){
+				;the panel was opend dynamicaly by the script
+				;it should be closed
+				cx2 := pr.IconX - pr.bLeft 
+				cy2 := pr.IconY - pr.bTop 
+				Click, %cx2%, %cy2%
+			}
+			;if( pr.IconX ){
+			;	xpos := xpos - pr.bLeft 
+			;	ypos := ypos - pr.bTop
+			;}	
+			MouseMove, xpos, ypos, mSpeed
+			BlockInput, Off
+		}
+
+	Return
+}
+
+getPropsMatIcon( pr ){
+	;getting the small materials icon from the properties panel
+	ImageSearch, aX, aY, pr.bLeft, pr.bTop + 14, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsMaterial.png
+  	if (ErrorLevel = 1)
+	{
+		ImageSearch, aX, aY, pr.bLeft, pr.bTop + 14, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsMaterialSel.png
+		if (ErrorLevel = 1)
+		{
+			;CornerNotify(1, "!!! can't see the material icon !!!", "", "r hc", 1)	
+
+		}else{
+			pr.matIconX := aX
+			pr.matIconY := aY
+		}
+	}else{
+		pr.matIconX := aX
+		pr.matIconY := aY
+	}
+
+	Return pr
+}
+
+getPropsChannels( pr ){
+	;getting the small channels from the properties panel
+	aw := 0
+	theYStart := pr.matIconY + 46
+	theXStart := pr.bLeft
+	ac := 1 
+		if(pr.scrollerLeft){
+			qwe := pr.scrollerLeft
+		}else{
+			qwe := pr.bRight
+		}
+	while 1{
+
+		;splashInfo( theXStart . " ||| " . theYStart )
+		if (theXStart > qwe){
+			theXStart := pr.bLeft
+			theYStart := aY + 22
+		}
+		ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannelSel.png
+		if (ErrorLevel = 1){
+			ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannel.png
+			if (ErrorLevel = 1){
+				break
+			}else{
+				;splashInfo( theXStart . " ||| " . theYStart . " :: found0")
+				chann := {}
+				chann.isOn := 0
+				chann.X := aX + 21
+				chann.Y := aY + 12
+				pr.channels[ac] := chann
+				pr.avChannels := ac
+
+				theXStart := aX + 62
+				ac := ac + 1
+			}
+		}else{
+				;splashInfo( theXStart . " ||| " . theYStart . " :: found1")
+				chann := {}
+				chann.isOn := 1
+				chann.X := aX + 21
+				chann.Y := aY + 12
+				pr.channels[ac] := chann
+				pr.avChannels := ac
+
+				theXStart := aX + 62
+				ac := ac + 1
+		}
+
+		;if(aw > 10){
+		;	break
+		;}
+		aw := aw + 1
+	}
+
+	return pr	
+}
+
+
+;--------------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------------------------------
+
+;for the up down sliders::
+sqFormat(){
+	global precisionAdd
+	SetFormat, float, 0.4
+	return precisionAdd
+}
+setOpp( what, doClick ){
+	Send {Home}
+	Send {Shift}+{End}
+	clipboard =  ; Start off empty to allow ClipWait to detect when the text has arrived.
+	Send ^c
+	ClipWait  ; Wait for the clipboard to contain text.
+	qs = A_FormatFloat
+	if( what = "add"){
+		;splashInfo( what )
+		ss := Clipboard + sqFormat()
+	}else{ 
+		ss := Clipboard - sqFormat()
+	}
+	clipboard := ss
+	Send, ^v
+	Send, {Enter}
+	if( doClick = 1){
+		Click
+	}
+
+}
+getTextSel(){
+	tx := {}
+	ImageSearch, txFoundX, txFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\textSelected.png
+	if(ErrorLevel = 1){
+		;CornerNotify(1, "!!! The caret is not visible !!!", "", "r hc", 1)
+
+	}else{
+		;MsgBox, %txFoundX% . %txFoundY%
+		tx.x := txFoundX
+		tx.y := txFoundY - 4
+	}
+	return tx
+}
+
+getTheNumber( w ){
+	ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber.png
+	if(ErrorLevel = 1){
+		ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber_2.png
+		if(ErrorLevel = 1){
+			}else{
+				w.nbX := txnbX
+				w.nbY := txnbY
+			}
+	}else{
+		w.nbX := txnbX
+		w.nbY := txnbY
+	}
+	return w
+}
+
+accOp(opps){
+	sTx := getTextsel()
+
+	;cx := A_CaretY
+	;;splashInfo( cx )
+	sss := getWindowTest()
+	if(sss.aClass = "Qt5QWindowPopupDropShadowSaveBits"){
+		;splashInfo(sss.bHeight)
+		;if( sss.bHe)
+		sss := getTheNumber(sss)
+		if(sss.nbX){
+		;splashInfo( sss.nbX)
+			;BlockInput, On
+			sx2 := sss.bRight - 5
+			sy2 := sss.bTop + 3
+			Click, %sx2% %sy2%
+			setOpp(opps,0)
+			sx1 := sss.nbX + 5 
+			sy1 := sss.nbY - 5
+			
+			;splashInfo( sx1 . sy1)
+			;Sleep, 100
+			Click, %sx1% %sy1%
+			Click, %sx1% %sy1%
+			;Sleep, 1000
+			Click, %sx2% %sy2%
+			;BlockInput, Off
+		}
+	}else{
+		;BlockInput, On
+		setOpp(opps,0)
+		sx := sTx.x
+		sy := sTx.y
+		Click, %sx% %sy%
+		;BlockInput, Off
+	}
+}
+
+
+;gather all the mask action in one command
+doMask( myObj ){
+	if( myObj.var = "addBlackMask"){
+		maskCreate( myObj )
+	}else if( myObj.var = "addWhiteMask"){
+		maskCreate( myObj )
+	}else if( myObj.var = "addBitmapMask"){
+		maskCreate( myObj )
+	}else if( myObj.var = "addMaskWithCS"){
+		maskCreate( myObj )
+	}else if( myObj.var = "selectMask"){
+		selectMask()
+	}else if( myObj.var = "toggleMask"){
+		toggleMask()
+	}else if( myObj.var = "removeMask"){
+		removeMask()
+	}else if( myObj.var = "clearMask"){
+		clearMask()
+	}else if( myObj.var = "tglSelectCorOrMask"){
+		tglSelectCorOrMask()
+	}
+}
+
+
+
+
+
+; this is the function that the pressing of a button will call
+; when adding a function it's necessary to add it here as well
+buttonPress( myObj ){
+	if(myObj.command){
+
+		if(myObj.command = "shelfSearchAndSelect"){
+			;putting defaults
+			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
+			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
+			myObj.click := myObj.click ? myObj.click : 1
+			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
+			shelfSearchAndSelect( myObj )
+		
+		}
+		else if(myObj.command = "filterSearchAndSelect"){
+			;putting defaults
+			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
+			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
+			myObj.click := myObj.click ? myObj.click : 1
+			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
+			filterSearchAndSelect( myObj )
+		
+		}
+		else if(myObj.command = "filterSearchAndCreate"){
+			;putting defaults
+			myObj.toSearch := myObj.toSearch ? myObj.toSearch : ""
+			myObj.selectFirst := myObj.selectFirst ? myObj.selectFirst : "False"
+			myObj.click := myObj.click ? myObj.click : 1
+			myObj.clearAfter := myObj.clearAfter? myObj.clearAfter : "False"
+			myObj.var := myObj.var? myObj.var : "FxAddFilter"
+			
+			filterSearchAndCreate( myObj )
+		
+		}
+
+		else if(myObj.command = "test"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : " deff "
+			test( myObj )
+		}
+		else if(myObj.command = "maskCreate"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "addBlackMask"
+			maskCreate( myObj )
+		}
+		else if(myObj.command = "doMask"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "addBlackMask"
+			doMask( myObj )
+		}
+		else if(myObj.command = "maskGroupUI"){
+			;putting defaults
+			maskGroupUI()
+		}
+		else if(myObj.command = "shelfSearchUI"){
+			;putting defaults
+			shelfSearchUI()
+		}
+		else if(myObj.command = "selectMask"){
+			;putting defaults
+			selectMask()
+		}
+		else if(myObj.command = "toggleMask"){
+			;putting defaults
+			toggleMask()
+		}
+		else if(myObj.command = "removeMask"){
+			;putting defaults
+			removeMask()
+		}
+		else if(myObj.command = "clearMask"){
+			;putting defaults
+			clearMask()
+		}
+		else if(myObj.command = "tglSelectCorOrMask"){
+			;putting defaults
+			tglSelectCorOrMask()
+		}
+		else if(myObj.command = "viewMask"){
+			;putting defaults
+			viewMask()
+		}
+		else if(myObj.command = "createFill"){
+			;putting defaults
+			createFill( myObj )
+		}
+		else if(myObj.command = "removeEffect"){
+			;putting defaults
+			removeEffect()
+		}
+		else if(myObj.command = "createEffects"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "FxAddFilter"
+			createEffects( myObj )
+		}
+		else if(myObj.command = "setBlendMode"){
+			;putting defaults
+			myObj.blendMode := myObj.blendMode ? myObj.blendMode : "Normal"
+			setBlendMode( myObj )
+		}
+		else if(myObj.command = "toggleDocked"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "TextureSets"
+			toggleDocked( myObj.var )
+		}
+		else if(myObj.command = "SH_GroupUI"){
+			;putting defaults
+			myObj.file := myObj.file ? myObj.file : "empty.json"
+			myObj.title := myObj.title ? myObj.title : "BCM_UI"
+			SH_GroupUI( myObj )
+		}
+
+	}else{
+		CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;direct hotkeys
+;--------------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------------------------------
+
 ;the ctrl+alt+s ---- toogle pressure for size
 #IfWinActive, ahk_exe Substance Painter.exe
 !^s::
@@ -2300,7 +2726,7 @@ getBrushFlow(){
 
 
 
-;shift + alt + p
+;shift + alt + p --- set all channels to passthrough
 #IfWinActive, ahk_exe Substance Painter.exe
 +!p::
 {
@@ -2311,13 +2737,19 @@ getBrushFlow(){
 }
 
 
-;` do a shelf search
+;alt+1 do a shelf search
 #IfWinActive, ahk_exe Substance Painter.exe
 !1::
 {
-	Fileread, searches, searches.json
-	searchesObj := Jxon_Load(searches)
-	custWindow( "Shelf Predefined Searches" )
+
+	myMObjUI := {}
+	myMObjUI.file := "searches.json"
+	myMObjUI.title := "Shelf Predefined Searches"
+	SH_GroupUI( myMObjUI )
+
+	;Fileread, searches, searches.json
+	;searchesObj := Jxon_Load(searches)
+	;custWindow( "Shelf Predefined Searches", "searches.json" )
 	Return
 }
 
@@ -2326,10 +2758,14 @@ getBrushFlow(){
 #IfWinActive, ahk_exe Substance Painter.exe
 `::
 {
+	myMObjUI := {}
+	myMObjUI.file := "masksButtons.json"
+	myMObjUI.title := "BCM_Commands"
+	SH_GroupUI( myMObjUI )
 	
-	Fileread, searches, masksButtons.json
-	searchesObj := Jxon_Load(searches)
-	custWindow( "Mask creattions")
+	;Fileread, searches, masksButtons.json
+	;searchesObj := Jxon_Load(searches)
+	;custWindow( "Mask creattions", "masksButtons.json")
 	Return
 }
 
@@ -2337,10 +2773,15 @@ getBrushFlow(){
 #IfWinActive, ahk_exe Substance Painter.exe
 ^`::
 {
-	
-	Fileread, searches, filtersButtons.json
-	searchesObj := Jxon_Load(searches)
-	custWindow( "Filters creations")
+	myMObjUI := {}
+	myMObjUI.file := "filtersButtons.json"
+	myMObjUI.title := "Filters creations"
+	SH_GroupUI( myMObjUI )
+
+
+	;Fileread, searches, filtersButtons.json
+	;searchesObj := Jxon_Load(searches)
+	;custWindow( "Filters creations", "filtersButtons.json")
 	Return
 }
 ;alt] select upper`
@@ -2371,101 +2812,16 @@ getBrushFlow(){
 #IfWinActive, ahk_exe Substance Painter.exe
 !`::
 {	
-	Fileread, searches, blendingModesButtons.json
-	searchesObj := Jxon_Load(searches)
-	custWindow( "Change Blending Mode")
+
+	myMObjUI := {}
+	myMObjUI.file := "blendingModesButtons.json"
+	myMObjUI.title := "Change Blending Mode"
+	SH_GroupUI( myMObjUI )
+
+	;Fileread, searches, blendingModesButtons.json
+	;searchesObj := Jxon_Load(searches)
+	;custWindow( "Change Blending Mode", "blendingModesButtons.json")
 	Return
-}
-sqFormat(){
-	global precisionAdd
-	SetFormat, float, 0.4
-	return precisionAdd
-}
-setOpp( what, doClick ){
-	Send {Home}
-	Send {Shift}+{End}
-	clipboard =  ; Start off empty to allow ClipWait to detect when the text has arrived.
-	Send ^c
-	ClipWait  ; Wait for the clipboard to contain text.
-	qs = A_FormatFloat
-	if( what = "add"){
-		;splashInfo( what )
-		ss := Clipboard + sqFormat()
-	}else{ 
-		ss := Clipboard - sqFormat()
-	}
-	clipboard := ss
-	Send, ^v
-	Send, {Enter}
-	if( doClick = 1){
-		Click
-	}
-
-}
-getTextSel(){
-	tx := {}
-	ImageSearch, txFoundX, txFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\textSelected.png
-	if(ErrorLevel = 1){
-		;CornerNotify(1, "!!! The caret is not visible !!!", "", "r hc", 1)
-
-	}else{
-		;MsgBox, %txFoundX% . %txFoundY%
-		tx.x := txFoundX
-		tx.y := txFoundY - 4
-	}
-	return tx
-}
-
-getTheNumber( w ){
-	ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber.png
-	if(ErrorLevel = 1){
-		ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber_2.png
-		if(ErrorLevel = 1){
-			}else{
-				w.nbX := txnbX
-				w.nbY := txnbY
-			}
-	}else{
-		w.nbX := txnbX
-		w.nbY := txnbY
-	}
-	return w
-}
-
-accOp(opps){
-	sTx := getTextsel()
-
-	;cx := A_CaretY
-	;;splashInfo( cx )
-	sss := getWindowTest()
-	if(sss.aClass = "Qt5QWindowPopupDropShadowSaveBits"){
-		sss := getTheNumber(sss)
-		if(sss.nbX){
-		;splashInfo( sss.nbX)
-			;BlockInput, On
-			sx2 := sss.bRight - 5
-			sy2 := sss.bTop + 3
-			Click, %sx2% %sy2%
-			setOpp(opps,0)
-			sx1 := sss.nbX + 5 
-			sy1 := sss.nbY - 5
-			
-			;splashInfo( sx1 . sy1)
-			;Sleep, 100
-			Click, %sx1% %sy1%
-			Click, %sx1% %sy1%
-			;Sleep, 1000
-			Click, %sx2% %sy2%
-			;BlockInput, Off
-		}
-	}else{
-		;BlockInput, On
-		setOpp(opps,0)
-		sx := sTx.x
-		sy := sTx.y
-		Click, %sx% %sy%
-		;BlockInput, Off
-	}
 }
 
 #IfWinActive, ahk_exe Substance Painter.exe
@@ -2485,7 +2841,7 @@ Down::
 
 ;alt + p open the filters window`
 #IfWinActive, ahk_exe Substance Painter.exe
-Left::
+^1::
 {
 	wasTextSelBeforeThisWin := getTextSel()
 	if(wasTextSelBeforeThisWin.x){
@@ -2512,5 +2868,105 @@ Left::
 	winPrecision( "Change precision for UP and Down shortcuts" )
 
 
+	Return
+}
+;alt + F1 click on the docked texture Sets button`
+#IfWinActive, ahk_exe Substance Painter.exe
+!F1::
+{
+
+	toggleDocked("TextureSets")
+	Return
+}
+;alt + F1 click on the docked texture Sets button`
+#IfWinActive, ahk_exe Substance Painter.exe
+!F2::
+{
+
+	toggleDocked("TextureSetsSettings")
+	Return
+}
+
+
+;alt + F1 click on the docked Properties button`
+#IfWinActive, ahk_exe Substance Painter.exe
+!F3::
+{
+
+	toggleDocked("DisplaySettings")
+	Return
+}
+;alt + F1 click on the docked Properties button`
+#IfWinActive, ahk_exe Substance Painter.exe
+!F4::
+{
+
+	toggleDocked("ShaderSettings")
+	Return
+}
+
+;alt + F1 click on the docked Properties button`
+#IfWinActive, ahk_exe Substance Painter.exe
+!F5::
+{
+
+	toggleDocked("Properties")
+	Return
+}
+
+
+
+;BCM_substancePainter_shortcuts.ahk
+;ahk_class AutoHotkeyGUI
+;ahk_exe AutoHotkey.exe
+
+;#IfWinActive, BCM_substancePainter_shortcuts.ahk BCM_substancePainter_shortcuts.exe 
+#if WinActive("BCM_substancePainter_shortcuts.ahk") or WinActive("BCM_substancePainter_shortcuts.exe")
+Esc::
+{
+	;destroy the gui with the esc key
+	Gui, 2:Destroy
+	Gui, 3:Destroy
+	Return
+}
+
+;F7::
+;{
+	
+;	DetectHiddenWindows, On
+;	WinGet, allWIN, list ;get allWIN hwnd
+;	as := 1
+;	myWin := {}
+;	ssss := allWIN1
+;	;MsgBox, %ssss%
+;	Loop, %allWIN%
+;    {
+;        WinGetClass, WClass, % "ahk_id " allWIN%A_Index%
+;        if (WClass = "Qt5QWindowPopupDropShadowSaveBits"){
+
+;        	myWin[as] := allWIN%A_Index%
+;        	WinGet, Style, Style, % "ahk_id " allWIN%A_Index%
+;        	;WinGetPos, X, Y, Width, Height, 
+;        	;splashinfo( Style )
+;        	;WinActivate, % "ahk_id " allWIN%A_Index%
+;        	WinRestore, % "ahk_id " allWIN%A_Index%
+;        	WinShow, % "ahk_id " allWIN%A_Index%
+;        	;WinSet, Style, +0x80000000 +0x80880000 +0x40000 +0x10000000, % "ahk_id " allWIN%A_Index%
+;        	as := as + 1
+;        }
+;    }
+
+;    ;MsgBox, %cs%
+;    ;msgBObj(myWin)
+;	;splashInfo( spWin )
+;	Return
+;}
+
+;F7 clciks on the channels
+#IfWinActive, ahk_exe Substance Painter.exe
+F7::
+{
+
+	disableChannels( obj )
 	Return
 }

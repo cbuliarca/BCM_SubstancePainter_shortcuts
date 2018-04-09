@@ -1,99 +1,101 @@
-{ 
+{
 	"buttonsA": [
 		{
-			"name":"Tool Default",
-			"toSearch":"tool myDefault!",
-			"shortcut":"1",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"True",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "True",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Tool Default",
+			"selectFirst": "True",
+			"shortcut": "1",
+			"toSearch": "tool myDefault!"
 		},
 		{
-			"name":"Dirt 1",
-			"toSearch":"Brush Dirt 1 -Cement",
-			"shortcut":"2",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"True",
-			"command":"shelfSearchAndSelect"
-		},	
-		{
-			"name":"Ark_hair",
-			"toSearch":"Tool ark_hair",
-			"shortcut":"3",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"True",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "True",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Dirt 1",
+			"selectFirst": "True",
+			"shortcut": "2",
+			"toSearch": "Brush Dirt 1 -Cement"
 		},
 		{
-			"name":"Proj Texture",
-			"toSearch":"Project Texture",
-			"shortcut":"t",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "True",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Ark_hair",
+			"selectFirst": "True",
+			"shortcut": "3",
+			"toSearch": "Tool ark_hair"
 		},
 		{
-			"name":"Project",
-			"toSearch":"Project",
-			"shortcut":"p",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Proj Texture",
+			"selectFirst": "False",
+			"shortcut": "t",
+			"toSearch": "Project Texture"
 		},
 		{
-			"name":"Alpha Shape",
-			"toSearch":"alphas shape! -circle",
-			"shortcut":"a",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Project",
+			"selectFirst": "False",
+			"shortcut": "p",
+			"toSearch": "Project"
 		},
 		{
-			"name":"BCM RGB",
-			"toSearch":"Smart BCM_RGB",
-			"shortcut":"r",
-			"selectFirst":"False",
-			"click":2,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Alpha Shape",
+			"selectFirst": "True",
+			"shortcut": "a",
+			"toSearch": "alphas shape! -circle"
 		},
 		{
-			"name":"BCM smart",
-			"toSearch":"Smart BCM",
-			"shortcut":"b",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 2,
+			"command": "shelfSearchAndSelect",
+			"name": "BCM RGB",
+			"selectFirst": "False",
+			"shortcut": "r",
+			"toSearch": "Smart BCM_RGB"
 		},
 		{
-			"name":"BCM",
-			"toSearch":"BCM!",
-			"shortcut":"q",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "BCM smart",
+			"selectFirst": "False",
+			"shortcut": "b",
+			"toSearch": "Smart BCM"
 		},
 		{
-			"name":"Transf with Mask",
-			"toSearch":"transform with mask",
-			"shortcut":"d",
-			"selectFirst":"False",
-			"click":1,
-			"clearAfter":"False",
-			"command":"shelfSearchAndSelect"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "BCM",
+			"selectFirst": "False",
+			"shortcut": "q",
+			"toSearch": "BCM!"
 		},
 		{
-			"name":"{Mask group}",
-			"shortcut":"`",
-			"command":"maskGroupUI"
+			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "Transf with Mask",
+			"selectFirst": "False",
+			"shortcut": "d",
+			"toSearch": "transform with mask"
+		},
+		{
+			"command": "SH_GroupUI",
+			"file": "masksButtons.json",
+			"name": "{Commands}",
+			"shortcut": "`",
+			"title": "BCM_Commands"
 		}
 	]
 }

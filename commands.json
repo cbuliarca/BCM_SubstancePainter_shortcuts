@@ -1,0 +1,144 @@
+{
+	"avilableCommands":[
+		
+		{"command":"shelfSearchAndSelect",
+			"options":{
+					"selectFirst": "Boolean", 
+					"toSearch": "String", 
+					"click": "Integer", 
+					"clearAfter": "Boolean"
+					}
+		},
+
+		{"command":"filterSearchAndSelect",
+			"options":{
+
+					"selectFirst": "Boolean", 
+					"toSearch": "String", 
+					"click": "Integer", 
+					"clearAfter": "Boolean"
+					}
+		},
+
+		{"command":"filterSearchAndCreate",
+			"options":{
+
+					"selectFirst": "Boolean", 
+					"toSearch": "String", 
+					"click": "Integer", 
+					"clearAfter": "Boolean",
+					"var":[
+							"FxAddGenerator",
+							"FxAddFill",
+							"FxAddFilter"
+						]
+					}
+		},
+
+		{"command":"doMask",
+			"options":{	
+					"var":[
+							"addBlackMask", 
+							"addWhiteMask", 
+							"addBitmapMask",  
+							"addMaskWithCS",  
+							"selectMask",  
+							"toggleMask",  
+							"removeMask",  
+							"clearMask",  
+							"tglSelectCorOrMask"
+							]
+			}
+		},
+
+		{"command":"createFill",
+			"options":{			
+					"var":[
+							"addBlackMask", 
+							"addWhiteMask", 
+							"addBitmapMask", 
+							"addMaskWithCS",
+							"noMask"
+							]
+			}
+		},
+
+		{"command":"removeEffect",
+			"options":{	
+			}
+		},
+
+		{"command":"createEffects",
+			"options":{		
+					"var":[
+							"FxAddGenerator", 
+							"FxAddPaint", 
+							"FxAddFill", 
+							"FxAddLevels", 
+							"FxAddFilter", 
+							"FxAddColorSelection", 
+							"FxAddAnchorPoint"
+							]
+			}
+		},
+
+		{"command":"toggleDocked",
+			"options":{		
+					"var":[
+							"TextureSets", 
+							"TextureSetsSettings", 
+							"DisplaySettings", 
+							"filShaderSettings", 
+							"Properties"
+							]
+			}
+		},
+
+		{"command":"setBlendMode",
+			"options":{		
+					"var":[
+							"Normal", 
+							"Passthrough", 
+							"Disable", 
+							"Replace", 
+							"Multiply", 
+							"Divide", 
+							"Inverse divide", 
+							"Min", 
+							"Max", 
+							"Add", 
+							"Substact", 
+							"Inverse substact", 
+							"Diference", 
+							"Exclusion", 
+							"AddSub", 
+							"Overlay", 
+							"Screen", 
+							"Linear burn", 
+							"Color burn", 
+							"Color dodge", 
+							"Soft light", 
+							"Hard light", 
+							"Vivid light", 
+							"Linear light", 
+							"Pin light", 
+							"Tint", 
+							"Saturation", 
+							"Color", 
+							"Normal map combine", 
+							"Normal map detail", 
+							"Normal map inverse detail"
+							]
+			}
+		},		
+
+		{"command":"SH_GroupUI",
+			"options":{
+
+					"file": "String", 
+					"title": "String"
+				}
+		}
+
+	]
+}

@@ -1,206 +1,245 @@
-{ 
+{
 	"buttonsA": [
 		{
-			"name":"add Black Mask",
-			"shortcut":"1",
-			"var":"addBlackMask",
-			"command":"maskCreate"
+			"command": "doMask",
+			"name": "add Black Mask",
+			"shortcut": "1",
+			"var": "addBlackMask"
 		},
 		{
-			"name":"add White Mask",
-			"shortcut":"2",
-			"var":"addWhiteMask",
-			"command":"maskCreate"
+			"command": "doMask",
+			"name": "add White Mask",
+			"shortcut": "2",
+			"var": "addWhiteMask"
 		},
 		{
-			"name":"toggle Mask",
-			"shortcut":"3",
-			"var":"toggleMask",
-			"command":"toggleMask"
+			"command": "doMask",
+			"name": "toggle Mask",
+			"shortcut": "6",
+			"var": "toggleMask"
 		},
 		{
-			"name":"remove Mask",
-			"shortcut":"8",
-			"var":"removeMask",
-			"command":"removeMask"
+			"command": "doMask",
+			"name": "remove Mask",
+			"shortcut": "8",
+			"var": "removeMask"
 		},
 		{
-			"name":"clear Mask",
-			"shortcut":"7",
-			"var":"clearMask",
-			"command":"clearMask"
+			"command": "doMask",
+			"name": "clear Mask",
+			"shortcut": "7",
+			"var": "clearMask"
 		},
 		{
-			"name":"show Mask",
-			"shortcut":"5",
-			"var":"toggleMask",
-			"command":"viewMask"
+			"command": "doMask",
+			"name": "show Mask",
+			"shortcut": "5",
+			"var": "selectMask"
 		},
 		{
-			"name":"select Mask",
-			"shortcut":"4",
-			"var":"toggleMask",
-			"command":"selectMask"
+			"command": "doMask",
+			"name": "tgl Color Mask",
+			"shortcut": "3",
+			"var": "tglSelectCorOrMask"
 		},
 		{
-			"name":"tgl Color Mask",
-			"shortcut":"6",
-			"var":"tglSelectCorOrMask",
-			"command":"tglSelectCorOrMask"
+			"command": "",
+			"name": " .",
+			"shortcut": ""
 		},
 		{
-			"name":"fill layer",
-			"shortcut":"q",
-			"command":"createFill"
+			"command": "createFill",
+			"name": "fill layer",
+			"shortcut": "q",
+			"var": "noMask"
 		},
 		{
-			"name":"fill& black mask",
-			"shortcut":"w",
-			"var":"addBlackMask",
-			"command":"createFill"
+			"command": "createFill",
+			"name": "fill& black mask",
+			"shortcut": "w",
+			"var": "addBlackMask"
 		},
 		{
-			"name":"fill& mask color selection",
-			"shortcut":"e",
-			"var":"addMaskWithCS",
-			"command":"createFill"
+			"command": "createFill",
+			"name": "fill& mask color selection",
+			"shortcut": "e",
+			"var": "addMaskWithCS"
 		},
 		{
-			"name":"fill& white mask",
-			"shortcut":"r",
-			"var":"addWhiteMask",
-			"command":"createFill"
+			"command": "createFill",
+			"name": "fill& white mask",
+			"shortcut": "r",
+			"var": "addWhiteMask"
 		},
 		{
-			"name":" .",
-			"shortcut":"",
-			"var":"",
-			"command":""
-		},	
-		{
-			"name":" .",
-			"shortcut":"",
-			"var":"",
-			"command":""
-		},	
-		{
-			"name":" .",
-			"shortcut":"",
-			"var":"",
-			"command":""
+			"command": "",
+			"name": " .",
+			"shortcut": ""
 		},
 		{
-			"name":"{shelf searches UI}",
-			"shortcut":"`",
-			"command":"shelfSearchUI"
+			"command": "",
+			"name": " .",
+			"shortcut": "",
+			"var": ""
 		},
 		{
-			"name":"add Generator FX",
-			"shortcut":"g",
-			"var":"FxAddGenerator",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Paint FX",
-			"shortcut":"p",
-			"var":"FxAddPaint",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Fill FX",
-			"shortcut":"f",
-			"var":"FxAddFill",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Levels FX",
-			"shortcut":"l",
-			"var":"FxAddLevels",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Filter FX",
-			"shortcut":"k",
-			"var":"FxAddFilter",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Color Selection FX",
-			"shortcut":"j",
-			"var":"FxAddColorSelection",
-			"command":"createEffects"
-		},		
-		{
-			"name":"add Anchor Point FX",
-			"shortcut":"a",
-			"var":"FxAddAnchorPoint",
-			"command":"createEffects"
-		},		
-		{
-			"name":"Remove FX",
-			"shortcut":"d",
-			"var":"FxRemove",
-			"command":"removeEffect"
-		},		
-		{
-			"name":"Blur Create",
-			"toSearch":"u:filter blur! -BCM",
-			"shortcut":"b",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"command": "",
+			"name": " .",
+			"shortcut": "",
+			"var": ""
 		},
 		{
-			"name":"Hue Create",
-			"toSearch":"u:filter HUE",
-			"shortcut":"h",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"command": "SH_GroupUI",
+			"file": "searches.json",
+			"name": "{shelf searches UI}",
+			"shortcut": "`",
+			"title": "Predefined Shelf Searches"
 		},
 		{
-			"name":"Splatter Create",
-			"toSearch":"u:generator splatter_mater",
-			"shortcut":"s",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddGenerator",
-			"command":"filterSearchAndCreate"
+			"command": "createEffects",
+			"name": "add Generator FX",
+			"shortcut": "g",
+			"var": "FxAddGenerator"
 		},
 		{
-			"name":"Grayscal Convers",
-			"toSearch":"u:generator grayscale",
-			"shortcut":"z",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddGenerator",
-			"command":"filterSearchAndCreate"
+			"command": "createEffects",
+			"name": "add Paint FX",
+			"shortcut": "p",
+			"var": "FxAddPaint"
 		},
 		{
-			"name":"Transform mask",
-			"toSearch":"u:filter transform with",
-			"shortcut":"t",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndCreate"
+			"command": "createEffects",
+			"name": "add Fill FX",
+			"shortcut": "f",
+			"var": "FxAddFill"
 		},
 		{
-			"name":"Eyeball",
-			"toSearch":"material eyeball",
-			"shortcut":"n",
-			"selectFirst":"True",
-			"click":1,
-			"clearAfter":"False",
-			"var":"FxAddFilter",
-			"command":"filterSearchAndSelect"
+			"command": "createEffects",
+			"name": "add Levels FX",
+			"shortcut": "l",
+			"var": "FxAddLevels"
+		},
+		{
+			"command": "createEffects",
+			"name": "add Filter FX",
+			"shortcut": "k",
+			"var": "FxAddFilter"
+		},
+		{
+			"command": "createEffects",
+			"name": "add Color Selection FX",
+			"shortcut": "j",
+			"var": "FxAddColorSelection"
+		},
+		{
+			"command": "createEffects",
+			"name": "add Anchor Point FX",
+			"shortcut": "a",
+			"var": "FxAddAnchorPoint"
+		},
+		{
+			"command": "removeEffect",
+			"name": "Remove FX",
+			"shortcut": "d",
+			"var": "FxRemove"
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Blur Create",
+			"selectFirst": "True",
+			"shortcut": "b",
+			"toSearch": "u:filter blur! -BCM",
+			"var": "FxAddFilter"
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Sharp Create",
+			"selectFirst": "True",
+			"shortcut": "s",
+			"toSearch": "u:filter sharpen! -BCM",
+			"var": "FxAddFilter"
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Hue Create",
+			"selectFirst": "True",
+			"shortcut": "h",
+			"toSearch": "u:filter HUE",
+			"var": "FxAddFilter"
+		},
+		{
+			"btToEdit": "0x1a0882",
+			"btToEditVar": "bVar28",
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Splatter Create",
+			"selectFirst": "True",
+			"shortcut": "!s",
+			"toSearch": "u:generator splatter_mater",
+			"var": "FxAddGenerator"
+		},
+		{
+			"btToEdit": "0x30079e",
+			"btToEditVar": "bVar29",
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Stains Create",
+			"selectFirst": "True",
+			"shortcut": "^s",
+			"toSearch": "u:generator stains_master",
+			"var": "FxAddGenerator"
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Grayscal Convers",
+			"selectFirst": "True",
+			"shortcut": "z",
+			"toSearch": "u:generator grayscale",
+			"var": "FxAddGenerator"
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Transform masks",
+			"selectFirst": "True",
+			"shortcut": "t",
+			"toSearch": "u:filter transform with",
+			"var": "FxAddFilter"
+		},
+		{
+			"clearAfter": "True",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Eyeball",
+			"selectFirst": "True",
+			"shortcut": "n",
+			"toSearch": "eyeball",
+			"var": "FxAddFill"
+		},
+		{
+			"btToEdit": "0x390718",
+			"btToEditVar": "bVar33",
+			"command": "toggleDocked",
+			"name": "tglTextureSets",
+			"shortcut": "F1",
+			"var": "TextureSets"
+		},
+		{
+			"command": "toggleDocked",
+			"name": "tglTextureSetsSettings",
+			"shortcut": "F2",
+			"var": "TextureSetsSettings"
 		}
 	]
 }

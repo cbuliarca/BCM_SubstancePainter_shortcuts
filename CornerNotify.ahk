@@ -24,31 +24,31 @@ CornerNotify(secs, title, message, position="b r", isError=0) {
 CornerNotify_Create(title, message, position="b r", isError=0) {
 	global cornernotify_title, cornernotify_msg, w, curtransp, cornernotify_hwnd, cornernotify_isError
 	CornerNotify_Destroy() ; make sure an old instance isn't still running or fading out
-	Gui, 2:+AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound
+	Gui, 10:+AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound
 	cornernotify_hwnd := WinExist()
 	WinSet, ExStyle, +0x20 ; WS_EX_TRANSPARENT make the window transparent-to-mouse
 	WinSet, Transparent, 160
 	curtransp := 160
-	Gui, 2:Color, 202020 ;background color
-	;Gui, 2:Font, cF0F0F0 s17 wbold, Arial
+	Gui, 10:Color, 202020 ;background color
+	;Gui, 10:Font, cF0F0F0 s17 wbold, Arial
     if (isError == 1)
     {
-        Gui, 2:Font, cFF6060 s17 wbold, Arial
+        Gui, 10:Font, cFF6060 s17 wbold, Arial
     }
     else{
-        Gui, 2:Font, cF0F0F0 s17 wbold, Arial
+        Gui, 10:Font, cF0F0F0 s17 wbold, Arial
     }
 
-	Gui, 2:Add, Text, Center x20 y12 w300 vcornernotify_title, %title%
+	Gui, 10:Add, Text, Center x20 y12 w300 vcornernotify_title, %title%
     if (isError == 1)
     {
-        Gui, 2:Font, cFF6060 s15 wnorm
+        Gui, 10:Font, cFF6060 s15 wnorm
     }
     else{
-        Gui, 2:Font, cF0F0F0 s15 wnorm
+        Gui, 10:Font, cF0F0F0 s15 wnorm
     }
-	Gui, 2:Add, Text, x20 y100 w400 vcornernotify_msg, %message%
-	Gui, 2:Show, NoActivate W700
+	Gui, 10:Add, Text, x20 y100 w400 vcornernotify_msg, %message%
+	Gui, 10:Show, NoActivate W700
 	WinMove(cornernotify_hwnd, position, title)
 	Return
 }
@@ -66,7 +66,7 @@ CornerNotify_Create(title, message, position="b r", isError=0) {
 CornerNotify_Destroy() {
 	global curtransp
 	curtransp := 0
-	Gui, 2:Destroy
+	Gui, 10:Destroy
 	SetTimer, CornerNotify_FadeOut_Destroy, Off
 }
 
@@ -80,7 +80,7 @@ CornerNotify_FadeOut_Destroy:
 		curtransp := curtransp - 4
 		WinSet, Transparent, %curtransp%, ahk_id %cornernotify_hwnd%
 	} Else {
-		Gui, 2: Destroy
+		Gui, 10: Destroy
 		SetTimer, CornerNotify_FadeOut_Destroy, Off
 	}
 Return

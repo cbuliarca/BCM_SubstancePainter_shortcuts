@@ -36,7 +36,8 @@ winSearches_Create( sX, sY, sW, stitle) {
   global searchesObj
   winSearches_Destroy() ; make sure an old instance isn't still running or fading out
 
-  Gui, 2:+AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound
+  Gui, 2:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
+  ;Gui, 2:+AlwaysOnTop +LastFound
 	winSearches_hwnd := WinExist()
   ;WinSet, ExStyle, +0x20 ; WS_EX_TRANSPARENT make the window transparent-to-mouse
 	WinSet, Transparent, 160
@@ -83,10 +84,39 @@ winSearches_Create( sX, sY, sW, stitle) {
 
   ;DllCall("SetParent", "uint", hwnd_gui2, "uint", hwnd_Container)
   ;OnMessage(WM_KEYDOWN := 0x100, "DetectKeyButtonPress")
+  ;OnMessage( 0x7B, "TheContextPressed")
+  OnMessage( 0x204, "WM_RBUTTONDOWN")
   WinActivate, winSearches_hwnd
   GuiControl, Focus, MyEdit
+
 	Return
 }
+
+WM_RBUTTONDOWN(wParam, lParam){
+
+  CoordMode, Mouse, Screen
+  MouseGetPos, x, y
+
+  
+  eddTx := "Edit shortcut"
+  if A_GuiControl
+    sss := %A_GuiControl%
+    GuiControlGet, butEdited, Hwnd, %A_GuiControl%
+    sss.btToEdit := butEdited
+    sss.btToEditVar := A_GuiControl
+  CoordMode Mouse, relative
+  if( sss.name = ""){
+    eddTx := "Create shortcut"
+  }
+
+  ;GuiControl, 2:, %butEdited%, "testtsstts"
+  winEditShortcuts( x, y, 400, eddTx, sss)
+
+  Return
+}
+
+
+
 
 butPressedRoutine:
 {
@@ -113,8 +143,6 @@ OnShortcut:
 }
 
 
-;destroy the gui with the esc key
-Esc:: Gui, 2:Destroy
 
 ClearModifierOnlyValue:
   ControlGetText, DisplayedKeys,, ahk_id %hwnd_Keys%  ; ControlGet, DisplayedKeys, Line , 1,,  ahk_id %hwnd_MyEdit%,
@@ -324,5 +352,3 @@ GetMonitorUnderMouse2()
     return tr
         
 }
-
-
