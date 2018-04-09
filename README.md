@@ -5,15 +5,15 @@ These are some Autohotkey scripts that are searching custom pixels on your scree
 
 ## Features in the scripts:
 
-*1. **Toggle pressure for flow** - when pressing **Ctrl+Alt+A** the mouse will go to the drop down of the Flow's pen pressure and change it 
+* 1. **Toggle pressure for flow** - when pressing **Ctrl+Alt+A** the mouse will go to the drop down of the Flow's pen pressure and change it 
 
-*2. **Toggle pressure for size** - when pressing **Ctrl+Alt+S** the mouse will go to the drop down of the Size's pen pressure and change it 
+* 2. **Toggle pressure for size** - when pressing **Ctrl+Alt+S** the mouse will go to the drop down of the Size's pen pressure and change it 
 
-*3.**Increment sliders** - by pressing the **UP** or **Down** Arrows when you have a text field selected it will decrease or increase the number. Ypu can change the precision by pressing the LEFT Arrow and change the options on the window
+* 3.**Increment sliders** - by pressing the **UP** or **Down** Arrows when you have a text field selected it will decrease or increase the number. Ypu can change the precision by pressing the LEFT Arrow and change the options on the window
 example : https://www.youtube.com/watch?v=wBDIHohJbos
 
-*4.**Change blending options** - for the selected stack or layer. When pressing **Alt+\`** a window will open when you can select one of the buttons. With this window active you can press for example 1 and the blending mode will be changed to PassThrough.
+* 4.**Change blending options** - for the selected stack or layer. When pressing **Alt+\`** a window will open when you can select one of the buttons. With this window active you can press for example 1 and the blending mode will be changed to PassThrough.
 
-*5.**Some mask options** - pressing the **\`** will open a window with shortcuts you can change masks, create filters.... 
+* 5.**Some mask options** - pressing the **\`** will open a window with shortcuts you can change masks, create filters.... 
 
-*6.**Predefined shelf searches** - pressing two times **\`**, will open the window with predefined shelf searches. This way you can select some brushes, or open the project textures.
+* 6.**Predefined shelf searches** - pressing two times **\`**, will open the window with predefined shelf searches. This way you can select some brushes, or open the project textures.
