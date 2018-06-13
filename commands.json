@@ -96,7 +96,7 @@
 
 		{"command":"setBlendMode",
 			"options":{		
-					"var":[
+					"blendMode":[
 							"Normal", 
 							"Passthrough", 
 							"Disable", 

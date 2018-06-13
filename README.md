@@ -21,7 +21,7 @@ If you find that these are helpful and you have some more suggestions please lea
 
 * **Toggle pressure for size** - when pressing **Ctrl+Alt+S** the mouse will go to the drop down of the Size's pen pressure and change it 
 
-* **Increment sliders** - by pressing the **UP** or **Down** Arrows when you have a text field selected it will decrease or increase the number. You can change the precision by pressing **Ctrl+1** and change the options on the window.
+* **Increment sliders** - by pressing the **Alt + UP** or **Alt + Down** Arrows when you have a text field selected it will decrease or increase the number. You can change the precision by pressing **Ctrl+1** and change the options on the window.
 example : https://www.youtube.com/watch?v=wBDIHohJbos
 
 * **Change blending options** - for the selected stack or layer. When pressing **Alt+\`** a window will open when you can select one of the buttons. With this window active you can press for example 1 and the blending mode will be changed to PassThrough.

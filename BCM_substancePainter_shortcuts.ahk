@@ -2823,23 +2823,23 @@ buttonPress( myObj ){
 	;custWindow( "Change Blending Mode", "blendingModesButtons.json")
 	Return
 }
-
+;alt + Up add increment by precision `
 #IfWinActive, ahk_exe Substance Painter.exe
-Up::
+!Up::
 {	
 	accOp("add")
 	Return	
 }
 
-
+;alt + Down substract increment by precision `
 #IfWinActive, ahk_exe Substance Painter.exe
-Down::
+!Down::
 {	
 	accOp("minus")
 	Return	
 }
 
-;alt + p open the filters window`
+;ctrl + 1 open the precision window`
 #IfWinActive, ahk_exe Substance Painter.exe
 ^1::
 {
