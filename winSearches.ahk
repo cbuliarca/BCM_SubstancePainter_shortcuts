@@ -1,12 +1,17 @@
 ;create window
 
 winSearches( title ) {
-  WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
-  WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+  ;WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+  ;WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+
+  qq := findPainterWindow( )
+  aX := qq.bLeft
+  aY := qq.bTop
+  aW := qq.bWidth
+  aH := qq.bHeight
   w := 760
   bX := aX + ((aW * 0.5) - (w*0.5))
   bY := aY + (aH*0.25)
-
 
 	winSearches_Create(bX, bY, w, title )
   millisec := secs*1000.00
@@ -36,24 +41,24 @@ winSearches_Create( sX, sY, sW, stitle) {
   global searchesObj
   winSearches_Destroy() ; make sure an old instance isn't still running or fading out
 
-  Gui, 2:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
-  ;Gui, 2:+AlwaysOnTop +LastFound
+  Gui, bcmSH1:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
+  ;Gui, bcmSH1:+AlwaysOnTop +LastFound
 	winSearches_hwnd := WinExist()
   ;WinSet, ExStyle, +0x20 ; WS_EX_TRANSPARENT make the window transparent-to-mouse
 	WinSet, Transparent, 160
 	curtranspSS := 160
-	Gui, 2:Color, 202020 ;background color
+	Gui, bcmSH1:Color, 202020 ;background color
 
   ;:the title
-  Gui, 2:Font, ce3e3e3 s10 wbold, Arial
-  Gui, 2: Add, Text, Center x0 y5 w%sW%, %stitle%
+  Gui, bcmSH1:Font, ce3e3e3 s10 wbold, Arial
+  Gui, bcmSH1: Add, Text, Center x0 y5 w%sW%, %stitle%
   
 
-  Gui, 2:Font, cF0F0F0 s12 wbold, Arial
+  Gui, bcmSH1:Font, cF0F0F0 s12 wbold, Arial
   ;the listener
-  ;Gui, 2: Add, Text, ReadOnly -Border w720 h10 x20 y20 vMyTT Hwndhwnd_Container 
-  ;Gui, 2: Add, Edit, +ReadOnly -Border vMyEdit Hwndhwnd_Keys w720 h10, 
-  Gui, 2:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkey gOnShortcut
+  ;Gui, bcmSH1: Add, Text, ReadOnly -Border w720 h10 x20 y20 vMyTT Hwndhwnd_Container 
+  ;Gui, bcmSH1: Add, Edit, +ReadOnly -Border vMyEdit Hwndhwnd_Keys w720 h10, 
+  Gui, bcmSH1:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkey gOnShortcut
 
   ;create buttons::::::::::::::
   butH := 80
@@ -69,8 +74,8 @@ winSearches_Create( sX, sY, sW, stitle) {
       bVar%kr% := v
       nName := v.name
       nSh := v.shortcut
-      ;Gui, 2: Add, Text, x%ax% y%ay% w100 h100, sassasa
-      Gui, 2: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 vbVar%kr% gbutPressedRoutine, >> %nSh% << %nName%        
+      ;Gui, bcmSH1: Add, Text, x%ax% y%ay% w100 h100, sassasa
+      Gui, bcmSH1: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 vbVar%kr% gbutPressedRoutine, >> %nSh% << %nName%        
 
       ax := ax + butW + 10
       if(ax > 680){
@@ -80,7 +85,7 @@ winSearches_Create( sX, sY, sW, stitle) {
       kr := kr + 1
 
   }
-  Gui, 2:Show, W%sW% x%sX% y%sY%
+  Gui, bcmSH1:Show, W%sW% x%sX% y%sY%
 
   ;DllCall("SetParent", "uint", hwnd_gui2, "uint", hwnd_Container)
   ;OnMessage(WM_KEYDOWN := 0x100, "DetectKeyButtonPress")
@@ -109,7 +114,7 @@ WM_RBUTTONDOWN(wParam, lParam){
     eddTx := "Create shortcut"
   }
 
-  ;GuiControl, 2:, %butEdited%, "testtsstts"
+  ;GuiControl, bcmSH1:, %butEdited%, "testtsstts"
   winEditShortcuts( x, y, 400, eddTx, sss)
 
   Return
@@ -151,14 +156,14 @@ ClearModifierOnlyValue:
     Loop, Parse, ModifierKeyList, `, 
       If GetKeyState(A_LoopField, "P")    ;still holding down
         Return  
-    Gui, 2:Font, cGray  
-    GuiControl, 2:Font, MyEdit    
+    Gui, bcmSH1:Font, cGray  
+    GuiControl, bcmSH1:Font, MyEdit    
     ControlSetText,, % EditBoxDefaultText, ahk_id %hwnd_Keys%,
   }
 Return
 
 DetectKeyButtonPress(wParam, lParam, msg) {
-  Static MouseParamToVK := {1:1, 2:2, 0x10:4, 0x20:5, 0x40:6} ; L,R,M,X1,X2
+  Static MouseParamToVK := {1:1, bcmSH1:2, 0x10:4, 0x20:5, 0x40:6} ; L,R,M,X1,X2
   if (msg < 0x200 && lParam & 1<<30) ; Not a mouse message && key-repeat.
     return
   if A_GuiControl != MyEdit
@@ -182,8 +187,8 @@ DetectKeyButtonPress(wParam, lParam, msg) {
   PressedKeyName := GetKeyName("VK" SubStr(wParam+0, 3))
   If PressedKeyName in %DisabledKeyList%
     Return
-  Gui, 2:Font, cBlack
-  GuiControl, 2:Font, MyEdit  
+  Gui, bcmSH1:Font, cBlack
+  GuiControl, bcmSH1:Font, MyEdit  
   If PressedKeyName in %ModifierKeyList%
     GuiControl,, MyEdit, % PressedModifiers
   Else
@@ -261,7 +266,7 @@ winSearches_Destroy() {
   global kr
 	curtranspSS := 0
   kr := 1
-	Gui, 2:Destroy
+	Gui, bcmSH1:Destroy
 }
 
 winSearchesBeginFadeOut:
@@ -274,7 +279,7 @@ winSearches_FadeOut_Destroy:
 		curtranspSS := curtranspSS - 4
 		WinSet, Transparent, %curtranspSS%, ahk_id %winSearches_hwnd%
 	} Else {
-		Gui, 2: Destroy
+		Gui, bcmSH1: Destroy
 		SetTimer, winSearches_FadeOut_Destroy, Off
 	}
 Return
@@ -348,7 +353,7 @@ GetMonitorUnderMouse2()
     		tr.monitorUnderMouse := 2
     	}
     }
-    CoordMode Mouse, relative
+    ;CoordMode Mouse, relative
     return tr
         
 }

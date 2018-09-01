@@ -19,6 +19,8 @@
 			"toSearch": "Brush Dirt 1 -Cement"
 		},
 		{
+			"btToEdit": "0xc01c92",
+			"btToEditVar": "bVar3",
 			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
@@ -96,6 +98,15 @@
 			"name": "{Commands}",
 			"shortcut": "`",
 			"title": "BCM_Commands"
+		},
+		{
+			"clearAfter": "False",
+			"click": 0,
+			"command": "shelfSearchAndSelect",
+			"name": "blur",
+			"selectFirst": "False",
+			"shortcut": "!b",
+			"toSearch": "blur"
 		}
 	]
 }

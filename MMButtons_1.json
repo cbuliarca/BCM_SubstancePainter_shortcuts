@@ -19,10 +19,10 @@
 			"var": "toggleMask"
 		},
 		{
-			"command": "doMask",
-			"name": "remove Mask",
-			"shortcut": "8",
-			"var": "removeMask"
+			"command": "doLayers",
+			"name": "upper Layer",
+			"shortcut": "]",
+			"var": "selectUpperLayStack"
 		},
 		{
 			"command": "doMask",
@@ -43,9 +43,10 @@
 			"var": "tglSelectCorOrMask"
 		},
 		{
-			"command": "",
-			"name": " .",
-			"shortcut": ""
+			"command": "createFill",
+			"name": "fill+clrSelection",
+			"shortcut": "e",
+			"var": "addMaskWithCS"
 		},
 		{
 			"command": "createFill",
@@ -54,16 +55,16 @@
 			"var": "noMask"
 		},
 		{
-			"command": "createFill",
-			"name": "fill& black mask",
-			"shortcut": "w",
-			"var": "addBlackMask"
+			"command": "doLayers",
+			"name": "down layer",
+			"shortcut": "[",
+			"var": "selectDownLayStack"
 		},
 		{
-			"command": "createFill",
-			"name": "fill + clrSelection",
-			"shortcut": "e",
-			"var": "addMaskWithCS"
+			"command": "createLayer",
+			"name": "Simple Layer",
+			"shortcut": "n",
+			"var": "noMask"
 		},
 		{
 			"command": "createFill",

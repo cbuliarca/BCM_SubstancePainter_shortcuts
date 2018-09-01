@@ -1,8 +1,11 @@
 ;create window
 
 winPrecision( title ) {
-  WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
-  WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+  qq := findPainterWindow( )
+  aX := qq.bLeft
+  aY := qq.bTop
+  aW := qq.bWidth
+  aH := qq.bHeight
   w := 760
   bX := aX + ((aW * 0.5) - (w*0.5))
   bY := aY + (aH*0.25)
@@ -36,23 +39,23 @@ winPrecision_Create( sX, sY, sW, stitle) {
   global precisionObj, MyPrecisionEditQ, EnterBtn
   winPrecision_Destroy(0) ; make sure an old instance isn't still running or fading out
 
-  Gui, 2:+AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound
+  Gui, bcmPrWin:+AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound
 	winPrecision_hwnd := WinExist()
   ;WinSet, ExStyle, +0x20 ; WS_EX_TRANSPARENT make the window transparent-to-mouse
 	WinSet, Transparent, 160
 	curtranspSSPrecis := 160
-	Gui, 2:Color, 202020 ;background color
+	Gui, bcmPrWin:Color, 202020 ;background color
 
   ;:the title
-  Gui, 2:Font, ce3e3e3 s10 wbold, Arial
-  Gui, 2: Add, Text, Center x0 y5 w%sW%, %stitle%
+  Gui, bcmPrWin:Font, ce3e3e3 s10 wbold, Arial
+  Gui, bcmPrWin: Add, Text, Center x0 y5 w%sW%, %stitle%
   
 
-  Gui, 2:Font, cF0F0F0 s12 wbold, Arial
+  Gui, bcmPrWin:Font, cF0F0F0 s12 wbold, Arial
   ;the listener
-  ;Gui, 2: Add, Text, ReadOnly -Border w720 h10 x20 y20 vMyTTPrecis Hwndhwnd_Container 
-  ;Gui, 2: Add, Edit, +ReadOnly -Border vMyEditPrecis Hwndhwnd_Keys w720 h10, 
-  Gui, 2:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkeyPrecis gOnShortcutPrecision
+  ;Gui, bcmPrWin: Add, Text, ReadOnly -Border w720 h10 x20 y20 vMyTTPrecis Hwndhwnd_Container 
+  ;Gui, bcmPrWin: Add, Edit, +ReadOnly -Border vMyEditPrecis Hwndhwnd_Keys w720 h10, 
+  Gui, bcmPrWin:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkeyPrecis gOnShortcutPrecision
 
   ;create buttons::::::::::::::
   butH := 60
@@ -68,8 +71,8 @@ winPrecision_Create( sX, sY, sW, stitle) {
       dVar%krPrecis% := v
       nName := v.name
       nSh := v.shortcut
-      ;Gui, 2: Add, Text, x%ax% y%ay% w100 h100, sassasa
-      Gui, 2: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 -TabStop vdVar%krPrecis% gbutPressedPrecisionRoutine, >> %nSh% << %nName%        
+      ;Gui, bcmPrWin: Add, Text, x%ax% y%ay% w100 h100, sassasa
+      Gui, bcmPrWin: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 -TabStop vdVar%krPrecis% gbutPressedPrecisionRoutine, >> %nSh% << %nName%        
 
       ax := ax + butW + 10
       if(ax > 680){
@@ -81,21 +84,21 @@ winPrecision_Create( sX, sY, sW, stitle) {
   }
   ay := ay + butH + 10
 
-  Gui, 2: Font, c000000 s50 wbold, Arial
-  Gui, 2: Add, Edit, x10 y%ay% w740 h40 r1 -WantReturn vMyPrecisionEditQ, %precisionAdd%
-  Gui, 2: Add, Button, w40 h1 -TabStop default vEnterBtn gButSSSS, OK
+  Gui, bcmPrWin: Font, c000000 s50 wbold, Arial
+  Gui, bcmPrWin: Add, Edit, x10 y%ay% w740 h40 r1 -WantReturn vMyPrecisionEditQ, %precisionAdd%
+  Gui, bcmPrWin: Add, Button, w40 h1 -TabStop default vEnterBtn gButSSSS, OK
   
-  Gui, 2:Font, ce3e3e3 s14 wbold, Arial
-  Gui, 2: Add, Text, Center w%sW%, precision will be changed only if you press enter
+  Gui, bcmPrWin:Font, ce3e3e3 s14 wbold, Arial
+  Gui, bcmPrWin: Add, Text, Center w%sW%, precision will be changed only if you press enter
   
 
-  Gui, 2: Show, W%sW% x%sX% y%sY% 
+  Gui, bcmPrWin: Show, W%sW% x%sX% y%sY% 
 
-  GuiControl, 2:Hide, EnterBtn
+  GuiControl, bcmPrWin:Hide, EnterBtn
 
 
   WinActivate, winPrecision_hwnd
-  GuiControl, 2:Focus, MyEditPrecis
+  GuiControl, bcmPrWin:Focus, MyEditPrecis
 	Return
 }
 
@@ -191,13 +194,13 @@ winPrecision_Destroy( ws ) {
   global krPrecis
 	curtranspSSPrecis := 0
   krPrecis := 1
-	Gui, 2:Destroy
+	Gui, bcmPrWin:Destroy
   if (ws = 1){
     if(wasTextSelBeforeThisWin.x){
       Sleep, 100
       sqx := wasTextSelBeforeThisWin.x
       sqy := wasTextSelBeforeThisWin.y
-      Click, %sqx% %sqy%
+      myClick( sqx, sqy, "left")
       wasTextSelBeforeThisWin := {}
     }
   }

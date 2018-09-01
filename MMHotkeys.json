@@ -1,0 +1,30 @@
+{
+	"markingMenus": [
+		{
+			"file": "MMButtons_1.json",
+			"title": "blending modes",
+			"shortcut": "c"
+		},
+		{
+			"file": "blendingModesButtons.json",
+			"title": "blending modes",
+			"shortcut": "w"
+		},
+		{
+			"file": "masksButtons.json",
+			"title": "masks",
+			"shortcut": "2"
+		},
+		{
+			"file": "searches.json",
+			"title": "searches",
+			"shortcut": "q"
+		},
+		{
+			"file": "filtersButtons.json",
+			"title": "filters",
+			"shortcut": "e"
+		}
+
+	]
+}

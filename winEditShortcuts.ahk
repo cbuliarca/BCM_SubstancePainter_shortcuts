@@ -36,15 +36,15 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
   btnObjG := contrl
   
   sW := sWW
-  ;Gui, 3:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
-  Gui, 3:+AlwaysOnTop +LastFound
+  ;Gui, bcmOptWin:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
+  Gui, bcmOptWin:+AlwaysOnTop +LastFound
 	winEditShortcuts_hwnd := WinExist()
 	WinSet, Transparent, 230
-	Gui, 3:Color, ffffff ;background color
+	Gui, bcmOptWin:Color, ffffff ;background color
 
   ;:the title
-  Gui, 3:Font, 151515 s10 wbold, Arial
-  Gui, 3: Add, Text, Center x0 y5 w%sW% veTitle, %stitle%
+  Gui, bcmOptWin:Font, 151515 s10 wbold, Arial
+  Gui, bcmOptWin: Add, Text, Center x0 y5 w%sW% veTitle, %stitle%
 
 
   if(aCommands.avilableCommands){
@@ -57,7 +57,7 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
 
   if(stitle = "Edit shortcut")
   {
-    Gui, 3: Add, Button, x0 y25 w%sW% h30 -TabStop vEditShortDeleteBtn gDeleteEditShortcuts, Delete this Button
+    Gui, bcmOptWin: Add, Button, x0 y25 w%sW% h30 -TabStop vEditShortDeleteBtn gDeleteEditShortcuts, Delete this Button
     eY := 40
   
   }else{
@@ -80,13 +80,13 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
   eX := txW + 5
   eW := sW - txW - 10
   ey := ey + spY
-  Gui, 3: Add, Text, Left x5 y%eY% w%txW%, Button Name
-  Gui, 3: Add, Edit, x%eX% y%eY% w%eW% veButName, %cName%
+  Gui, bcmOptWin: Add, Text, Left x5 y%eY% w%txW%, Button Name
+  Gui, bcmOptWin: Add, Edit, x%eX% y%eY% w%eW% veButName, %cName%
 
 
   ey := ey + spY
-  Gui, 3: Add, Text, Left x5 y%eY% w%txW%, Shortcut
-  Gui, 3: Add, Hotkey, x%eX% y%eY% w%eW% veShortcut gCheckHotkey, %shName%
+  Gui, bcmOptWin: Add, Text, Left x5 y%eY% w%txW%, Shortcut
+  Gui, bcmOptWin: Add, Hotkey, x%eX% y%eY% w%eW% veShortcut gCheckHotkey, %shName%
 
 
 
@@ -103,14 +103,14 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
   }
 
   ey := ey + spY
-  Gui, 3: Add, Text, Left x5 y%eY% w%txW%, Command
-  Gui, 3: Add, DropDownList, x%eX% y%eY% w%eW% gCommandChanged veCommand, %aComs%
+  Gui, bcmOptWin: Add, Text, Left x5 y%eY% w%txW%, Command
+  Gui, bcmOptWin: Add, DropDownList, x%eX% y%eY% w%eW% gCommandChanged veCommand, %aComs%
 
 
 
 
   ey := ey + spY
-  Gui, 3: Add, Text, Left x5 y%eY% w%txW%, Options:
+  Gui, bcmOptWin: Add, Text, Left x5 y%eY% w%txW%, Options:
 
   ;splashInfo(ey)
 
@@ -137,9 +137,9 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
       }
 
     ey := ey + spY
-    Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+    Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
     aa := aa + 1
-    Gui, 3: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %bolOpts%
+    Gui, bcmOptWin: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %bolOpts%
     
 
     }else if(v = "String"){
@@ -152,9 +152,9 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
       }
 
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, Edit, x%eX% y%eY% w%eW% veVar%aa%, %strOpts%
+      Gui, bcmOptWin: Add, Edit, x%eX% y%eY% w%eW% veVar%aa%, %strOpts%
 
 
     }else if(v = "Integer"){
@@ -166,9 +166,9 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
         }
       }
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, Edit, Number x%eX% y%eY% w%eW% veVar%aa%, %intOpts%
+      Gui, bcmOptWin: Add, Edit, Number x%eX% y%eY% w%eW% veVar%aa%, %intOpts%
 
 
     }else{
@@ -206,16 +206,16 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
       }
       ;splashInfo( drOpts)
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %drOpts%
+      Gui, bcmOptWin: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %drOpts%
     }
     aa := aa + 1
   }
 
   
-  Gui, 3: Add, Button, x0 w%sW% h40 -TabStop default vEditShortEnterBtn gSaveEditShortcuts, Apply
-  Gui, 3:Show, W%sW% x%sX% y%sY%
+  Gui, bcmOptWin: Add, Button, x0 w%sW% h40 -TabStop default vEditShortEnterBtn gSaveEditShortcuts, Apply
+  Gui, bcmOptWin:Show, W%sW% x%sX% y%sY%
   WinActivate, winEditShortcuts_hwnd
 
 	Return
@@ -225,7 +225,7 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
 winEditShortcuts_Destroy() {
 	curtranspSS := 0
   kr := 1
-	Gui, 3:Destroy
+	Gui, bcmOptWin:Destroy
 }
 
 CheckHotkey:
@@ -283,9 +283,9 @@ checkExistentHotkey(){
       CornerNotify(1, "!!! You can't use this shortcut.There is already a button with this shortcut !!!", "", "r hc", 1)
       if(btnObjG.shortcut){
           sc := btnObjG.shortcut
-          GuiControl, 3:, eShortcut, %sc%
+          GuiControl, bcmOptWin:, eShortcut, %sc%
         }else{
-          GuiControl, 3:, eShortcut, 
+          GuiControl, bcmOptWin:, eShortcut, 
         }
     }
   }
@@ -405,27 +405,27 @@ addDefaultOptions( comm ){
       bolOpts := "True||False"
 
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %bolOpts%
+      Gui, bcmOptWin: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %bolOpts%
     
 
     }else if(v = "String"){
       strOpts := ""
 
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, Edit, x%eX% y%eY% w%eW% veVar%aa%, %strOpts%
+      Gui, bcmOptWin: Add, Edit, x%eX% y%eY% w%eW% veVar%aa%, %strOpts%
 
 
     }else if(v = "Integer"){
       intOpts := 1
 
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, Edit, Number x%eX% y%eY% w%eW% veVar%aa%, %intOpts%
+      Gui, bcmOptWin: Add, Edit, Number x%eX% y%eY% w%eW% veVar%aa%, %intOpts%
 
 
     }else{
@@ -442,9 +442,9 @@ addDefaultOptions( comm ){
 
       ;splashInfo( drOpts)
       ey := ey + spY
-      Gui, 3: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
+      Gui, bcmOptWin: Add, Text, Center x5 y%eY% w%txW% veVar%aa%, %k%
       aa := aa + 1
-      Gui, 3: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %drOpts%
+      Gui, bcmOptWin: Add, DropDownList, x%eX% y%eY% w%eW% veVar%aa%, %drOpts%
     }
     aa := aa + 1
   }

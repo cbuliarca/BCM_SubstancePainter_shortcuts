@@ -1,11 +1,6 @@
-bcm_workArea := {}
-bcm_workArea := getAllPixelsMonitors()
-
 
 #Include %A_ScriptDir%              ; Set working directory for #Include.
 #Include *i Jxon22.ahk
-#Include *i pbuttons_class.ahk
-#Include *i markingMenu.ahk
 #Include *i CornerNotify.ahk
 #Include *i winSearches.ahk
 #Include *i winPrecision.ahk
@@ -16,13 +11,7 @@ bcm_workArea := getAllPixelsMonitors()
 
 toPerformAfterInfoGet := ""
 painterInfoObj := {}
-bcm_workArea := {}
-precisionAdd := 0.1
-MMcreated := 0
-MMOn := 0
 
-CoordMode, Mouse, Screen
-CoordMode Pixel
 
 
 ;https://autohotkey.com/board/topic/122-automatic-reload-of-changed-script/page-2
@@ -37,13 +26,7 @@ IfWinActive,%A_ScriptName%
 }
 return
 
-
-
-
-
-
-
-bcm_splashInfo( sq ){
+splashInfo( sq ){
 	WinGet, WinID1, ID, ahk_exe Substance Painter.exe,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID1%
 	w := 500
@@ -55,7 +38,7 @@ bcm_splashInfo( sq ){
 	SplashImage, Off
 }
 
-bcm_msgBObj( ob ){
+msgBObj( ob ){
 	txt := ""
 	For k, v in ob{
 		txt1 := (" " . k . " :: " . v . "`n")
@@ -65,35 +48,7 @@ bcm_msgBObj( ob ){
 	return
 }
 
-cal_forMyMonitors( val ){
-	if(val < 0){
-		return 1920 - val
-	}else if (val >= 0){
-		return 1920 + val
-	}else{
-		return val
-	}
-}
-
-myClick( val1, val2, btnN ){
-	;a click with errors check, if the values are ok it will click
-	CoordMode, Mouse, Screen
-	doIt := 0
-	if( val1 AND val2)
-	{
-		if( val1 is number AND val2 in number){
-			;bcm_splashInfo("click")
-			if (btnN == "right"){
-				Click, right, %val1%, %val2%
-			}else{
-				Click, %val1%, %val2%
-			}
-		}
-	}
-}
-
 toogleSizePressure( bTabX, bTabY ){
-	;old version obsolette
 
 	theSizeX := bTabX - 5
 	theSizeY := bTabY + 16
@@ -108,25 +63,25 @@ toogleSizePressure( bTabX, bTabY ){
 	{
 		CornerNotify(1, "Size pressure ON", "", "r hc", 0)
 		BlockInput, on
-		myClick( theSizeX , theSizeY, "left")
+		Click, %theSizeX%, %theSizeY%
 		npY := theSizeY + 40
-		myClick( theSizeX , npY, "left")
+		Click, %theSizeX%, %npY%
 		BlockInput, off
 	}
 	Else
 	{
 		CornerNotify(1, "Size pressure OFF", "", "r hc", 0)
 		BlockInput, on
-		myClick( theSizeX , theSizeY, "left")
+		Click, %theSizeX%, %theSizeY%
 		npY1 := theSizeY + 10
-		myClick( theSizeX , npY1, "left")
+		Click, %theSizeX%, %npY1%
 		BlockInput, off
 	}
 }
 
 
 toogleOpacityPressure( bTabX, bTabY ){
-	;old version obsolette
+
 	theSizeX := bTabX - 5
 	theSizeY := bTabY + 36
 
@@ -140,18 +95,18 @@ toogleOpacityPressure( bTabX, bTabY ){
 	{
 		CornerNotify(1, "Flow pressure ON", "", "r hc", 0)
 		BlockInput, on
-		myClick( theSizeX , theSizeY, "left")
+		Click, %theSizeX%, %theSizeY%
 		npY := theSizeY + 40
-		myClick( theSizeX , npY, "left")
+		Click, %theSizeX%, %npY%
 		BlockInput, off
 	}
 	Else
 	{
 		CornerNotify(1, "Flow pressure OFF", "", "r hc", 0)
 		BlockInput, on
-		myClick( theSizeX , theSizeY, "left")
+		Click, %theSizeX%, %theSizeY%
 		npY1 := theSizeY + 10
-		myClick( theSizeX , npY1, "left")
+		Click, %theSizeX%, %npY1%
 		BlockInput, off
 	}
 }
@@ -178,6 +133,7 @@ getInfoFromPainter( ){
 
 
 }
+
 
 checkForChanges(){
 
@@ -235,9 +191,53 @@ setChannelsToPassthrough(){
 
 
 getLayersPanel(){
+		;global painterInfoObj
 
-	layersPanel := getPanel("Layers")
+	;CornerNotify(1, "!!! setChannelsToPassthrough !!!", "", "r hc", 0)
 
+	;set all properties to passthrow
+	layersPanel := {}
+	MouseGetPos, xpos, ypos 
+	mSpeed := 0.000001
+	ImageSearch, LayersFoundX, LayersFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\Layers.png
+	if (ErrorLevel = 2)
+	{
+	    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
+	}
+	else if (ErrorLevel = 1)
+	{
+	    CornerNotify(1, "!!! 'Layers' could not be found on the screen !!!", "", "r hc", 1)
+	}
+	else
+	{
+		layersPanel.bLeft := LayersFoundX - 8
+		layersPanel.bTop := LayersFoundY - 13
+		ImageSearch, LayersEndPanelDownX, LayersEndPanelDownY, layersPanel.bLeft, layersPanel.bTop + 13, layersPanel.bLeft + 14, %A_ScreenHeight%, %A_ScriptDir%\images\bottomPanel.png
+		if (ErrorLevel = 1)
+		{
+		    CornerNotify(1, "!!! end of 'Layers' panel could not be found on the screen !!!", "", "r hc", 1)
+		}
+		else{
+			layersPanel.bBottom := LayersEndPanelDownY
+			ImageSearch, LayersClosePanelX, LayersClosePanelY, layersPanel.bLeft , layersPanel.bTop + 8, %A_ScreenWidth% , layersPanel.bTop + 25, %A_ScriptDir%\images\closePanel.png
+			if (ErrorLevel = 1)
+			{
+			    CornerNotify(1, "!!! close of 'Layers' panel could not be found on the screen !!!", "", "r hc", 1)
+			}
+			else{
+				layersPanel.bRight := LayersClosePanelX + 21
+
+				;BlockInput, On
+				;MouseMove, layersPanel.bLeft, layersPanel.bTop, 10s
+				;MouseMove, layersPanel.bLeft, layersPanel.bBottom, 10
+				;MouseMove, layersPanel.bRight, layersPanel.bBottom, 10
+				;MouseMove, layersPanel.bRight, layersPanel.bTop, 10
+				;BlockInput, Off
+
+				
+			}
+		}
+	}
 
 	if(layersPanel.bRight){ 
 		layersPanel.binButtonX := layersPanel.bRight - 18
@@ -256,12 +256,23 @@ getLayersPanel(){
 		layersPanel.addFxButtonY := layersPanel.bTop + 50
 	}
 	return layersPanel
-
-
 }
 
 getLayerPanelScroller( lP ){
 	tq := getScrollPosition(lP.bRight - 20, lP.bTop, lP.bRight ,lP.bBottom  )
+	;s1 := lP.bRight - 20
+	;s2 := lP.bTop
+	;s3 := lP.bRight
+	;s4 := lP.bBottom
+	;MsgBox, bRight: %s1% . bTop:%s2% . bLeft:%s3% . bBottom:%s4%
+	;s1 := tq.scrollerTop
+	;s2 := tq.scrollerBottom
+	;s3 := tq.scrollerCenterY
+	;s4 := tq.scrollerLeft
+	;s5 := tq.scrollUppY
+	;s6 := tq.scrollerOffset
+	;MsgBox, scrollerTop: %s1% . scrollerBottom:%s2% . scrollerCenterY:%s3% . scrollerLeft:%s4% . scrollUppY:%s5% . scrollerOffset:%s6%
+	;splashInfo( tq.scrollerCenterY )
 	lP.scrollerLeft  := tq.scrollerLeft
 	lP.scrollerTop := tq.scrollerTop
 	lP.scrollerRight := tq.scrollerRight
@@ -276,7 +287,6 @@ getLayerPanelScroller( lP ){
 	lP.scrollerOffsetDown := tq.scrollerOffsetDown
 	return lP
 }
-
 getListUIInfo( layersPanel ){
 
 	listUI := {}
@@ -433,16 +443,24 @@ getCurrentLayers( layersPanel ){
 
 getShelf(){
 	shelf :={}
-	shelf := getPanel( "Shelf" )
+	;shelf := getShelfTab( shelf )
+	;if(shelf.shelfTabActive = 0){
+	;	;select the shelf
+	;	sTX := shelf.shelfTabX + 5
+	;	sTY := shelf.shelfTabY + 5
+	;	BlockInput, on
+	;	Click, %sTX%, %sTY%
+	;	BlockInput, off
+	;	Sleep, 50
+	;}
 	shelf := getShelfFolder( shelf )
 	shelf := getShelfFilter( shelf )
 	shelf := getShelfSerchesEndX( shelf )
-	CoordMode, Mouse, Screen
 	if(shelf.shelfSearchEndX = 1){
 		sT1X := shelf.shelfSearchEndXX + 9
 		sT1Y := shelf.shelfSearchEndXY + 9
 		BlockInput, on
-		myClick( sT1X , sT1Y, "left")
+		Click, %sT1X%, %sT1Y%
 		BlockInput, off
 		Sleep, 50
 	}
@@ -453,77 +471,23 @@ getShelf(){
 	;msgBObj(shelf)
 	return shelf
 }
-
-getShelfFolder( sh ){
-	CoordMode, Pixel
-	sh.shelfFolderX := sh.bLeft + 16
-	sh.shelfFolderY := sh.bTop + 50
-	ImageSearch, ShelfFolderEndX, ShelfFolderEndY, sh.shelfFolderX, sh.shelfFolderY , sh.bRight, sh.shelfFolderY + 11, %A_ScriptDir%\images\folderActiveBand.png
+getShelfSearchX( sh ){
+	ImageSearch, ShelfSearchFilterOnX, ShelfSearchFilterOnY, sh.shelfSearchX - 35 , sh.shelfSearchY , sh.shelfSearchX, sh.shelfSearchY + 27, %A_ScriptDir%\images\searchFilterX.png
 	if (ErrorLevel = 1)
 	{
-		;CornerNotify(1, "!!! The shelf FolderEnd is 1not visible !!!", "", "r hc", 1)
-		sh.shelfFolderActive := 0
-		sh.shelfFolderEndX := sh.bLeft
-	}
-	Else{
-		sh.shelfFolderEndX := ShelfFolderEndX + 3 
-		sh.shelfFolderActive := 1
-	}
-
-	return sh
-}
-getShelfFilter( sh ){
-	
-	if( sh.shelfFolderX ){
-		shStartX := sh.shelfFolderX + 10
-		shStartY := sh.shelfFolderY - 10
-		shEndY := sh.shelfFolderY + 20
-
-	}else{
-		shStartX := sh.bLeft
-		shStartY := sh.bTop
-		shEndY := sh.bBottom
-	}
-	CoordMode, Pixel
-	ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 100, %A_ScriptDir%\images\filerActive.png
-	if (ErrorLevel = 1)
-	{
-		CoordMode, Pixel
-		ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 100, %A_ScriptDir%\images\filerInactive.png
-		if (ErrorLevel = 1)
-		{
-		;shelf Filter could not be found
-			CornerNotify(1, "!!! The shelf Filter is not visible !!!", "", "r hc", 1)
-		}Else{
-			sh.shelfFilterX := ShelfFilterX
-			sh.shelfFilterY := ShelfFilterY
-			sh.shelfFilterActive := 0
-			;return tr
-		}	
+		sh.shelfSearchFilterOn := 0
 	}Else{
-			sh.shelfFilterX := ShelfFilterX
-			sh.shelfFilterY := ShelfFilterY
-			sh.shelfFilterActive := 1
-			CoordMode, Pixel
-			ImageSearch, ShelfFilterEndX, ShelfFilterEndY, sh.shelfFilterX, sh.shelfFilterY + 29, sh.bRight, sh.shelfFilterY + 36, %A_ScriptDir%\images\filterActiveBand.png
-			if (ErrorLevel = 1)
-			{
-				CornerNotify(1, "!!! The shelf FilterEnd is not visible !!!", "", "r hc", 1)
-			}
-			Else{
-				sh.shelfFilterEndX := ShelfFilterEndX + 3
-			}
+		sh.shelfSearchFilterOn := 1
+		sh.shelfSearchFilterOnX := ShelfSearchFilterOnX
+		sh.shelfSearchFilterOnY := ShelfSearchFilterOnY
 	}
 	return sh
 }
-
-
 getShelfSerchesEndX( sh ){
-	CoordMode, Pixel
-	ImageSearch, ShelfSearchEndXX, ShelfSearchEndXY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 20, %A_ScriptDir%\images\searchX.png
+	ImageSearch, ShelfSearchEndXX, ShelfSearchEndXY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, %A_ScreenWidth%, sh.shelfFilterY + 20, %A_ScriptDir%\images\searchX.png
 	if (ErrorLevel = 1)
 	{
-		ImageSearch, ShelfSearchEndXX, ShelfSearchEndXY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 20, %A_ScriptDir%\images\searchX2.png
+		ImageSearch, ShelfSearchEndXX, ShelfSearchEndXY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, %A_ScreenWidth%, sh.shelfFilterY + 20, %A_ScriptDir%\images\searchX2.png
 		if (ErrorLevel = 1)
 		{
 			sh.shelfSearchEndX := 0
@@ -539,27 +503,11 @@ getShelfSerchesEndX( sh ){
 	}
 	return sh
 }
-
-getShelfSearchX( sh ){
-	CoordMode, Pixel
-	ImageSearch, ShelfSearchFilterOnX, ShelfSearchFilterOnY, sh.shelfSearchX - 35 , sh.shelfSearchY , sh.shelfSearchX, sh.shelfSearchY + 27, %A_ScriptDir%\images\searchFilterX.png
-	if (ErrorLevel = 1)
-	{
-		sh.shelfSearchFilterOn := 0
-	}Else{
-		sh.shelfSearchFilterOn := 1
-		sh.shelfSearchFilterOnX := ShelfSearchFilterOnX
-		sh.shelfSearchFilterOnY := ShelfSearchFilterOnY
-	}
-	return sh
-}
-
 getShelfSearch( sh ){
-	CoordMode, Pixel
-	ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStart.png
+	ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, %A_ScreenWidth%, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStart.png
 	if (ErrorLevel = 1)
 	{
-		ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStartOn.png
+		ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, %A_ScreenWidth%, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStartOn.png
 		if (ErrorLevel = 1){
 			CornerNotify(1, "!!! The shelf Search is not visible !!!", "", "r hc", 1)
 		}Else{
@@ -574,6 +522,85 @@ getShelfSearch( sh ){
 	}
 	return sh
 }
+
+getShelfFilter( sh ){
+	if( sh.shelfFolderX ){
+		shStartX := sh.shelfFolderX + 10
+		shStartY := sh.shelfFolderY - 2
+		shEndY := sh.shelfFolderY + 20
+
+	}else{
+		shStartX := 0
+		shStartY := 0
+		shEndY := A_ScreenHeight
+	}
+	ImageSearch, ShelfFilterX, ShelfFilterY, shStartX, shStartY, %A_ScreenWidth%, shEndY, %A_ScriptDir%\images\filerActive.png
+	if (ErrorLevel = 1)
+	{
+		ImageSearch, ShelfFilterX, ShelfFilterY, shStartX, shStartY, %A_ScreenWidth%, shEndY, %A_ScriptDir%\images\filerInactive.png
+		if (ErrorLevel = 1)
+		{
+		;shelf Filter could not be found
+			CornerNotify(1, "!!! The shelf Filter is not visible !!!", "", "r hc", 1)
+		}Else{
+			sh.shelfFilterX := ShelfFilterX
+			sh.shelfFilterY := ShelfFilterY
+			sh.shelfFilterActive := 0
+			;return tr
+		}	
+	}Else{
+			sh.shelfFilterX := ShelfFilterX
+			sh.shelfFilterY := ShelfFilterY
+			sh.shelfFilterActive := 1
+			ImageSearch, ShelfFilterEndX, ShelfFilterEndY, sh.shelfFilterX, sh.shelfFilterY + 29, %A_ScreenWidth%, sh.shelfFilterY + 36, %A_ScriptDir%\images\filterActiveBand.png
+			if (ErrorLevel = 1)
+			{
+				CornerNotify(1, "!!! The shelf FilterEnd is not visible !!!", "", "r hc", 1)
+			}
+			Else{
+				sh.shelfFilterEndX := ShelfFilterEndX + 3
+			}
+	}
+	return sh
+}
+
+
+
+getShelfFolder( sh ){
+	ImageSearch, ShelfFolderX, ShelfFolderY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\folderActive.png
+	if (ErrorLevel = 1)
+	{
+		ImageSearch, ShelfFolderX, ShelfFolderY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\folderInactive.png
+		if (ErrorLevel = 1)
+		{
+		;shelf Folder could not be found
+			CornerNotify(1, "!!! The shelf Folder is not visible !!!", "", "r hc", 1)
+		}Else{
+			sh.shelfFolderX := ShelfFolderX
+			sh.shelfFolderY := ShelfFolderY
+			sh.shelfFolderActive := 0l
+			;return tr 
+		}	
+	}Else{
+			sh.shelfFolderX := ShelfFolderX
+			sh.shelfFolderY := ShelfFolderY
+			sh.shelfFolderActive := 1
+			ImageSearch, ShelfFolderEndX, ShelfFolderEndY, ShelfFolderX, ShelfFolderY + 4, %A_ScreenWidth%, ShelfFolderY + 6, %A_ScriptDir%\images\folderActiveBand.png
+			if (ErrorLeve = 1)
+			{
+				CornerNotify(1, "!!! The shelf FolderEnd is not visible !!!", "", "r hc", 1)
+			}
+			Else{
+				sh.shelfFolderEndX := ShelfFolderEndX + 3 
+			}
+			;MsgBox, ssss is .%tr.shelfTabX%
+			;return tr
+	}
+	return sh
+}
+
+
+
 
 
 getShelfTab( sh ){
@@ -604,7 +631,6 @@ getShelfTab( sh ){
 
 
 shelfSearchAndSelect( myOb ){
-	CoordMode, Mouse, Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed = 0.000001
 	shelfA := getShelf()
@@ -613,7 +639,7 @@ shelfSearchAndSelect( myOb ){
 		sY := shelfA.shelfSearchY + 4
 		;MsgBox, %sX% . %sY%
 		BlockInput, on
-		myClick( sX , sY, "left") ; clcik on the serch field
+		Click, %sX%, %sY% ; clcik on the serch field
 		
 		;clear the field
 		Send {Home}
@@ -624,7 +650,7 @@ shelfSearchAndSelect( myOb ){
 		if (shelfA.shelfSearchFilterOn = 1){
 			sfX := shelfA.shelfSearchFilterOnX + 5
 			sfY := shelfA.shelfSearchFilterOnY + 5
-			myClick( sfX , sfY, "left")
+			Click, %sfX%, %sfY%
 		}
 
 		;send text to search
@@ -633,7 +659,7 @@ shelfSearchAndSelect( myOb ){
 		Send, ^v
 		;Send {Text} %myText%
 
-		;bcm_msgBObj(shelfA)
+
 		;select result
 		if( myOb.selectFirst = "True"){
 			selX := shelfA.shelfFolderX + 10
@@ -648,13 +674,13 @@ shelfSearchAndSelect( myOb ){
 			Sleep, 100
 			clk := myOb.click
 			Loop, %clk%{
-				myClick( selX , selY, "left")
+				Click, %selX%, %selY%
 				Sleep, 100
 			}
 			
 		}
 		if( myOb.clearAfter = "True"){
-			myClick( sX , sY, "left")
+			Click, %sX%, %sY%
 			Send {Home}
 			Send {Shift}+{End}
 			Send {Backspace}
@@ -665,167 +691,74 @@ shelfSearchAndSelect( myOb ){
 	}
 }
 
-getPanel( typ ){
-	global bcm_workArea
-	bcm_workArea := getAllPixelsMonitors()
+test( myObj ){
+	ss := myObj.var
+	MsgBox, %ss%
+}
 
-	qPanel := {}
-	qPanel := findFloatPanel( typ )
-	CoordMode, Pixel
-	if(qPanel.bLeft){
-		;the panel is floating so we don't need to search with image search
-		;bcm_msgBObj(qPanel)
+
+
+
+
+getPropertiesPanel(){
+	prIc := getDockedIcon( "Properties" )
+	propPanel := {}
+	if( prIc.isOn = 1){
+		propPanel.IconX := prIc.dockedIconX + 10
+		propPanel.IconY := prIc.dockedIconX + 10
+		propPanel := getWindowUnDocked( propPanel )
+		propPanel.IconXWasClicked := 0
 	}else{
-		;first seach for docker image
-		prIc := getDockedIcon( typ )
-		;bcm_msgBObj(prIc)
-		if( prIc.isOn = 0){
-
-			qPanel.IconX := prIc.dockedIconX + 10
-			qPanel.IconY := prIc.dockedIconY + 10
-			qPanel := getWindowUnDocked( qPanel, typ )
-			qPanel.IconXWasClicked := 1
-
-		}else{
-			linkITitle := A_ScriptDir . "\images\" . typ . ".png"
-			linkIDocked := A_ScriptDir . "\images\" . typ . "Docked.png"
-			ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %linkITitle%
-			if (ErrorLevel = 2)
+		ImageSearch, propFoundX, propFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\Properies - Paint.png
+		if (ErrorLevel = 2)
+		{
+		    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
+		}
+		else if (ErrorLevel = 1)
+		{
+			ImageSearch, propIconFoundX, propIconFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\PropertiesDocked.png
+			if (ErrorLevel = 1)
 			{
-			    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
+		    	CornerNotify(1, "!!! 'Properties -' could not be found on the screen !!!", "", "r hc", 1)
+			}else{
+				propPanel.IconX := propIconFoundX + 10
+				propPanel.IconY := propIconFoundY + 10
+				propPanel := getWindowUnDocked( propPanel )
 			}
-			else if (ErrorLevel = 1)
+		}
+		else
+		{
+			propPanel.bLeft := propFoundX - 6
+			propPanel.bTop := propFoundY - 14
+			;splashInfo( propFoundY - 14 ) 
+			ImageSearch, propEndPanelDownX, propEndPanelDownY, propPanel.bLeft, propPanel.bTop, propPanel.bLeft + 100, %A_ScreenHeight%, %A_ScriptDir%\images\bottomPanel.png
+			if (ErrorLevel = 1)
 			{
-				;didnt found the main title of panel image, search for the tabbed
-				qPanel := getTabbedPanel( typ )
-
+			    CornerNotify(1, "!!! end of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
 			}
-			else
-			{
-				;the main title image found, set the top and left
-				qPanel.bLeft :=  propFoundX - 6
-				qPanel.bTop := propFoundY - 14  
-				;now find the bottom
-				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft, qPanel.bTop + 4, qPanel.bLeft + 100, bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
+			else{
+				propPanel.bBottom := propEndPanelDownY
+				ImageSearch, propClosePanelX, propClosePanelY, propPanel.bLeft, propPanel.bTop + 8, %A_ScreenWidth% , propPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
 				if (ErrorLevel = 1)
 				{
-				    CornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
+				    CornerNotify(1, "!!! close of 'Properties -' panel could not be found on the screen !!!", "", "r hc", 1)
 				}
 				else{
-					;the bottom found
-					qPanel.bBottom := propEndPanelDownY
-					;now search for the "x" close
-					ImageSearch, propClosePanelX, propClosePanelY, qPanel.bLeft, qPanel.bTop + 8, bcm_workArea.endY , qPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
-					if (ErrorLevel = 1)
-					{
-					    CornerNotify(1, "!!! close of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
-					}
-					else{
-						qPanel.bRight := propClosePanelX + 21 	
+					propPanel.bRight := propClosePanelX + 21 
 
-						;BlockInput, On
-						;MouseMove, qPanel.bLeft, qPanel.bTop, 10
-						;MouseMove, qPanel.bLeft, qPanel.bBottom, 10
-						;MouseMove, qPanel.bRight, qPanel.bBottom, 10
-						;MouseMove, qPanel.bRight, qPanel.bTop, 10
-						;BlockInput, Off
+					;BlockInput, On
+					;MouseMove, propPanel.bLeft, propPanel.bTop, 10
+					;MouseMove, propPanel.bLeft, propPanel.bBottom, 10
+					;MouseMove, propPanel.bRight, propPanel.bBottom, 10
+					;MouseMove, propPanel.bRight, propPanel.bTop, 10
+					;BlockInput, Off
 
-						
-					}
+					
 				}
 			}
 		}
 	}
-	return qPanel
-
-}
-
-getTabbedPanel( styp ){
-	;bcm_splashInfo( "started tabbed" )
-	global bcm_workArea
-	;bcm_msgBObj(bcm_workArea)
-	CoordMode, Pixel
-	linkITabbed := A_ScriptDir . "\images\" . styp . "Tabbed.png"
-	linkITabbedSelected := A_ScriptDir . "\images\" . styp . "TabbedSelected.png"
-	qRRPanel := {}
-	ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %linkITabbed%
-	if (ErrorLevel = 1)
-	{
-		ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %linkITabbedSelected%
-		if (ErrorLevel = 1)
-		{
-			CornerNotify(1, "!!! '" . typ . "' could not be found on the screen !!!", "", "r hc", 1)
-		}else{
-			;it's tabbed selected
-			;bcm_splashInfo( "tabbed selected" )
-			qRRPanel.bTop := propFoundY - 14
-			qRRPanel.tabbed := 1
-			qRRPanel.tabbedSelected := 1
-		}
-	}else{
-		;it's tabbed unselected
-		;bcm_splashInfo( "tabbed unselected" )
-		qRRPanel.bTop := propFoundY - 14
-		qRRPanel.tabbed := 1
-		qRRPanel.tabbedSelected := 0
-	}
-
-	if(qRRPanel.bTop){
-		;bcm_splashInfo("looking for left")
-		;search for left, right and bottom starting from the found tabbed images
-		;left::
-		llimg := A_ScriptDir . "\images\panelLeftBorder.png"
-		lleftX := recursiveToFindLastX( bcm_workArea.painterStartX, propFoundY, propFoundX, propFoundY + 9, llimg, 1)
-		if(lleftX == bcm_workArea.painterStartX){
-			CornerNotify(1, "!!! '" . typ . "'s left panel border could not be found on the screen !!!", "", "r hc", 1)
-			qRRPanel := {}
-		}else{
-			qRRPanel.bLeft := lleftX
-			;bcm_splashInfo(lleftX)
-		}
-
-		;right
-		if(qRRPanel.bLeft){
-			CoordMode, Pixel
-			ImageSearch, qRightX, qRightY, propFoundX , propFoundY, bcm_workArea.painterEndX, propFoundY + 9, %llimg%
-			if (ErrorLevel = 1)
-			{
-				CornerNotify(1, "!!! '" . typ . "'s right panel border could not be found on the screen !!!", "", "r hc", 1)
-				qRRPanel := {}
-			}else{
-				qRRPanel.bRight := qRightX + 1
-			}
-		}
-
-		;bottom
-		if(qRRPanel.bRight){
-			CoordMode, Pixel
-			ImageSearch, qBtmX, qBtmY, qRRPanel.bLeft + 1 , qRRPanel.bTop + 5, qRRPanel.bRight, bcm_workArea.painterEndY, %A_ScriptDir%\images\bottomPanel.png
-			if (ErrorLevel = 1)
-			{
-				CornerNotify(1, "!!! '" . typ . "'s bottom panel border could not be found on the screen !!!", "", "r hc", 1)
-				qRRPanel := {}
-			}else{
-				qRRPanel.bBottom := qBtmY
-			}
-		}
-	}
-	return qRRPanel
-}
-
-recursiveToFindLastX( startX, startY , endx, endY , img, imgWidth){
-	;MsgBox, , , %startX%
-	CoordMode, Pixel
-	ImageSearch, fndX, fndY, startX , startY, endx, endY, %img%
-	if (ErrorLevel = 1)
-	{
-		fndX := startX - imgWidth
-		;CornerNotify(1, "!!! '" . typ . "' left panel border could not be found on the screen !!!", "", "r hc", 1)
-	}else{
-		fndX += imgWidth
-		fndX := recursiveToFindLastX( fndX, fndY , endx, endY , img, imgWidth)
-	}
-	return fndX
+	return propPanel
 }
 
 getWindowTest( ){
@@ -855,43 +788,30 @@ getWindowTest( ){
 
 
 
-getWindowUnDocked( pr, typ ){
-	; this will click on the dock icon to show the panel
+getWindowUnDocked( pr ){
 	cX := pr.IconX
 	cY := pr.IconY
-	;bcm_msgBObj(pr)
-	CoordMode, Mouse, Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed := 0.000001
 	BlockInput, on
-	myClick( cX , cY, "left")
+	Click, %cX%, %cY%
 	pr.IconXWasClicked := 1
-	Sleep, 100
-
-	flP := findFloatPanel( typ )
-
-	if(flP.bLeft){
-		pr.bLeft := flP.bLeft
-		pr.bRight := flP.bRight 
-		pr.bTop := flP.bTop
-		pr.bBottom := flP.bBottom
-		
+	Sleep, 50
+	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+	WinGetClass, aClass, ahk_id %WinID%
+	qr := GetMonitorUnderMouse2()
+	;splashInfo(" x: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
+	if (aClass = "Qt5QWindowToolSaveBits"){
+		if(aX < 0){
+			pr.bLeft := A_ScreenWidth + aX + 4 + 2
+		}else{
+			pr.bLeft := aX + 4 + 2
+		}
+		pr.bRight := pr.bLeft + aW - 4
+		pr.bTop := aY + 4 + 2
+		pr.bBottom := pr.bTop + aH - 4
 	}
-	;WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
-	;WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
-	;WinGetClass, aClass, ahk_id %WinID%
-	;;qr := GetMonitorUnderMouse2()
-	;;splashInfo(" x: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
-	;if (aClass = "Qt5QWindowToolSaveBits"){
-	;	if(aX < 0){
-	;		pr.bLeft := A_ScreenWidth + aX + 4 + 2
-	;	}else{
-	;		pr.bLeft := aX + 4 + 2
-	;	}
-	;	pr.bRight := pr.bLeft + aW - 4
-	;	pr.bTop := aY + 4 + 2
-	;	pr.bBottom := pr.bTop + aH - 4
-	;}
 	BlockInput, off
 	MouseMove, xpos, ypos, mSpeed  
 
@@ -918,9 +838,6 @@ getFilterTab( pr ){
 }
 
 getSBSField(pr){
-	CoordMode, Pixel
-	CoordMode, Mouse, Screen
-
 	ImageSearch, sbsFoundX, sbsFoundY, pr.bLeft + 7, pr.bTop + 31, pr.bLeft + 11, pr.bBottom, %A_ScriptDir%\images\SBSFieldLeft.png
 	if(ErrorLevel = 1){
 		CornerNotify(1, "!!! Filter loading area could not be found on the screen !!!", "", "r hc", 1)
@@ -931,18 +848,15 @@ getSBSField(pr){
 	return pr
 }
 filterSearchAndCreate( myObj ){
-	ob := createEffects( myObj )
+	createEffects( myObj )
 	sleep 100
-	if(ob.bTop){
-		;it means that the layers was found in the createEffects()
-		filterSearchAndSelect( myObj )
-	}
+	filterSearchAndSelect( myObj )
 }
 
 
 filterSearchAndSelect( myObj ){
+
 	flr := getFilterSearch()
-	CoordMode, Mouse, Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed = 0.000001
 	if(flr.bRight){
@@ -952,8 +866,6 @@ filterSearchAndSelect( myObj ){
 		} 
 
 		flr := getSBSField(flr)
-
-		;bcm_msgBObj(flr)
 		if( flr.sbsFieldTop){
 
 			sx1 := flr.sbsFieldLeft + 19
@@ -962,17 +874,18 @@ filterSearchAndSelect( myObj ){
 			flr.searchBLeft := sx1
 			flr.searchBTop := sy1
 			flr.searchBRight := flr.searchBLeft + 297
-			flr.searchBBottom := flr.searchBTop + 284
+			flr.searchBBottom := flr.searchBTop + 306
 			if(flr.searchBRight > A_ScreenWidth){
 				flr.searchBRight := A_ScreenWidth
 				flr.searchBLeft := flr.searchBRight - 297
 			}
 			if(flr.searchBBottom > A_ScreenHeight){
+				flr.searchBTop := sy1 + 306
 				flr.searchBBottom := sy1
-				flr.searchBTop := sy1 - 284
 			}
 			;open search window
-			myClick( sx1 , sy1, "left")
+			Click %sx1% %sy1%
+
 			Send {Home}
 			Send {Shift}+{End}
 			Send {Backspace}
@@ -980,37 +893,36 @@ filterSearchAndSelect( myObj ){
 			myText := myObj.toSearch
 			clipboard := myText
 			Send, ^v
-			;bcm_msgBObj(flr)
+
 			if( myObj.selectFirst = "True"){
-				;click for selecting the filter
-				sx2 := flr.searchBLeft + 27
+				sx2 := flr.searchBLeft + 33
 				sy2 := flr.searchBTop + 74
 				Sleep 50
 				if( flr.IconX ){
-					CoordMode, Mouse, Screen
-					myClick( sx2 , sy2, "left")
-					if(flr.IconXWasClicked = 1){
-						;close the panel, click on the icon again
-						sx3 := flr.IconX
-						sy3 := flr.IconY
-						myClick( sx3 , sy3, "left")
-					}
+					; this means that the window last opened was the over one
+					; the coordinates were changed
+					sx2 := sx2 - flr.bLeft 
+					sy2 := sy2 - flr.bTop 
+					Click %sx2% %sy2%
+					;close the panel, click on the x
+					sx3 := (flr.bLeft + (flr.bRight - flr.bleft - 16)) -  flr.bLeft
+					sy3 := (flr.bTop + 16) - flr.bTop
+					Click %sx3% %sy3%
 				}else{
-					myClick( sx2 , sy2, "left")
+					Click %sx2% %sy2%
 				}
 			}
 		}
 
 		BlockInput, off
-		CoordMode, Mouse, Screen
+
 		MouseMove, xpos, ypos, mSpeed  
 	}
 
 	return
 }
 getFilterSearch(){
-	pr := getPanel("Properties")
-	;bcm_msgBObj(pr)
+	pr := getPropertiesPanel()
 	if(pr.bRight) prSc := getScroll( pr )
 	return pr
 }
@@ -1019,31 +931,28 @@ getFilterSearch(){
 ;================================================================
 ;================================================================
 maskCreate( myObj ){
-	CoordMode, Mouse , Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed := 0.000001
 	lay := getLayersPanel()
 	msk := getMaskButton(lay)
-	;bcm_msgBObj(msk)
 	mx := msk.x + 4
 	my := msk.y + 4
 	BlockInput, on
-	myClick( mx , my, "left")
+	Click, %mx%, %my%
 	Sleep, 100
 	if( myObj.var = "addBlackMask"){
 		my1 := msk.addBlackMask
-		myClick( mx , my1, "left")
+		Click, %mx%, %my1%
 	}else if(myObj.var = "addWhiteMask"){
 		my1 := msk.addWhiteMask
-		myClick( mx , my1, "left")
+		Click, %mx%, %my1%
 	}else if(myObj.var = "addBitmapMask"){
 		my1 := msk.addBitmapMask
-		myClick( mx , my1, "left")
+		Click, %mx%, %my1%
 	}else if(myObj.var = "addMaskWithCS"){
 		my1 := msk.addMaskWithCS
-		myClick( mx , my1, "left")
+		Click, %mx%, %my1%
 	}
-	CoordMode, Mouse , Screen
 	MouseMove, xpos, ypos, mSpeed  
 	BlockInput, Off
 	Return
@@ -1125,38 +1034,6 @@ SH_GroupUI( myObj ){
 ;--------------------------------------------------------------------------------------------
 ;--------------------------------------------------------------------------------------------
 
-;toogleHide(){
-;	layPanel := getLayersPanel()
-; 	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
-; 	layPanel := getSelectedLayerP(layPanel)
-;}
-;selectUppMainLayStack(){
-; 	layPanel := getLayersPanel()
-; 	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
-; 	layPanel := getSelectedLayerP(layPanel)
-; 	;bcm_msgBObj(layPanel)
-; 	doIt := 0
-; 	if(layPanel.activestackUp){
-; 		cy := layPanel.activestackUp - 4
-; 		cx := layPanel.bLeft + ((layPanel.bRight - layPanel.bLeft)*.5) 
-; 		doIt := 1
-; 	}else if( layPanel.activeLayUp ){
-; 		cy := layPanel.activeLayUp - 4
-; 		cx := layPanel.bLeft + ((layPanel.bRight - layPanel.bLeft)*.5)
-; 		doIt := 1
-; 	}
-; 	if(doIt = 1){
-; 		CoordMode, Mouse , Screen
-;	 	;splashInfo(cx)
-;	 	MouseGetPos, xpos, ypos 
-;	 	mSpeed := 0.000001
-;	 	BlockInput, On
-;	 	myClick( cx , cy, "left")
-;		MouseMove, xpos, ypos, mSpeed  
-;		BlockInput, off
-;   	}
-;	Return
-;}
 
 
  selectUpperLayStack(){
@@ -1174,12 +1051,11 @@ SH_GroupUI( myObj ){
  		doIt := 1
  	}
  	if(doIt = 1){
- 		CoordMode, Mouse , Screen
 	 	;splashInfo(cx)
 	 	MouseGetPos, xpos, ypos 
 	 	mSpeed := 0.000001
 	 	BlockInput, On
-	 	myClick( cx , cy, "left")
+	 	Click, %cx%, %cy%
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, off
    	}
@@ -1187,7 +1063,6 @@ SH_GroupUI( myObj ){
 }
 
 selectDownLayStack(){
-
  	layPanel := getLayersPanel()
  	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
  	layPanel := getSelectedLayerP(layPanel)
@@ -1202,12 +1077,11 @@ selectDownLayStack(){
  		doIt := 1
  	}
  	if(doIt = 1){
- 		CoordMode, Mouse , Screen
 	 	;splashInfo(cx)
 	 	MouseGetPos, xpos, ypos 
 	 	mSpeed := 0.000001
 	 	BlockInput, On
-	 	myClick( cx , cy, "left")
+	 	Click, %cx%, %cy%
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, off
    	}
@@ -1220,7 +1094,7 @@ selectDownLayStack(){
  	layPanel := getLayersPanel()
  	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
  	layPanel := getSelectedLayerP(layPanel)
- 	CoordMode, Mouse, Screen
+
  	if(layPanel.activeLayUp) layPanel := getLayerIcons(layPanel)
  	;if(layPanel.hasMask) layPanel := isMaskActive( layPanel )
 
@@ -1229,9 +1103,7 @@ selectDownLayStack(){
  	MouseGetPos, xpos, ypos 
  	mSpeed := 0.000001
  	BlockInput, On
- 	CoordMode, Mouse, Screen
- 	myClick( cx , cy, "left")
- 	CoordMode, Mouse, Screen
+ 	Click, %cx%, %cy%
 	MouseMove, xpos, ypos, mSpeed  
 	BlockInput, off
 
@@ -1252,16 +1124,15 @@ selectDownLayStack(){
  		dx := layPanel.bRight - 100
  		doItD := 1
  	}
- 	CoordMode, Mouse , Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed := 0.000001
  	if( doIt = 1){
 	 	cx := layPanel.acvLayMaskCenterX
 	 	cy := layPanel.activeLayUp + 18
 	 	BlockInput, On
-		Send !{myClick( cx , cy, "left")}
+		Send !{Click, %cx%, %cy%}
 		if(doItD = 1){
-			myClick( dx , dy, "left")
+			Click, %dx%, %dy%
 		}
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, off
@@ -1276,7 +1147,7 @@ selectDownLayStack(){
  	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
  	layPanel := getSelectedLayerP(layPanel)
  	layPanel := getLayerIcons(layPanel)
- 	CoordMode, Mouse, Screen
+ 	;msgBobj(layPanel)
  	if(layPanel.hasMask = 1) doIt := 1
  	if(layPanel.activestackDown){
  		dy := layPanel.activestackUp + 4
@@ -1289,9 +1160,9 @@ selectDownLayStack(){
 	 	cx := layPanel.acvLayMaskCenterX
 	 	cy := layPanel.activeLayUp + 18
 	 	BlockInput, On
-		Send +{myClick( cx , cy, "left")}
+		Send +{Click, %cx%, %cy%}
 		if(doItD = 1){
-			myClick( dx , dy, "left")
+			Click, %dx%, %dy%
 		}
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, off
@@ -1302,18 +1173,17 @@ selectDownLayStack(){
 removeMask(){
 	layPanel := getLayersPanel()
 	layPanel := getSelectedLayerP(layPanel)
-	CoordMode, Mouse , Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed := 0.000001
 	BlockInput, On
 	ay := layPanel.activeLayUp + 20
 	ax := layPanel.bLeft + 10
-	myClick( ax , ay, "right")
+	Click, right, %ax%, %ay%
 	Sleep, 100
 	layPanel := getLayContextWindow(layPanel)
 	by := layPanel.actvLayCtxRemoveMask
 	bx := ax + 10
-	myClick( bx , by, "right")
+	Click, %bx%, %by%
 	MouseMove, xpos, ypos, mSpeed  
 	BlockInput, off
 	;msgBobj(layPanel)
@@ -1322,18 +1192,17 @@ removeMask(){
 clearMask(){
 	layPanel := getLayersPanel()
 	layPanel := getSelectedLayerP(layPanel)
-	CoordMode, Mouse , Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed := 0.000001
 	BlockInput, On
 	ay := layPanel.activeLayUp + 20
 	ax := layPanel.bLeft + 10
-	myClick( ax , ay, "right")
+	Click, right, %ax%, %ay%
 	Sleep, 100
 	layPanel := getLayContextWindow(layPanel)
 	by := layPanel.actvLayCtxClearMask
 	bx := ax + 10
-	myClick( bx , by, "left")
+	Click, %bx%, %by%
 	MouseMove, xpos, ypos, mSpeed  
 	BlockInput, off
 
@@ -1344,13 +1213,12 @@ removeEffect(){
 	;msgBobj(layPanel)
 	if(layPanel.activeStackUp){
 		layPanel := getStacksAfterActive(layPanel)
-		CoordMode, Mouse , Screen
 		MouseGetPos, xpos, ypos 
 		mSpeed := 0.000001
 		BlockInput, On
 		ay := layPanel.activeStackUp + 11
 		ax := layPanel.bRight - 22
-		myClick( ax , ay, "left")
+		Click, %ax%, %ay%
 		doClickSel := 0
 		mx := layPanel.bRight - 120
 		if(layPanel.stacksAfterActive > 0){
@@ -1362,9 +1230,8 @@ removeEffect(){
 		}
 		if(doClickSel = 1){
 			Sleep, 200
-			myClick( mx , my2, "left")
+			Click, %mx%, %my2%
 		}
-		CoordMode, Mouse , Screen
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, off
 	}
@@ -1377,7 +1244,6 @@ removeEffect(){
  	;if (layPanel.bRight) layPanel := getLayerPanelScroller(layPanel)
  	layPanel := getSelectedLayerP(layPanel)
  	layPanel := getLayerIcons(layPanel)
- 	CoordMode, Mouse, Screen
  	if(layPanel.hasMask = 1) layPanel := isMaskActive( layPanel ) 
  	if(layPanel.acvLayMaskOn = 1){
  		cx := layPanel.acvLayColorCenterX
@@ -1389,29 +1255,29 @@ removeEffect(){
  	MouseGetPos, xpos, ypos 
  	mSpeed := 0.000001
  	BlockInput, On
- 	myClick( cx , cy, "left")
+ 	Click, %cx%, %cy%
 	MouseMove, xpos, ypos, mSpeed  
 	BlockInput, off
  	Return
  }
 
  getLayerIcons(lp){
- 	CoordMode, Pixel
- 	ImageSearch, acStackX, acStackY, lp.bLeft, lp.activeLayDown - 11, lp.bRight, lp.activeLayDown - 4, %A_ScriptDir%\images\grayStacks.png
-	if (ErrorLevel = 1)
+ 	ImageSearch, acStackX, acStackY, lp.lLeft, lp.activeLayDown - 11, lp.bRight, lp.activeLayDown - 4, %A_ScriptDir%\images\grayStacks.png
+  	if (ErrorLevel = 1)
 	{
 		;CornerNotify(1, "!!! can't see the stack icon !!!", "", "r hc", 1)	
 	}else{
 		s1X := acStackX
 	}
-	CoordMode, Pixel
- 	ImageSearch, caaaX, acStack1Y, lp.bLeft, lp.activeLayDown - 11, lp.bRight, lp.activeLayDown - 4, %A_ScriptDir%\images\oranageStacks.png
+
+ 	ImageSearch, caaaX, acStack1Y, lp.lLeft, lp.activeLayDown - 11, lp.bRight, lp.activeLayDown - 4, %A_ScriptDir%\images\oranageStacks.png
   	if (ErrorLevel = 1)
 	{
 		;CornerNotify(1, "!!! you need to see the entyre eye on your screen !!!", "", "r hc", 1)	
 	}else{
 		s2X := caaaX
 	}
+
 
 	if( s1X AND s2X){
 		if(s1X < s2X){
@@ -1701,51 +1567,9 @@ getSelectedLayerP(lp){
 ;==================== end masks
 ;================================================================
 ;================================================================
-createLayer( myObj ){
-	CoordMode, Mouse, Screen
-	lay := getLayersPanel()
-	;bcm_msgBObj(lay)
-	if(lay.addLayButtonX){
-		MouseGetPos, xpos, ypos 
-		mSpeed = 0.000001
-		lx := lay.addLayButtonX
-		ly := lay.addLayButtonY
-		msk := getMaskButton(lay)
-		BlockInput, on
-		myClick( lx , ly, "left")
-		Sleep, 300
-		if( myObj.var ){
-			if(myObj.var = "noMask"){
-				;my1 := msk.addMaskWithCS
-				;myClick( mx , my1, "left")
-			}else{
-				mx := msk.x
-				my := msk.y 
-				myClick( mx , my, "left")
-				Sleep, 100
-				if( myObj.var = "addBlackMask"){
-					my1 := msk.addBlackMask
-					myClick( mx , my1, "left")
-				}else if(myObj.var = "addWhiteMask"){
-					my1 := msk.addWhiteMask
-					myClick( mx , my1, "left")
-				}else if(myObj.var = "addBitmapMask"){
-					my1 := msk.addBitmapMask
-					myClick( mx , my1, "left")
-				}else if(myObj.var = "addMaskWithCS"){
-					my1 := msk.addMaskWithCS
-					myClick( mx , my1, "left")
-				}
-			}
-		}
-		MouseMove, xpos, ypos, mSpeed  
-		BlockInput, Off
-	}
-	return
-}
 
 createFill( myObj ){
-	CoordMode, Mouse, Screen
+
 	lay := getLayersPanel()
 	if(lay.addFillButtonX){
 		MouseGetPos, xpos, ypos 
@@ -1754,29 +1578,29 @@ createFill( myObj ){
 		ly := lay.addFillButtonY
 		msk := getMaskButton(lay)
 		BlockInput, on
-		myClick( lx , ly, "left")
+		Click, %lx%, %ly%
 		Sleep, 300
 		if( myObj.var ){
 			if(myObj.var = "noMask"){
 				;my1 := msk.addMaskWithCS
-				;myClick( mx , my1, "left")
+				;Click, %mx%, %my1%
 			}else{
 				mx := msk.x
 				my := msk.y 
-				myClick( mx , my, "left")
+				Click, %mx%, %my%
 				Sleep, 100
 				if( myObj.var = "addBlackMask"){
 					my1 := msk.addBlackMask
-					myClick( mx , my1, "left")
+					Click, %mx%, %my1%
 				}else if(myObj.var = "addWhiteMask"){
 					my1 := msk.addWhiteMask
-					myClick( mx , my1, "left")
+					Click, %mx%, %my1%
 				}else if(myObj.var = "addBitmapMask"){
 					my1 := msk.addBitmapMask
-					myClick( mx , my1, "left")
+					Click, %mx%, %my1%
 				}else if(myObj.var = "addMaskWithCS"){
 					my1 := msk.addMaskWithCS
-					myClick( mx , my1, "left")
+					Click, %mx%, %my1%
 				}
 			}
 		}
@@ -1787,90 +1611,83 @@ createFill( myObj ){
 }
 
 createEffects( myObj ){
-	CoordMode, Mouse, Screen
-	CoordMode, Pixel
+
 	MouseGetPos, xpos, ypos 
 	mSpeed = 0.000001
 	lay := getLayersPanel()
-	if (lay.bTop){
-		;it means that it was not an error when searching for the layers panel
+	lay := getEffectsButton(lay)
+	mx := lay.addFxButtonX
+	my := lay.addFxButtonY
 
-
-		lay := getEffectsButton(lay)
-		;bcm_msgBObj(lay)
-		mx := lay.addFxButtonX
-		my := lay.addFxButtonY
-		CoordMode, Mouse, Screen
-		if( myObj.var = "FxAddGenerator"){
-			my1 := lay.FxAddGenerator
+	if( myObj.var = "FxAddGenerator"){
+		my1 := lay.FxAddGenerator
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%`
+	}else if(myObj.var = "FxAddPaint"){
+		my1 := lay.FxAddPaint
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100`
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxAddFill"){
+		my1 := lay.FxAddFill
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxAddLevels"){
+		my1 := lay.FxAddLevels
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxAddFilter"){
+		my1 := lay.FxAddFilter
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxAddColorSelection"){
+		my1 := lay.FxAddColorSelection
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxAddAnchorPoint"){
+		my1 := lay.FxAddAnchorPoint
+		BlockInput, on
+		Click, %mx%, %my%
+		Sleep, 100
+		Click, %mx%, %my1%
+	}else if(myObj.var = "FxRemove"){
+		my1 := lay.FxRemove
+		lay := getSelectedLayerP(lay)
+		if(lay.activestackUp OR lay.activeAnchorUp){
+			lay := getStacksAfterActive(lay)
 			BlockInput, on
-			myClick( mx , my, "left")
+			Click, %mx%, %my%
 			Sleep, 100
-			myClick( mx , my1, "left")`
-		}else if(myObj.var = "FxAddPaint"){
-			my1 := lay.FxAddPaint
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100`
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxAddFill"){
-			my1 := lay.FxAddFill
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxAddLevels"){
-			my1 := lay.FxAddLevels
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxAddFilter"){
-			my1 := lay.FxAddFilter
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxAddColorSelection"){
-			my1 := lay.FxAddColorSelection
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxAddAnchorPoint"){
-			my1 := lay.FxAddAnchorPoint
-			BlockInput, on
-			myClick( mx , my, "left")
-			Sleep, 100
-			myClick( mx , my1, "left")
-		}else if(myObj.var = "FxRemove"){
-			my1 := lay.FxRemove
-			lay := getSelectedLayerP(lay)
-			if(lay.activestackUp OR lay.activeAnchorUp){
-				lay := getStacksAfterActive(lay)
-				BlockInput, on
-				myClick( mx , my, "left")
-				Sleep, 100
-				myClick( mx , my1, "left")
-				doClickSel := 0
-				if(lay.stacksAfterActive > 0){
-					my2 := lay.activeStackUp + 10
-					doClickSel := 1
-				}else if( lay.stacksBeforeActive > 0){
-					my2 := lay.activeStackUp - 10
-					doClickSel := 1
-				}
-				if(doClickSel = 1){
-					Sleep, 400
-					myClick( mx , my2, "left")
-				}
-				
+			Click, %mx%, %my1%
+			doClickSel := 0
+			if(lay.stacksAfterActive > 0){
+				my2 := lay.activeStackUp + 10
+				doClickSel := 1
+			}else if( lay.stacksBeforeActive > 0){
+				my2 := lay.activeStackUp - 10
+				doClickSel := 1
 			}
+			if(doClickSel = 1){
+				Sleep, 400
+				Click, %mx%, %my2%
+			}
+			
 		}
-		MouseMove, xpos, ypos, mSpeed  
-		BlockInput, Off
 	}
-	Return lay
+	MouseMove, xpos, ypos, mSpeed  
+	BlockInput, Off
+	Return
 
 }
 
@@ -1887,12 +1704,7 @@ getEffectsButton( layersP ){
 	return layersP
 }
 
-
-
-
-
 setBlendMode( myObj ){
-
 	 lay := getLayersPanel()
 	 if(lay.bRight){
 	 	lay := getSelectedLayerP( lay )
@@ -1900,18 +1712,16 @@ setBlendMode( myObj ){
 	 ;msgBobj(lay)
 	 if( lay.activeLayUp ){
 	 	if(lay.activeStackUp){
-	 		mx := lay.bRight - 76
+	 		mx := lay.bRight - 71
 	 		my := lay.activeStackUp + 12
 	 	}else{
 	 		mx := lay.bRight - 25
 	 		my := lay.activeLayUp + 15 
 	 	}
-	 		CoordMode, Mouse, Screen
 	 		MouseGetPos, xpos, ypos 
 			mSpeed = 0.000001
 			BlockInput, on
-			;MsgBox,,, %mx% || %my%
-			myClick( mx , my, "left")
+			Click, %mx%, %my%
 			Sleep, 100	
 
 			
@@ -1986,9 +1796,9 @@ setBlendMode( myObj ){
 	 			}
 	 			lay.my1 := my1
 	 			lay.mx1 := mx1
-	 			myClick( mx1 , my1, "left")
+	 			Click, %mx1%, %my1%
 	 		}
-	 		CoordMode, Mouse, Screen
+
 	 		MouseMove, xpos, ypos, mSpeed  
 			BlockInput, Off
 			;msgBobj( lay )
@@ -2001,57 +1811,49 @@ getBlendingsWindow( lp ){
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 	WinGetClass, aClass, ahk_id %WinID%
 	qr := GetMonitorUnderMouse2()
-	oos := {}
-	oos.x := aX
-	oos.y := aY
-	oos.w := aW
-	oos.h := aH
-	;msgBObj()lp
-	;splashInfo(" ax: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
-	
+	;splashInfo(" x: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
 	if (aClass = "Qt5QWindowPopupDropShadowSaveBits"){
 		if( aX = 0 AND aY = 0){
 			lp.blendingsWinTop := 0
 			lp.blendingsWinLeft := 0
-			lp.blendingsWinRight := lp.blendingsWinLeft + aW
-			lp.blendingsWinBottom := lp.blendingsWinTop + aH
+			lp.blendingsWinRight := lp.blendingsWinLeft + 147
+			lp.blendingsWinBottom := lp.blendingsWinTop + 600
 			if(qr.swaped = 1){
 				;splashInfo( "swaped sssss")
 				lp.blendingsWinLeft := A_ScreenWidth 
-				lp.blendingsWinRight := lp.blendingsWinLeft - aW
+				lp.blendingsWinRight := lp.blendingsWinLeft - 147
 			}
 			;the error happend
 		}else{
 			if( lp.activeStackDown){
-				;this means that it was a stack triggered for change blending
 				lp.blendingsWinTop := lp.activeStackDown - 1
 				lp.blendingsWinLeft := lp.bRight - 84
-				lp.blendingsWinRight := lp.blendingsWinLeft + aW
-				lp.blendingsWinBottom := lp.blendingsWinTop + aH
+				lp.blendingsWinRight := lp.blendingsWinLeft + 147
+				lp.blendingsWinBottom := lp.blendingsWinTop + 600
 				if( lp.blendingsWinBottom > A_ScreenHeight){
 					lp.blendingsWinBottom := lp.activeStackUp - 1
-					lp.blendingsWinTop := lp.blendingsWinBottom - aH
+					lp.blendingsWinTop := lp.blendingsWinBottom - 600
 				}
 				if( lp.blendingsWinRight > A_ScreenWidth){
 					lp.blendingsWinRight := A_ScreenWidth
-					lp.blendingsWinLeft := lp.blendingsWinRight - aW
+					lp.blendingsWinLeft := lp.blendingsWinRight - 147
 				}
 			}else if( lp.activeLayDown ){
 				lp.blendingsWinTop := lp.activeLayUp + 23
 				lp.blendingsWinLeft := lp.bRight - 54
-				lp.blendingsWinRight := lp.blendingsWinLeft + aW
-				lp.blendingsWinBottom := lp.blendingsWinTop + aH
+				lp.blendingsWinRight := lp.blendingsWinLeft + 147
+				lp.blendingsWinBottom := lp.blendingsWinTop + 600
 				if( lp.blendingsWinBottom > A_ScreenHeight){
-					lp.blendingsWinBottom := lp.activeLayUp - 1
-					lp.blendingsWinTop := lp.blendingsWinBottom - aH
+					lp.blendingsWinBottom := lp.activeStackUp - 1
+					lp.blendingsWinTop := lp.blendingsWinBottom - 600
 					if(lp.blendingsWinTop < 0){
 						lp.blendingsWinTop := 0
-						lp.blendingsWinBottom := lp.blendingsWinTop + aH
+						lp.blendingsWinBottom := lp.blendingsWinTop + 600
 					}
 				}
 				if( lp.blendingsWinRight > A_ScreenWidth){
 					lp.blendingsWinRight := A_ScreenWidth
-					lp.blendingsWinLeft := lp.blendingsWinRight - aW
+					lp.blendingsWinLeft := lp.blendingsWinRight - 147
 				}
 			}
 		}	
@@ -2188,7 +1990,7 @@ openCloseTab( theTab ){
 	BlockInput, On
 	cPx := theTab.posX
 	cPy := theTab.posY
-	myClick( cPx , cPy, "left")
+	Click %cPx%, %cPy%
 	BlockInput, Off
 }
 
@@ -2325,58 +2127,74 @@ moveScrollBack( tabNFO ){
 
 }
 
-
-getBrushUppOptions( whatOp ){
-	global bcm_workArea
-	bcm_workArea := getAllPixelsMonitors()
-	CoordMode, Pixel
+getBrushSize(){
 	tr := {}
-	linkITitle := A_ScriptDir . "\images\Brush" . whatOp . "Upp.png"
-
-	ImageSearch, FoundX, FoundY, bcm_workArea.painterStartX, bcm_workArea.painterStartY , bcm_workArea.painterEndX, bcm_workArea.painterStartY + 95 , %linkITitle%
+	ImageSearch, FoundX, FoundY, 0, 30 , %A_ScreenWidth%, 95 , %A_ScriptDir%\images\BrushSizeUpp.png
 	if (ErrorLevel = 2)
 	{
 		CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
 	}
 	else if (ErrorLevel = 1)
 	{
-	    CornerNotify(1, " !!! '" . whatOp . "' could not be found on the upper part. !!!", "", "r hc", 1)
+	    CornerNotify(1, " !!! 'Size' could not be found on the upper part. !!!", "", "r hc", 1)
 	    ;MsgBox "Properies -" could not be found on the screen.
 	}
 	else
 	{
-		tr.X := FoundX
-		tr.Y := FoundY
-		ImageSearch, penPressureX, penPressureY, tr.X + 110, tr.Y, tr.X + 136, tr.Y+ 25, %A_ScriptDir%\images\penPressure.png
+		tr.sizeX := FoundX
+		tr.sizeY := FoundY
+		ImageSearch, penPressureX, penPressureY, tr.sizeX + 110, tr.sizeY, tr.sizeX + 136, tr.sizeY+ 25, %A_ScriptDir%\images\penPressure.png
 		if (ErrorLevel = 1){
 			tr.penPressure := 0
 		}else{
 			tr.penPressure := 1
 
 		}
-		tr.DropDownX := tr.X + 122
-		tr.DropDownY := tr.Y + 14
-		tr.noPressureD := tr.DropDownY + 30
-		tr.penPressureD := tr.DropDownY + 53
+		tr.sizeDropDownX := tr.sizeX + 122
+		tr.sizeDropDownY := tr.sizeY + 14
+		tr.noPressureD := tr.sizeDropDownY + 30
+		tr.penPressureD := tr.sizeDropDownY + 53
+	}
+	return tr
+}
+getBrushFlow(){
+	tr := {}
+	ImageSearch, FoundX, FoundY, 0, 30 , %A_ScreenWidth%, 95 , %A_ScriptDir%\images\BrushFlowUpp.png
+	if (ErrorLevel = 2)
+	{
+		CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
+	}
+	else if (ErrorLevel = 1)
+	{
+	    CornerNotify(1, " !!! 'Flow' could not be found on the upper part. !!!", "", "r hc", 1)
+	    ;MsgBox "Properies -" could not be found on the screen.
+	}
+	else
+	{
+		tr.flowX := FoundX
+		tr.flowY := FoundY
+		ImageSearch, penPressureX, penPressureY, tr.flowX + 110, tr.flowY, tr.flowX + 136, tr.flowY+ 25, %A_ScriptDir%\images\penPressure.png
+		if (ErrorLevel = 1){
+			tr.penPressure := 0
+		}else{
+			tr.penPressure := 1
+
+		}
+		tr.flowDropDownX := tr.flowX + 122
+		tr.flowDropDownY := tr.flowY + 14
+		tr.noPressureD := tr.flowDropDownY + 30
+		tr.penPressureD := tr.flowDropDownY + 53
 	}
 	return tr
 }
 
 getDockedIcon( whStr ){
-	global bcm_workArea
-	bcm_workArea := getAllPixelsMonitors()
-	;bcm_msgBObj(bcm_workArea)
 	tr :={}
 	strr := A_ScriptDir . "\images\" . whStr . "Docked.png"
 	strrB := A_ScriptDir . "\images\" . whStr . "DockedSelected.png"
-	startX := bcm_workArea.startX
-	startY := bcm_workArea.startY
-	endX := bcm_workArea.endX
-	endY := bcm_workArea.endY
-	CoordMode Pixel
-	ImageSearch, dockedX, dockedY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %strrB%
+	ImageSearch, dockedX, dockedY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %strrB%
 	if(ErrorLevel = 1){
-		ImageSearch, dockedX, dockedY, bcm_workArea.startX, bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %strr%
+		ImageSearch, dockedX, dockedY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %strr%
 		if(ErrorLevel = 1){
 		}else{
 			tr.isDocked := 1
@@ -2398,14 +2216,13 @@ toggleDocked( whStr ){
 	;will press the docked panel opening it or closing it
 	st := getDockedIcon( whStr )
 	if(st.isDocked){
-		CoordMode, Mouse , Screen
 		MouseGetPos, xpos, ypos 
 		mSpeed := 0.000001
 		BlockInput, On
 		
 		clX := st.dockedIconX
 		clY := st.dockedIconY
-		myClick( clX , clY, "left")	
+		Click %clX% %clY%	
 		;Sleep 200
 		;if(st.isOn = 1){
 		;	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
@@ -2417,135 +2234,8 @@ toggleDocked( whStr ){
 		BlockInput, Off
 	}
 }
-getAllPixelsMonitors(){
-	;this function is for getting the working area in case of multiple monitors
-	; it's for replacing the A_ScreenWidth and A_ScreenHeight
-	SysGet, MonC, MonitorCount
-    SysGet, Mon1, Monitor, 1
-    SysGet, Mon2, Monitor, 2
-    SysGet, Mon3, Monitor, 3
-    SysGet, Mon4, Monitor, 4
-    SysGet, Mon5, Monitor, 5
-    SysGet, Mon6, Monitor, 6
-    SysGet, Mon7, Monitor, 7
-    SysGet, Mon8, Monitor, 8
-    SysGet, Mon9, Monitor, 9
-
-    smallX := 0
-    bigX := 0
-    smallY := 0
-    bigY := 0
-    alLoop := MonC * 2
-
-    theX := []
-    theY := []
-    j := 1
-    loop %MonC%
-	{
-		theX[j] := Mon%A_Index%Left
-		theX[j + 1] := Mon%A_Index%Right
-
-		theY[j] := Mon%A_Index%Top
-		theY[j + 1] := Mon%A_Index%Bottom
-		j += 2
-	}
-	loop %alLoop%
-	{
-		if(smallX > theX[A_Index]){
-			smallX := theX[A_Index]
-		}
-		if(smallY > theY[A_Index]){
-			smallY := theY[A_Index]
-		}
-
-		if(bigX < theX[A_Index]){
-			bigX := theX[A_Index]
-		}
-		if(bigY < theY[A_Index]){
-			bigY := theY[A_Index]
-		}
-	}
-
-	workAre :={}
-	workAre.startX := smallX
-	workAre.endX := bigX
-	workAre.startY := smallY
-	workAre.endY := bigY
-	pnbt := findPainterWindow( )
-	workAre.painterStartX := pnbt.bLeft
-	workAre.painterStartY := pnbt.bTop
-	workAre.painterEndX := pnbt.bRight
-	workAre.painterEndY := pnbt.bBottom
-	return workAre
-}
 
 
-
-
-findFloatPanel( typ ){
-
-		WinGet, WinList, List, ahk_class Qt5QWindowToolSaveBits,,,
-		;WinGet, WinList, List, ahk_exe Substance Painter.exe,,,]
-
-		Loop %WinList%
-		{
-			WinID := WinList%A_Index%
-			WinGet, WinProc, ProcessName, ahk_id %WinID%
-			if(WinProc == "Substance Painter.exe"){
-				WinGetTitle, WinTitle, ahk_id %WinID%
-				;bcm_splashInfo(WinTitle)
-				If InStr(WinTitle, typ)
-				{
-					WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
-				}
-			}
-		}
-
-		winW := {}
-		winW.bLeft := aX
-		winW.bTop := aY
-		winW.bRight := aX + aW
-		winW.bBottom := aY + aH
-		winW.isFloat := 1
-
-		;bcm_msgBObj(winW)
-		return winW
-
-}	
-
-
-
-findPainterWindow( ){
-
-		WinGet, WinList, List, ahk_exe Substance Painter.exe,,,
-
-		Loop %WinList%
-		{
-			WinID := WinList%A_Index%
-			WinGetClass, WinClass, ahk_id %WinID%
-			if(WinClass == "Qt5QWindowIcon"){
-				WinGetTitle, WinTitle, ahk_id %WinID%
-				;bcm_splashInfo(WinTitle)
-				If InStr(WinTitle, "Substance Painter")
-				{
-					WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
-				}
-			}
-		}
-
-		winW := {}
-		winW.bLeft := aX
-		winW.bTop := aY
-		winW.bWidth := aW
-		winW.bHeight := aH
-		winW.bRight := aX + aW
-		winW.bBottom := aY + aH
-		winW.isFloat := 1
-
-		;bcm_msgBObj(winW)
-		return winW
-
-}	
 disableChannels( mobj ){
 	; this works only for the properties panel that  doesn't have scrollers
 	;the ones with scrollers have unpreictable errors when clicking on the 
@@ -2553,7 +2243,7 @@ disableChannels( mobj ){
 	;if allegorithmic will repair the scroller juming
 	;then it will work
 
-	pr := getPanel("Properties")
+	pr := getPropertiesPanel()
 	;msgBObj(pr)
 	pr := getScroll( pr )
 	pr := getPropsMatIcon( pr )
@@ -2564,7 +2254,7 @@ disableChannels( mobj ){
 		;BlockInput, On
 		;cx := pr.matIconX
 		;cy := pr.matIconY
-		;myClick( cx , cy, "left")
+		;Click, %cx%, %cy%
 		;pr := getPropsChannels( pr )
 
 
@@ -2573,9 +2263,9 @@ disableChannels( mobj ){
 		;	if( v.isOn =  1){
 		;			cx1 := v.X
 		;			cy1 := v.Y
-		;			myClick( cx , cy, "left")
+		;			Click, %cx%, %cy%
 		;			Sleep, 500
-		;			myClick( cx1 , cy1, "left")
+		;			Click, %cx1%, %cy1%
 
 		;		;pr2 := getScroll( pr )
 		;		}
@@ -2597,7 +2287,7 @@ disableChannels( mobj ){
 						cx1 := cx1 - pr.bLeft 
 						cy1 := cy1 - pr.bTop 
 					}
-					myClick( cx1 , cy1, "left")
+					Click, %cx1%, %cy1%
 
 				}
 			}
@@ -2607,7 +2297,7 @@ disableChannels( mobj ){
 				;it should be closed
 				cx2 := pr.IconX - pr.bLeft 
 				cy2 := pr.IconY - pr.bTop 
-				myClick( cx2 , cy2, "left")
+				Click, %cx2%, %cy2%
 			}
 			;if( pr.IconX ){
 			;	xpos := xpos - pr.bLeft 
@@ -2706,13 +2396,8 @@ getPropsChannels( pr ){
 ;for the up down sliders::
 sqFormat(){
 	global precisionAdd
-	if (precisionAdd){
-		prAA := precisionAdd		
-	}else{
-		prAA := 0.1
-	}
 	SetFormat, float, 0.4
-	return prAA
+	return precisionAdd
 }
 setOpp( what, doClick ){
 	Send {Home}
@@ -2736,10 +2421,8 @@ setOpp( what, doClick ){
 
 }
 getTextSel(){
-	global bcm_workArea
-	CoordMode, Pixel
 	tx := {}
-	ImageSearch, txFoundX, txFoundY, bcm_workArea.startX, bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %A_ScriptDir%\images\textSelected.png
+	ImageSearch, txFoundX, txFoundY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\textSelected.png
 	if(ErrorLevel = 1){
 		;CornerNotify(1, "!!! The caret is not visible !!!", "", "r hc", 1)
 
@@ -2752,7 +2435,6 @@ getTextSel(){
 }
 
 getTheNumber( w ){
-	CoordMode, Pixel
 	ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber.png
 	if(ErrorLevel = 1){
 		ImageSearch, txnbX, txnbY, w.bLeft , w.bTop - 18 , w.bRight, w.bTop - 4, %A_ScriptDir%\images\blueForNumber_2.png
@@ -2769,28 +2451,31 @@ getTheNumber( w ){
 }
 
 accOp(opps){
-	CoordMode, Mouse, Screen
-	sTx := getTextSel()
+	sTx := getTextsel()
+
+	;cx := A_CaretY
+	;;splashInfo( cx )
 	sss := getWindowTest()
-	;bcm_msgBObj(sTx)
 	if(sss.aClass = "Qt5QWindowPopupDropShadowSaveBits"){
+		;splashInfo(sss.bHeight)
+		;if( sss.bHe)
 		sss := getTheNumber(sss)
 		if(sss.nbX){
 		;splashInfo( sss.nbX)
 			;BlockInput, On
 			sx2 := sss.bRight - 5
 			sy2 := sss.bTop + 3
-			myClick( sx2 , sy2, "left")
+			Click, %sx2% %sy2%
 			setOpp(opps,0)
 			sx1 := sss.nbX + 5 
 			sy1 := sss.nbY - 5
 			
 			;splashInfo( sx1 . sy1)
 			;Sleep, 100
-			myClick( sx1 , sy1, "left")
-			myClick( sx1 , sy1, "left")
+			Click, %sx1% %sy1%
+			Click, %sx1% %sy1%
 			;Sleep, 1000
-			myClick( sx2 , sy2, "left")
+			Click, %sx2% %sy2%
 			;BlockInput, Off
 		}
 	}else{
@@ -2798,40 +2483,11 @@ accOp(opps){
 		setOpp(opps,0)
 		sx := sTx.x
 		sy := sTx.y
-		myClick( sx , sy, "left")
+		Click, %sx% %sy%
 		;BlockInput, Off
 	}
 }
 
-openPrecisionW(){
-	global precisionAdd
-	global precisionObj
-	global wasTextSelBeforeThisWin
-	wasTextSelBeforeThisWin := getTextSel()
-	if(wasTextSelBeforeThisWin.x){
-
-	}else{
-		sss := getWindowTest()
-		if(sss.aClass = "Qt5QWindowPopupDropShadowSaveBits"){
-			sss := getTheNumber(sss)
-			if(sss.nbX){
-				wasTextSelBeforeThisWin := {}
-				wasTextSelBeforeThisWin.x := sss.nbX
-				wasTextSelBeforeThisWin.y := sss.nbY
-			}
-		}
-	}
-
-	if (precisionAdd){
-
-	}else{
-		precisionAdd := 0.1
-	} 
-	Fileread, searches, precisionButtons.json
-	precisionObj := Jxon_Load(searches)
-	winPrecision( "Change precision for UP and Down shortcuts" )
-
-}
 
 ;gather all the mask action in one command
 doMask( myObj ){
@@ -2856,13 +2512,7 @@ doMask( myObj ){
 	}
 }
 
-doLayers(myObj){
-	if( myObj.var = "selectUpperLayStack"){
-		selectUpperLayStack()
-	}else if( myObj.var = "selectDownLayStack"){
-		selectDownLayStack()
-	}
-}
+
 
 
 
@@ -2904,17 +2554,12 @@ buttonPress( myObj ){
 		else if(myObj.command = "test"){
 			;putting defaults
 			myObj.var := myObj.var ? myObj.var : " deff "
-			;test( myObj )
+			test( myObj )
 		}
 		else if(myObj.command = "maskCreate"){
 			;putting defaults
 			myObj.var := myObj.var ? myObj.var : "addBlackMask"
 			maskCreate( myObj )
-		}
-		else if(myObj.command = "doLayers"){
-			;putting defaults
-			myObj.var := myObj.var ? myObj.var : "selectUpperLayStack"
-			doLayers( myObj )
 		}
 		else if(myObj.command = "doMask"){
 			;putting defaults
@@ -2961,11 +2606,6 @@ buttonPress( myObj ){
 			;putting defaults
 			removeEffect()
 		}
-		else if(myObj.command = "createLayer"){
-			;putting defaults
-			myObj.var := myObj.var ? myObj.var : "noMask"
-			createLayer( myObj )
-		}
 		else if(myObj.command = "createEffects"){
 			;putting defaults
 			myObj.var := myObj.var ? myObj.var : "FxAddFilter"
@@ -2993,16 +2633,9 @@ buttonPress( myObj ){
 	}
 }
 
-getMMCreated(){
-	global MMcreated
-	if(MMcreated == 1){
-		CornerNotify(1, "alreadyCreated", "", "r hc", 0)
 
-	}else{
-		CornerNotify(1, "not Created", "", "r hc", 0)
 
-	}
-}
+
 
 
 
@@ -3028,29 +2661,28 @@ getMMCreated(){
 #IfWinActive, ahk_exe Substance Painter.exe
 !^s::
 {
-	pressSize := getBrushUppOptions("Size")
-	CoordMode, Mouse, Screen
-	if(pressSize.X){
+	pressSize := getBrushSize()
+	if(pressSize.sizeX){
 		MouseGetPos, xpos, ypos 
 		mSpeed := 0.000001
 		BlockInput, On
-		clX := pressSize.DropDownX
-		clY := pressSize.DropDownY
-		myClick( clX , clY, "left")
+		clX := pressSize.sizeDropDownX
+		clY := pressSize.sizeDropDownY
+		Click %clX% %clY%
 		Sleep 100
 		if(pressSize.penPressure = 1){
-			clX1 := pressSize.DropDownX
+			clX1 := pressSize.sizeDropDownX
 			clY1 := pressSize.noPressureD
 
-			myClick( clX1 , clY1, "left")
+			Click %clX1% %clY1%
 			CornerNotify(1, " Brush Size set to NO pen pressure ", "", "r hc", 0)
 		}else{
-			clX1 := pressSize.DropDownX
+			clX1 := pressSize.sizeDropDownX
 			clY1 := pressSize.penPressureD
-			myClick( clX1 , clY1, "left")		
+			Click %clX1% %clY1%		
 			CornerNotify(1, " Brush Size set to PEN PRESSURE ", "", "r hc", 0)	
 		}
-		CoordMode, Mouse, Screen
+
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, Off
 	}
@@ -3062,30 +2694,29 @@ getMMCreated(){
 #IfWinActive, ahk_exe Substance Painter.exe
 !^a::
 {
-	pressFlow := getBrushUppOptions("Flow")
-	CoordMode, Mouse, Screen
-	if(pressFlow.X){
+	pressFlow := getBrushFlow()
+	if(pressFlow.flowX){
 		MouseGetPos, xpos, ypos 
 		mSpeed := 0.000001
 		BlockInput, On
-		clX := pressFlow.DropDownX
-		clY := pressFlow.DropDownY
-		myClick( clX , clY, "left")
+		clX := pressFlow.flowDropDownX
+		clY := pressFlow.flowDropDownY
+		Click %clX% %clY%
 		Sleep 100
 		if(pressFlow.penPressure = 1){
-			clX1 := pressFlow.DropDownX
+			clX1 := pressFlow.flowDropDownX
 			clY1 := pressFlow.noPressureD
 						;splashInfo( clX )
-			myClick( clX , clY1, "left")
+			Click %clX% %clY1%
 			CornerNotify(1, " Brush Flow set to NO pen pressure ", "", "r hc", 0)
 		}else{
-			clX1 := pressFlow.DropDownX
+			clX1 := pressFlow.sizeDropDownX
 			clY1 := pressFlow.penPressureD
 						;splashInfo( clX )
-			myClick( clX , clY1, "left")		
+			Click %clX% %clY1%		
 			CornerNotify(1, " Brush Flow set to PEN PRESSURE ", "", "r hc", 0)	
 		}
-		CoordMode, Mouse, Screen
+
 		MouseMove, xpos, ypos, mSpeed  
 		BlockInput, Off
 	}
@@ -3194,7 +2825,7 @@ getMMCreated(){
 }
 ;alt + Up add increment by precision `
 #IfWinActive, ahk_exe Substance Painter.exe
-!Right::
+!Up::
 {	
 	accOp("add")
 	Return	
@@ -3202,25 +2833,41 @@ getMMCreated(){
 
 ;alt + Down substract increment by precision `
 #IfWinActive, ahk_exe Substance Painter.exe
-!Left::
+!Down::
 {	
 	accOp("minus")
 	Return	
 }
 
+;ctrl + 1 open the precision window`
+#IfWinActive, ahk_exe Substance Painter.exe
+^1::
+{
+	wasTextSelBeforeThisWin := getTextSel()
+	if(wasTextSelBeforeThisWin.x){
 
-;shift + alt + right open the precision window`
-#IfWinActive, ahk_exe Substance Painter.exe
-+!Right::
-{
-	openPrecisionW()
-	Return
-}
-;shift + alt + left open the precision window`
-#IfWinActive, ahk_exe Substance Painter.exe
-+!Left::
-{
-	openPrecisionW()
+	}else{
+		sss := getWindowTest()
+		if(sss.aClass = "Qt5QWindowPopupDropShadowSaveBits"){
+			sss := getTheNumber(sss)
+			if(sss.nbX){
+				wasTextSelBeforeThisWin := {}
+				wasTextSelBeforeThisWin.x := sss.nbX
+				wasTextSelBeforeThisWin.y := sss.nbY
+			}
+		}
+	}
+
+	if (precisionAdd){
+
+	}else{
+		precisionAdd := 0.1
+	} 
+	Fileread, searches, precisionButtons.json
+	precisionObj := Jxon_Load(searches)
+	winPrecision( "Change precision for UP and Down shortcuts" )
+
+
 	Return
 }
 ;alt + F1 click on the docked texture Sets button`
@@ -3278,9 +2925,8 @@ getMMCreated(){
 Esc::
 {
 	;destroy the gui with the esc key
-	Gui, bcmSH1:Destroy
-	Gui, bcmPrWin:Destroy
-	Gui, bcmOptWin:Destroy
+	Gui, 2:Destroy
+	Gui, 3:Destroy
 	Return
 }
 
@@ -3316,38 +2962,11 @@ Esc::
 ;	Return
 ;}
 
-;ctrl+F7 clciks on the channels
+;F7 clciks on the channels
 #IfWinActive, ahk_exe Substance Painter.exe
-^F7::
+F7::
 {
 
 	disableChannels( obj )
 	Return
 }
-
-;`F7
-#IfWinActive, ahk_exe Substance Painter.exe
-F7::
-{
-	
-	;getAllPixelsMonitors()
-	;bcm_msgBObj(getPanel( "Shelf" ))
-	;findFloatPanel( "Properties" )
-	;bcm_splashInfo( "tttttttt")
-
-	;selectUppMainLayStack()
-	myObj.var := "noMask"
-	createLayer( myObj )
-	Return
-}
-
-#IfWinActive, ahk_exe Substance Painter.exe
-~MButton::
-{
-	theMM()
-	Return
-}
-
-
-
-

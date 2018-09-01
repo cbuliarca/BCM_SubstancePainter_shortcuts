@@ -1,28 +1,9 @@
 { 
 	"buttonsA": [
 		{
-			"name":"Normal",
-			"shortcut":"`",
-			"blendMode":"Normal",
-			"command":"setBlendMode"
-		},
-		{
-			"name":"Passthrough",
-			"shortcut":"1",
-			"blendMode":"Passthrough",
-			"command":"setBlendMode"
-		},
-		{
-			"name":"Multiply",
-			"shortcut":"2",
-			"blendMode":"Multiply",
-			"command":"setBlendMode"
-		},
-
-		{
-			"name":"Screen",
-			"shortcut":"3",
-			"blendMode":"Screen",
+			"name":"Max",
+			"shortcut":"9",
+			"blendMode":"Max",
 			"command":"setBlendMode"
 		},
 		{
@@ -32,15 +13,33 @@
 			"command":"setBlendMode"
 		},
 		{
+			"name":"Multiply",
+			"shortcut":"2",
+			"blendMode":"Multiply",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Passthrough",
+			"shortcut":"1",
+			"blendMode":"Passthrough",
+			"command":"setBlendMode"
+		},
+		{
+			"name":"Screen",
+			"shortcut":"3",
+			"blendMode":"Screen",
+			"command":"setBlendMode"
+		},
+		{
 			"name":"Overlay",
 			"shortcut":"5",
 			"blendMode":"Overlay",
 			"command":"setBlendMode"
 		},
 		{
-			"name":"Disable",
-			"shortcut":"x",
-			"blendMode":"Disable",
+			"name":"Min",
+			"shortcut":"0",
+			"blendMode":"Min",
 			"command":"setBlendMode"
 		},
 		{
@@ -56,21 +55,21 @@
 			"command":"setBlendMode"
 		},
 		{
+			"name":"Normal",
+			"shortcut":"`",
+			"blendMode":"Normal",
+			"command":"setBlendMode"
+		},
+		{
 			"name":"Inverse divide",
 			"shortcut":"\\",
 			"blendMode":"Inverse divide",
 			"command":"setBlendMode"
 		},
 		{
-			"name":"Min",
-			"shortcut":"0",
-			"blendMode":"Min",
-			"command":"setBlendMode"
-		},
-		{
-			"name":"Max",
-			"shortcut":"9",
-			"blendMode":"Max",
+			"name":"Disable",
+			"shortcut":"x",
+			"blendMode":"Disable",
 			"command":"setBlendMode"
 		},
 		{

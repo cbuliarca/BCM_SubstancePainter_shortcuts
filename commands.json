@@ -34,7 +34,14 @@
 						]
 					}
 		},
-
+		{"command":"doLayers",
+			"options":{
+					"var":[
+							"selectUpperLayStack", 
+							"selectDownLayStack"
+							]
+					}
+		},
 		{"command":"doMask",
 			"options":{	
 					"var":[
@@ -62,7 +69,17 @@
 							]
 			}
 		},
-
+		{"command":"createLayer",
+			"options":{			
+					"var":[
+							"addBlackMask", 
+							"addWhiteMask", 
+							"addBitmapMask", 
+							"addMaskWithCS",
+							"noMask"
+							]
+			}
+		},
 		{"command":"removeEffect",
 			"options":{	
 			}

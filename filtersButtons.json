@@ -48,6 +48,53 @@
 			"selectFirst": "False",
 			"shortcut": "`",
 			"toSearch": ""
+		},
+		{
+			"clearAfter": "False",
+			"click": 1,
+			"command": "filterSearchAndCreate",
+			"name": "Sharpen",
+			"selectFirst": "True",
+			"shortcut": "t",
+			"toSearch": "u:filter sharpen! -BCM",
+			"var": "FxAddFilter"
+		},
+		{
+			"command": "removeEffect",
+			"name": "removeFX",
+			"shortcut": "d"
+		},
+		{
+			"btToEdit": "0x42b1970",
+			"btToEditVar": "bVar8",
+			"command": "createEffects",
+			"name": "Filter - fill",
+			"shortcut": "",
+			"var": "FxAddFill"
+		},
+		{
+			"command": "createEffects",
+			"name": "anchorPoint",
+			"shortcut": "",
+			"var": "FxAddAnchorPoint"
+		},
+		{
+			"command": "createEffects",
+			"name": "colorSelection",
+			"shortcut": "",
+			"var": "FxAddColorSelection"
+		},
+		{
+			"command": "createEffects",
+			"name": "levels",
+			"shortcut": "l",
+			"var": "FxAddLevels"
+		},
+		{
+			"command": "createEffects",
+			"name": "Paint",
+			"shortcut": "p",
+			"var": "FxAddPaint"
 		}
 	]
 }
