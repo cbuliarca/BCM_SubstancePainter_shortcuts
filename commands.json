@@ -110,7 +110,21 @@
 							]
 			}
 		},
-
+		{"command":"setBrushAlignement",
+			"options":{		
+					"var":[
+							"Camera", 
+							"Tangent_Wrap", 
+							"Tangent_Planar", 
+							"UV"
+							]
+			}
+		},
+		{"command":"setBrushSpacingTo",
+			"options":{		
+				"var": "String"
+			}
+		},
 		{"command":"setBlendMode",
 			"options":{		
 					"blendMode":[
@@ -156,6 +170,8 @@
 					"title": "String"
 				}
 		}
+
+
 
 	]
 }

@@ -24,7 +24,13 @@
 			"file": "filtersButtons.json",
 			"title": "filters",
 			"shortcut": "e"
+		},
+		{
+			"file": "brushMM.json",
+			"title": "brushMM",
+			"shortcut": "1"
 		}
+
 
 	]
 }

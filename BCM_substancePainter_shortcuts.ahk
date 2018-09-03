@@ -20,6 +20,8 @@ bcm_workArea := {}
 precisionAdd := 0.1
 MMcreated := 0
 MMOn := 0
+;dontMoveMMO := 1
+
 
 CoordMode, Mouse, Screen
 CoordMode Pixel
@@ -78,6 +80,7 @@ cal_forMyMonitors( val ){
 myClick( val1, val2, btnN ){
 	;a click with errors check, if the values are ok it will click
 	CoordMode, Mouse, Screen
+
 	doIt := 0
 	if( val1 AND val2)
 	{
@@ -156,7 +159,154 @@ toogleOpacityPressure( bTabX, bTabY ){
 	}
 }
 
+setBrushSpacingTo( myObj ){
+	CoordMode, Mouse, Screen
+	MouseGetPos, xpos, ypos 
+	mSpeed = 0.000001
+	pnl := getPanel("Properties")
+	pnl := getScroll(pnl)
+	;bcm_msgBObj(pnl)
+	pnl := searchForBrushShortcut(pnl)
 
+	if(pnl.brushShortcutX){
+		;it menas thet it is brush properties		
+		;click on the surface nera the scroller up to make it active
+
+		BlockInput, on
+		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
+
+		; navigate with tabs to spacing : 2 tabs
+		;ControlSend, {Tab}, ahk_exe Substance Painter.exe
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+
+		spp := myObj.var
+		;bcm_splashInfo(spp)1
+		Send, {%spp%}
+		
+		if(pnl.IconX){
+		;if the panel was opened by clicking on the docked icon
+			myClick(pnl.iconX, pnl.iconY, left)
+		}
+
+		MouseMove, xpos, ypos, mSpeed 
+		BlockInput, Off
+
+
+	}else{
+
+		;if the panel was opened by clicking on the docked icon just close it
+		BlockInput, on
+		if(pnl.IconX){
+			myClick(pnl.iconX, pnl.iconY, left)
+		}
+		MouseMove, xpos, ypos, mSpeed 
+		BlockInput, Off
+
+		CornerNotify(1, "!!! Can't set brush to " . myObj.var . ". You need to be on the Properties for a Brush!!!", "", "r hc", 1)
+	}
+}
+
+setBrushAlignement(myObj){
+	CoordMode, Mouse, Screen
+	MouseGetPos, xpos, ypos 
+	mSpeed = 0.000001
+	pnl := getPanel("Properties")
+	pnl := getScroll(pnl)
+	;bcm_msgBObj(pnl)
+	pnl := searchForBrushShortcut(pnl)
+
+	if(pnl.brushShortcutX){
+		;it menas thet it is brush properties		
+		;click on the surface nera the scroller up to make it active
+
+		BlockInput, on
+		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
+
+		; navigate with tabs to alignment : 7 tabs
+		;ControlSend, {Tab}, ahk_exe Substance Painter.exe
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+		Send, {Tab}
+		;Sleep, 1000
+
+
+		;;set to camera first with the arrow up keys
+		Send, {Up}
+		Send, {Up}
+		Send, {Up}
+		Send, {Up}
+		Send, {Up}
+
+		if(myObj.var = "UV"){
+			; chose with the arrow keys
+			Send, {Down}1
+			Send, {Down}
+			Send, {Down}
+
+		}else if (myObj.var = "Tangent_Wrap"){
+			Send, {Down}
+
+		}
+		else if (myObj.var = "Tangent_Planar"){
+			Send, {Down}
+			Send, {Down}
+
+
+		}
+		;if the panel was opened by clicking on the docked icon
+		if(pnl.IconX){
+			myClick(pnl.iconX, pnl.iconY, left)
+		}
+
+		MouseMove, xpos, ypos, mSpeed 
+		BlockInput, Off
+
+
+	}else{
+
+		;if the panel was opened by clicking on the docked icon just close it
+		BlockInput, on
+		if(pnl.IconX){
+			myClick(pnl.iconX, pnl.iconY, left)
+		}
+		MouseMove, xpos, ypos, mSpeed 
+		BlockInput, Off
+
+		CornerNotify(1, "!!! Can't set brush to " . myObj.var . ". You need to be on the Properties for a Brush!!!", "", "r hc", 1)
+	}
+}
+
+
+searchForBrushShortcut( pnl){
+	CoordMode, Pixel
+	ImageSearch, brshPropX, brshPropY, pnl.bLeft, pnl.bTop + 149, pnl.bRight, pnl.bBottom, %A_ScriptDir%\images\brushPropertiesShortcutSelected.png
+	if(ErrorLevel = 1){
+		ImageSearch, brshPropX1, brshPropY1, pnl.bLeft, pnl.bTop + 149, pnl.bRight, pnl.bBottom, %A_ScriptDir%\images\brushPropertiesShortcutUnselected.png
+		if(ErrorLevel = 1){
+
+		}else{
+			pnl.brushShortcutX := brshPropX1
+			pnl.brushShortcutY := brshPropY1
+		}
+	}else{
+		pnl.brushShortcutX := brshPropX
+		pnl.brushShortcutY := brshPropY
+	}
+	return pnl
+}
 
 getInfoFromPainter( ){
 	tr = {}
@@ -677,6 +827,7 @@ getPanel( typ ){
 		;bcm_msgBObj(qPanel)
 	}else{
 		;first seach for docker image
+
 		prIc := getDockedIcon( typ )
 		;bcm_msgBObj(prIc)
 		if( prIc.isOn = 0){
@@ -688,7 +839,6 @@ getPanel( typ ){
 
 		}else{
 			linkITitle := A_ScriptDir . "\images\" . typ . ".png"
-			linkIDocked := A_ScriptDir . "\images\" . typ . "Docked.png"
 			ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %linkITitle%
 			if (ErrorLevel = 2)
 			{
@@ -713,9 +863,9 @@ getPanel( typ ){
 				}
 				else{
 					;the bottom found
-					qPanel.bBottom := propEndPanelDownY
+					qPanel.bBottom := propEndPanelDownY + 1
 					;now search for the "x" close
-					ImageSearch, propClosePanelX, propClosePanelY, qPanel.bLeft, qPanel.bTop + 8, bcm_workArea.endY , qPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
+					ImageSearch, propClosePanelX, propClosePanelY, qPanel.bLeft, qPanel.bTop + 8, bcm_workArea.endX , qPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
 					if (ErrorLevel = 1)
 					{
 					    CornerNotify(1, "!!! close of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
@@ -1103,7 +1253,7 @@ SH_GroupUI( myObj ){
 	global searchesObj, openedFile
 	isFile := FileExist( myObj.file)
 	if(isFile = ""){
-		jStrNew := "{`n`t""buttonsA"": [`n`t`t{`n`t`t`t""command"": """",`n`t`t`t""name"": """",`n`t`t`t""shortcut"": """"`n`t`t}`n`t]`n}"
+		jStrNew := "{`n`t""buttonsA"": [`n`t`t{`n`t`t`t""command"": """",`n`t`t`t""name"": ""."",`n`t`t`t""shortcut"": """"`n`t`t}`n`t]`n}"
 		openedFile := myObj.file
 		FileAppend, %jStrNew% , %openedFile%
 
@@ -2239,6 +2389,7 @@ getScrollPosition(startX, startY, endX, endY){
 
 getScroll(tr){
 	;tr := {}
+	CoordMode, Pixel
 	ImageSearch, scrollerTopX, scrollerTopY, tr.bRight - 15, tr.bTop + 30, tr.bRight , tr.bBottom, %A_ScriptDir%\images\scollUp.png
  	if(ErrorLevel = 1){
  		tr.visible := 0
@@ -2273,8 +2424,37 @@ getScroll(tr){
  	}
 	return tr
 }
+moveScrollAt( scrollInfo, offset  ){
+	if (scrollInfo.visible == 1){
+		CoordMode, Mouse, Screen
+		;move scroll bar upp
+		scrollerY := scrollInfo.scrollerCenterY
+		scrollerX := scrollInfo.scrollerLeft + 4
+		ScrollBarYOff0 := ScrollBarY + 100
+		ScrollBarYOff := scrollerY - 800
+		scrollerMoveOff := 0 - scrollInfo.scrollerOffset
+		;MsgBox, offset is : %scrollerMoveOff%
+		;MsgBox, YCenter is : %scrollerY%
 
+
+
+		BlockInput, On
+		MouseMove, scrollerX, scrollerY, 0.0000001
+		;Click, down
+		;MouseMove, 0, +100, 1, R
+		;Click, up
+
+		Click, down
+		MouseMove, 0, %scrollerMoveOff% , 1, R
+		Click, up
+
+		BlockInput, Off
+		}else{
+			CornerNotify(1, "!!! No scrollerBar visible !!!", "", "r hc", 1)
+		}
+}
 moveScrollUp( scrollInfo  ){
+	CoordMode, Mouse, Screen
 	if (scrollInfo.visible == 1){
 
 		;move scroll bar upp
@@ -2293,7 +2473,7 @@ moveScrollUp( scrollInfo  ){
 		;Click, down
 		;MouseMove, 0, +100, 1, R
 		;Click, up
-
+		CoordMode, Mouse, Screen
 		Click, down
 		MouseMove, 0, %scrollerMoveOff% , 1, R
 		Click, up
@@ -2329,7 +2509,7 @@ moveScrollBack( tabNFO ){
 getBrushUppOptions( whatOp ){
 	global bcm_workArea
 	bcm_workArea := getAllPixelsMonitors()
-	CoordMode, Pixel
+	CoordMode, Pixel`
 	tr := {}
 	linkITitle := A_ScriptDir . "\images\Brush" . whatOp . "Upp.png"
 
@@ -2379,10 +2559,23 @@ getDockedIcon( whStr ){
 		ImageSearch, dockedX, dockedY, bcm_workArea.startX, bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %strr%
 		if(ErrorLevel = 1){
 		}else{
-			tr.isDocked := 1
-			tr.isOn := 0
-			tr.dockedIconX := dockedX
-			tr.dockedIconY := dockedY
+			if(whStr = "Properties"){
+				;on the properties panel it could actually find the tab from the brush so fisrt let's check if in 
+				;the right if itr has the alpha shortcut
+				ImageSearch, alphX, aplhY, dockedX + 31, dockedY - 1, dockedX + 51, dockedY + 18, %A_ScriptDir%\images\alphaPropertiesShortcut.png
+				if(ErrorLevel = 1){
+					;didn't found any alpha shortcut near for the properties panel
+					tr.isDocked := 1
+					tr.isOn := 0
+					tr.dockedIconX := dockedX
+					tr.dockedIconY := dockedY
+				}
+			}else{
+				tr.isDocked := 1
+				tr.isOn := 0
+				tr.dockedIconX := dockedX
+				tr.dockedIconY := dockedY
+			}
 		}
 	}else{
 		tr.isDocked := 1
@@ -2987,6 +3180,16 @@ buttonPress( myObj ){
 			myObj.title := myObj.title ? myObj.title : "BCM_UI"
 			SH_GroupUI( myObj )
 		}
+		else if(myObj.command = "setBrushAlignement"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "Tangent|Wrap"
+			setBrushAlignement( myObj )
+		}
+		else if(myObj.command = "setBrushSpacingTo"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "5"
+			setBrushSpacingTo( myObj )
+		}
 
 	}else{
 		CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
@@ -3336,8 +3539,11 @@ F7::
 	;bcm_splashInfo( "tttttttt")
 
 	;selectUppMainLayStack()
-	myObj.var := "noMask"
-	createLayer( myObj )
+	;myObj.var := "noMask"
+	;createLayer( myObj )
+	myObj := {}
+	myObj.var := "UV"
+	setBrushAlignement(myObj)
 	Return
 }
 

@@ -1,0 +1,71 @@
+{
+	"buttonsA": [
+		{
+			"command": "setBrushSpacingTo",
+			"name": "spacing: 1",
+			"shortcut": "",
+			"var": "1"
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "setBrushAlignement",
+			"name": "Align: Tng_Planar",
+			"shortcut": "",
+			"var": "Tangent_Planar"
+		},
+		{
+			"command": "setBrushAlignement",
+			"name": "Align: Tng_Wrap",
+			"shortcut": "",
+			"var": "Tangent_Wrap"
+		},
+		{
+			"command": "setBrushAlignement",
+			"name": "Align: Camera",
+			"shortcut": "",
+			"var": "Camera"
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "setBrushSpacingTo",
+			"name": "spacing: 5",
+			"shortcut": "",
+			"var": "5"
+		},
+		{
+			"command": "",
+			"mode": "edit",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "setBrushAlignement",
+			"name": "Align: UV",
+			"shortcut": "",
+			"var": "UV"
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		}
+	]
+}

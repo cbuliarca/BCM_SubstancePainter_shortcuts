@@ -58,8 +58,7 @@ winSearches_Create( sX, sY, sW, stitle) {
   ;the listener
   ;Gui, bcmSH1: Add, Text, ReadOnly -Border w720 h10 x20 y20 vMyTT Hwndhwnd_Container 
   ;Gui, bcmSH1: Add, Edit, +ReadOnly -Border vMyEdit Hwndhwnd_Keys w720 h10, 
-  Gui, bcmSH1:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkey gOnShortcut
-
+  Gui, bcmSH1:Add, Hotkey, +ReadOnly -Border w720 h10 x20 y20 vChosenHotkey gOnShortcut 
   ;create buttons::::::::::::::
   butH := 80
   butW := 80
@@ -75,8 +74,10 @@ winSearches_Create( sX, sY, sW, stitle) {
       nName := v.name
       nSh := v.shortcut
       ;Gui, bcmSH1: Add, Text, x%ax% y%ay% w100 h100, sassasa
-      Gui, bcmSH1: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 vbVar%kr% gbutPressedRoutine, >> %nSh% << %nName%        
-
+      Gui, bcmSH1: Add, Button, TOP x%ax% y%ay% h%butH% w%butW% +theme -0x400 vbVar%kr% HwndhwndVar%kr% gbutPressedRoutine, >> %nSh% << %nName%        
+      v.btToEdit := hwndVar%kr%
+      v.btToEditVar := bVar%kr%
+      ;v.testBtn := "qqq" . kr
       ax := ax + butW + 10
       if(ax > 680){
         ax := 25

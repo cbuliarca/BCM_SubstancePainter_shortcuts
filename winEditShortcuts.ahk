@@ -29,22 +29,59 @@ winEditShortcuts( sX, sY, sWW, stitle, contrl) {
   global eVar220, eVar221, eVar222, eVar223, eVar224, eVar225, eVar226, eVar227, eVar228, eVar229,
 
   global searchesObj, EditShortEnterBtn, EditShortDeleteBtn, aCommands, aa, sW, currentCtrl
-  global eButName, eShortcut, eCommand, btnObjG, eTitle
+  global eButName, eShortcut, eCommand, btnObjG, eTitle, eTMove, eMove, MyUpDown
   winEditShortcuts_Destroy() ; make sure an old instance isn't still running or fading out
+
+  ;we dont want the first time we create the edit move to domove 
+  ;dontMoveMMO := 1
 
   currentCtrl := contrl.btToEdit
   btnObjG := contrl
-  
+
+  ;these are for getting the current index of the selected button
+  ; in case of move;
+  ;also it gets the serchesEdit length
+  cControl := 1
+  allControls := 1
+  for k,v in searchesObj.buttonsA{
+    if(v.btToEditVar = contrl.btToEditVar){
+      btnObjG.cIndex := k
+      btnObjG.mode := "edit"
+      cControl := k
+      shh := stitle . " : " . v.name
+
+    }
+    allControls += 1
+  }
+
+  if(stitle = "Create shortcut"){
+    btnObjG := {}
+    allControls += 1
+    btnObjG.cIndex := allControls
+    btnObjG.mode := "create"
+    shh := stitle
+
+    cControl := allControls
+  }
+  allControls -= 1
   sW := sWW
   ;Gui, bcmOptWin:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
   Gui, bcmOptWin:+AlwaysOnTop +LastFound
-	winEditShortcuts_hwnd := WinExist()
-	WinSet, Transparent, 230
-	Gui, bcmOptWin:Color, ffffff ;background color
+  winEditShortcuts_hwnd := WinExist()
+  WinSet, Transparent, 230
+  Gui, bcmOptWin:Color, ffffff ;background color
 
   ;:the title
   Gui, bcmOptWin:Font, 151515 s10 wbold, Arial
-  Gui, bcmOptWin: Add, Text, Center x0 y5 w%sW% veTitle, %stitle%
+  sw2 := sw - 120
+  if(stitle = "Create shortcut"){
+    sw2 := sw
+  }
+  Gui, bcmOptWin: Add, Text, Center x%sw2% y5 w20 veTMove, MoveTo
+  sw3 := sw2 + 60
+  Gui, bcmOptWin: Add, Edit, Center Number x%sw3% y5 w50 veMove gMoveButton, %cControl%
+  Gui, bcmOptWin: Add, UpDown, vMyUpDown Range1-%allControls%, %cControl%
+  Gui, bcmOptWin: Add, Text, Center x0 y5 w%sW2% veTitle, %shh%
 
 
   if(aCommands.avilableCommands){
@@ -293,9 +330,9 @@ checkExistentHotkey(){
 
 
 changeSearchesObj( bStr, action ){
-  global searchesObj, btnObjG, openedFile, winSerTitle
-
+  global searchesObj, btnObjG, openedFile, winSerTitle, arrObjQQ
   oldBtnName := btnObjG.name
+  ;bcm_splashInfo(oldBtnName)
   GuiControlGet, editTitle, , eTitle
   if( editTitle = "Create shortcut"){
     qk := 1
@@ -306,17 +343,42 @@ changeSearchesObj( bStr, action ){
 
   }else{
     For k, v in searchesObj.buttonsA{
-      if( v.name = oldBtnName){
+      ;bcm_msgBObj( v )
+      if( v.btToEditVar == btnObjG.btToEditVar){
         if( action = "delete" ){
-            searchesObj.buttonsA.remove(k, "")
+            ;searchesObj.buttonsA.remove(k, "")
+            ;searchesObj.buttonsA.remove(k, "")
+            searchesObj.buttonsA := myArrRemove( searchesObj.buttonsA, k )
           }else{
+
             searchesObj.buttonsA[k] := bStr
           }
         break
       }
     }
   }
-  jStr := Jxon_Dump( searchesObj, "`t")
+
+  ;create new str to write because the searchesObj have the btnToEdit stuff
+  arrObjQQ := {}
+  arrObjQQ.buttonsA := []
+  stpper := 1
+  stpperA := 1
+  For k, v in searchesObj.buttonsA{
+    mObj := {}
+    for a, e in v{
+      ;bcm_splashInfo(k . "::" . a . " || " . e)
+      if(a != "btToEditVar"){
+        if(a != "btToEdit"){
+          mObj[a] := e
+        }
+      }
+    }
+    arrObjQQ.buttonsA[k] := mObj
+  }
+
+  ;bcm_splashInfo()
+  ;bcm_msgBObj(arrObjQQ.buttonsA[5])
+  jStr := Jxon_Dump( arrObjQQ, "`t")
   FileDelete, %openedFile%
   FileAppend, %jStr% , %openedFile%
 
@@ -327,6 +389,98 @@ changeSearchesObj( bStr, action ){
   custWindow( winSerTitle, openedFile )
 
   Return
+}
+
+myArrRemove( arry, idxToRemove ){
+  newAr := []
+  q := 1
+  For k in arry{
+    if( k != idxToRemove){
+      newAr.Push(arry[k])
+    }
+    q += 1
+  }
+  return newAr
+}
+
+
+
+MoveButton:
+{
+  ;global searchesObj, btnObjG
+  GuiControlGet, mvToIndex, ,eMove
+  ;bcm_splashInfo( mvToIndex . " || " . btnObjG.cIndex . " || " . btnObjG.mode)
+  ;bcm_msgBObj(btnObjG)
+  if(mvToIndex = btnObjG.cIndex){
+
+  }else{
+    if(btnObjG.mode = "create"){
+
+    }else{
+      
+      ;bcm_splashInfo( "run move")
+      searchesObj.buttonsA := myArrMoveFromTo(searchesObj.buttonsA, btnObjG.cIndex, mvToIndex)
+      ;save edits
+      ;GuiControl,bcmOptWin:Text, eTilte, "Edit shortcut"
+      bStr1 := getCurrentSettings()
+      ;bcm_msgBObj(bStr1)
+      changeSearchesObj( bStr1, "add")
+      btnObjG.cIndex := mvToIndex
+      btnObjG.btToEditVar := eVar%mvToIndex%
+      ;btnObjG.btToEditVar := eVar%mvToIndex%
+      searchesObj.buttonsA[mvToIndex].btToEditVar := eVar%mvToIndex%
+      ;winEditShortcuts_Destroy()
+
+      Sleep 100
+      ;REOPEn edit window
+    }
+    
+  }
+  return 
+}
+
+
+myArrMoveFromTo( arry, idxToMove, targetIDX ){
+  newAr := []
+  tmp := arry[idxToMove]
+  tmp2 := arry[targetIDX]
+  dontAdd := 0
+  q := 1
+  For k in arry{
+    if( idxToMove < targetIDX){
+      IF( k < idxToMove){
+        ;do nothing to q
+      }else if( k = idxToMove ){
+        q += 1
+      }else if (k = targetIDX ){
+        newAr.Push(tmp)
+        dontAdd := 1
+        q -= 1
+      }
+    
+    }else{
+      IF( k < targetIDX){
+        ;do nothing to q
+      }else if( k = targetIDX ){
+        newAr.Push(tmp)
+        dontAdd := 1
+        q -= 1
+      }else if (k = idxToMove ){
+        newAr.Push(arry[q])
+        dontAdd := 1
+        q += 1
+      }
+    }
+    
+    if( dontAdd != 1){
+      newAr.Push(arry[q])
+    }else{
+      dontAdd := 0
+    }
+    
+    q += 1
+  }
+  return newAr
 }
 
 

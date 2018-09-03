@@ -333,8 +333,8 @@ createGUI(){
 
 
 theMM(){
-   global MMOn
    ; THIS IS THE FUNCTION THAT'S CALLED when the Middle mouse is pressed
+   global MMOn
    global GuiHwnd
    global GuiHwnd2
    global pButton
@@ -386,7 +386,7 @@ theMM(){
          Break
       }else{
          SetTimer, MMKeyListenSubroutine, On
-         ;mous is down
+         ;mouse is down
          ;constanly checking the mouse position 
 
          CoordMode, Mouse, Screen

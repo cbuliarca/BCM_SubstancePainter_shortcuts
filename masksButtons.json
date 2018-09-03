@@ -164,8 +164,6 @@
 			"var": "FxAddFilter"
 		},
 		{
-			"btToEdit": "0xce0762",
-			"btToEditVar": "bVar27",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -176,8 +174,6 @@
 			"var": "FxAddFilter"
 		},
 		{
-			"btToEdit": "0x1a0882",
-			"btToEditVar": "bVar28",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -188,8 +184,6 @@
 			"var": "FxAddGenerator"
 		},
 		{
-			"btToEdit": "0x1a0298",
-			"btToEditVar": "bVar29",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -200,8 +194,6 @@
 			"var": "FxAddGenerator"
 		},
 		{
-			"btToEdit": "0x1e07c2",
-			"btToEditVar": "bVar30",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -232,8 +224,6 @@
 			"var": "FxAddFill"
 		},
 		{
-			"btToEdit": "0x390718",
-			"btToEditVar": "bVar33",
 			"command": "toggleDocked",
 			"name": "tglTextureSets",
 			"shortcut": "F1",
@@ -264,6 +254,13 @@
 			"shortcut": "!g",
 			"toSearch": "u:filter Gradient -generic",
 			"var": "FxAddFilter"
+		},
+		{
+			"command": "SH_GroupUI",
+			"file": "brushMM.json",
+			"name": "brushMM",
+			"shortcut": "",
+			"title": "brushMM"
 		}
 	]
 }
