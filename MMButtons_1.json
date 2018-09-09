@@ -13,10 +13,10 @@
 			"var": "addWhiteMask"
 		},
 		{
-			"command": "doMask",
-			"name": "toggle Mask",
+			"command": "doChannels",
+			"name": "enable Channels",
 			"shortcut": "6",
-			"var": "toggleMask"
+			"var": "enableAll"
 		},
 		{
 			"command": "doLayers",
@@ -25,16 +25,16 @@
 			"var": "selectUpperLayStack"
 		},
 		{
-			"command": "doMask",
-			"name": "clear Mask",
+			"command": "doChannels",
+			"name": "disable Channels",
 			"shortcut": "7",
-			"var": "clearMask"
+			"var": "disableAll"
 		},
 		{
 			"command": "doMask",
-			"name": "show Mask",
+			"name": "remove Mask",
 			"shortcut": "5",
-			"var": "selectMask"
+			"var": "removeMask"
 		},
 		{
 			"command": "doMask",
@@ -165,8 +165,6 @@
 			"var": "FxAddFilter"
 		},
 		{
-			"btToEdit": "0xce0762",
-			"btToEditVar": "bVar27",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -177,8 +175,6 @@
 			"var": "FxAddFilter"
 		},
 		{
-			"btToEdit": "0x1a0882",
-			"btToEditVar": "bVar28",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -189,8 +185,6 @@
 			"var": "FxAddGenerator"
 		},
 		{
-			"btToEdit": "0x1a0298",
-			"btToEditVar": "bVar29",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -201,8 +195,6 @@
 			"var": "FxAddGenerator"
 		},
 		{
-			"btToEdit": "0x1e07c2",
-			"btToEditVar": "bVar30",
 			"clearAfter": "False",
 			"click": 1,
 			"command": "filterSearchAndCreate",
@@ -233,8 +225,6 @@
 			"var": "FxAddFill"
 		},
 		{
-			"btToEdit": "0x390718",
-			"btToEditVar": "bVar33",
 			"command": "toggleDocked",
 			"name": "tglTextureSets",
 			"shortcut": "F1",

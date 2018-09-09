@@ -1,6 +1,6 @@
 bcm_workArea := {}
 bcm_workArea := getAllPixelsMonitors()
-
+addTrayMenus()
 
 #Include %A_ScriptDir%              ; Set working directory for #Include.
 #Include *i Jxon22.ahk
@@ -10,6 +10,9 @@ bcm_workArea := getAllPixelsMonitors()
 #Include *i winSearches.ahk
 #Include *i winPrecision.ahk
 #Include *i winEditShortcuts.ahk
+#Include *i winEditMM.ahk
+#Include *i helpWin.ahk
+
 ;#Include *i Eval.ahk
 
 #WinActivateForce
@@ -20,6 +23,7 @@ bcm_workArea := {}
 precisionAdd := 0.1
 MMcreated := 0
 MMOn := 0
+brushSpacingDefault := 5
 ;dontMoveMMO := 1
 
 
@@ -88,6 +92,7 @@ myClick( val1, val2, btnN ){
 			;bcm_splashInfo("click")
 			if (btnN == "right"){
 				Click, right, %val1%, %val2%
+				
 			}else{
 				Click, %val1%, %val2%
 			}
@@ -95,7 +100,7 @@ myClick( val1, val2, btnN ){
 	}
 }
 
-toogleSizePressure( bTabX, bTabY ){
+toogleSizePressure0( bTabX, bTabY ){
 	;old version obsolette
 
 	theSizeX := bTabX - 5
@@ -128,7 +133,7 @@ toogleSizePressure( bTabX, bTabY ){
 }
 
 
-toogleOpacityPressure( bTabX, bTabY ){
+toogleOpacityPressure0( bTabX, bTabY ){
 	;old version obsolette
 	theSizeX := bTabX - 5
 	theSizeY := bTabY + 36
@@ -159,13 +164,293 @@ toogleOpacityPressure( bTabX, bTabY ){
 	}
 }
 
+
+toogleBrushSizePressure(){
+	pressSize := getBrushUppOptions("Size")
+	CoordMode, Mouse, Screen
+	if(pressSize.X){
+		MouseGetPos, xpos, ypos 
+		mSpeed := 0.000001
+		BlockInput, On
+		clX := pressSize.DropDownX
+		clY := pressSize.DropDownY
+		myClick( clX , clY, "left")
+		Sleep 100
+		if(pressSize.penPressure = 1){
+			clX1 := pressSize.DropDownX
+			clY1 := pressSize.noPressureD
+
+			myClick( clX1 , clY1, "left")
+			CornerNotify(1, " Brush Size set to NO pen pressure ", "", "r hc", 0)
+		}else{
+			clX1 := pressSize.DropDownX
+			clY1 := pressSize.penPressureD
+			myClick( clX1 , clY1, "left")		
+			CornerNotify(1, " Brush Size set to PEN PRESSURE ", "", "r hc", 0)	
+		}
+		CoordMode, Mouse, Screen
+		MouseMove, xpos, ypos, mSpeed  
+		BlockInput, Off
+	}
+	Send {Ctrl}{Alt}
+	Return
+}
+
+toogleBrushFlowPressure(){
+	pressFlow := getBrushUppOptions("Flow")
+	CoordMode, Mouse, Screen
+	if(pressFlow.X){
+		MouseGetPos, xpos, ypos 
+		mSpeed := 0.000001
+		BlockInput, On
+		clX := pressFlow.DropDownX
+		clY := pressFlow.DropDownY
+		myClick( clX , clY, "left")
+		Sleep 100
+		if(pressFlow.penPressure = 1){
+			clX1 := pressFlow.DropDownX
+			clY1 := pressFlow.noPressureD
+						;splashInfo( clX )
+			myClick( clX , clY1, "left")
+			CornerNotify(1, " Brush Flow set to NO pen pressure ", "", "r hc", 0)
+		}else{
+			clX1 := pressFlow.DropDownX
+			clY1 := pressFlow.penPressureD
+						;splashInfo( clX )
+			myClick( clX , clY1, "left")		
+			CornerNotify(1, " Brush Flow set to PEN PRESSURE ", "", "r hc", 0)	
+		}
+		CoordMode, Mouse, Screen
+		MouseMove, xpos, ypos, mSpeed  
+		BlockInput, Off
+	}
+	Send {Ctrl}{Alt}
+	Return
+}
+
+bcm_simpleGUI(){
+	global winSimple_hwnd
+	Gui, simpleB:Destroy
+	;Gui, simpleB:+AlwaysOnTop -ToolWindow -SysMenu -Caption +LastFound
+	winSimple_hwnd := WinExist()
+	Gui, simpleB:+AlwaysOnTop +LastFound
+	;WinSet, Transparent, 23
+	Gui, simpleB:Show, Center w100 h100
+  	WinActivate, winSimple_hwnd
+	;Gui, editMM:Hide
+}
+
+
+
+toogleBrushBackfaceCulling(){
+	list1 := findPainterWindow()
+	CoordMode, Mouse, Screen
+	CoordMode, Pixel
+	MouseGetPos, xpos, ypos 
+	mSpeed := 0.000001
+	winMenuX := list1.bLeft + 161
+	winMenuY := list1.bTop + 29 
+	BlockInput, On
+	;click on the window menu
+	myClick(winMenuX, winMenuY, "left")
+	Sleep, 200
+	;search for ckeck for HideUI to see if the UI's are already hidden
+	;setinBB := ""
+	isAlreadyHiddenUI := 0
+	CoordMode, Pixel
+	ImageSearch, ckX, ckY, list1.bLeft + 110, list1.bTop + 90, list1.bLeft + 146, list1.bTop + 112, %A_ScriptDir%\images\checkMenu.png
+	if (ErrorLevel = 2){
+		;bcm_splashInfo("errrrrrrr")
+	}
+	else if (ErrorLevel = 1){
+		isAlreadyHiddenUI := 0
+	}else{
+		isAlreadyHiddenUI := 1
+	}
+
+	if( isAlreadyHiddenUI = 0){
+		;hide all the UI
+		myClick(list1.bLeft + 171, list1.bTop + 104, "left")
+		;Sleep,100
+	}
+
+
+	;now to open the properties right clikc in the upper corner of painter
+	; I think for the right click to work with the tablet, Painter should not have the focus
+	WinClose, Program Manager
+	WinActivate, Program Manager
+	myClick(list1.bLeft + 53, list1.bTop + 89, "right")
+	Sleep, 100
+
+
+	;find the propertiesWindow
+	prop := getThePropWindow()
+	CoordMode, Mouse, Screen
+	prop.wasRightClickOpened := 1
+	prop.rightClickX := list1.bLeft + 53
+	prop.rightClickY := list1.bTop + 89
+	
+	;BlockInput, Off
+	;bcm_msgBObj(prop)
+	;see if there is a brush selected
+	prop := searchForBrushShortcutWhenRightClick( prop )
+
+	if(prop.brushShortcutX){
+
+		;now claculate the scroll
+		prop.scrollerLeft := prop.bRight - 16
+		prop.scrollerTop  := prop.bTop + 168
+		prop.scrollerRight := prop.bRight - 4
+		prop.scrollerBottom := prop.bBottom - 4
+		prop.scrollerCenterY := prop.scrollerTop + 18
+		prop.scrollerCenterX := prop.scrollerLeft + 6
+		;prop.scrollUppX := prop.scrollerTop + 2
+		;prop.scrollUppY := prop.scrollerLeft + 1
+		;prop.scrollerOffset := 0
+		ImageSearch, scrlBeginX, scrlBeginY, prop.scrollerLeft-1, prop.scrollerTop, prop.scrollerRight + 1, prop.scrollerBottom, %A_ScriptDir%\images\scollUp.png
+		if(ErrorLevel =  1){
+
+		}else{
+			prop.scrollUppY := scrlBeginY
+		}
+
+		; now put the scroll to 96
+		CoordMode, Mouse, Screen
+		ofsssetQ := 96 - (prop.scrollUppY - prop.scrollerTop)
+		if(Abs(ofsssetQ) > 5){
+			MouseMove, prop.scrollerCenterX, prop.scrollUppY + 3, 0.0000001
+			Click, down
+			Sleep, 50
+			MouseMove,  0, ofsssetQ , 1, R
+			Click, up
+		}
+	
+		;find if backface culling is on or off or disabled
+		Sleep, 50
+		CoordMode, Pixel
+		prop := getBakfaceCulling( prop )
+		
+		;click on backface culling
+		if(prop.backfaceCullingX){
+			if(prop.backfaceCullingEnabled = 1){
+				myClick(prop.backfaceCullingX, prop.backfaceCullingY, "left" )
+				MouseMove, 0, 20 , 0, R
+			}
+		}
+
+		;close the righjt cliked properties
+		Send, {Esc}
+
+	}else{
+		;close the rightclicked porperties
+		Send, {Esc}
+		CornerNotify(1, "You need to be on the Properties for a Brush!!!", "", "r hc", 1)
+	}
+
+	if( isAlreadyHiddenUI = 0){
+		;clic on the window menu
+		myClick(winMenuX, winMenuY, "left")
+		Sleep, 100
+		;show all the UI
+		myClick(list1.bLeft + 171, list1.bTop + 104, "left")
+	}
+
+
+	MouseMove, xpos, ypos ,0.0000001
+	BlockInput, Off
+
+	;give info after the script finished
+	if(prop.backfaceCullingX){
+		if(prop.backfaceCullingEnabled = 1){
+			if(prop.backfaceCullingOn = 1){
+				CornerNotify(1, "Backface Culling OFF", "", "r hc", 0)
+			}else{
+				CornerNotify(1, "Backface Culling ON", "", "r hc", 0)
+			}
+		}else{
+			CornerNotify(1, "Backface Culling can't be chnaged because it's disabled", "", "r hc", 0)
+		}
+	}
+}
+
+getBakfaceCulling( pnl ){
+
+	CoordMode, Pixel
+	ImageSearch, bckCullX, bckCullY, pnl.bRight - 260, pnl.scrollerTop + 1, pnl.bRight - 207, pnl.bBottom, %A_ScriptDir%\images\on_Enabled.png
+	if(ErrorLevel =  1){
+		ImageSearch, bckCullX1, bckCullY1, pnl.bRight - 260, pnl.scrollerTop + 1, pnl.bRight - 207, pnl.bBottom, %A_ScriptDir%\images\off_Enabled.png
+		if(ErrorLevel =  1){
+			ImageSearch, bckCullX2, bckCullY2, pnl.bRight - 260, pnl.scrollerTop + 1, pnl.bRight - 207, pnl.bBottom, %A_ScriptDir%\images\on_Disabled.png
+			if(ErrorLevel =  1){
+				ImageSearch, bckCullX3, bckCullY3, pnl.bRight - 260, pnl.scrollerTop + 1, pnl.bRight - 207, pnl.bBottom, %A_ScriptDir%\images\off_Disabled.png
+				if(ErrorLevel =  1){
+					CornerNotify(1, "Can't see the backface culling option!!!", "", "r hc", 1)
+				}else{
+					pnl.backfaceCullingX := bckCullX3
+					pnl.backfaceCullingY := bckCullY3
+					pnl.backfaceCullingOn := 0
+					pnl.backfaceCullingEnabled := 0
+				}
+			}else{
+				pnl.backfaceCullingX := bckCullX2
+				pnl.backfaceCullingY := bckCullY2
+				pnl.backfaceCullingOn := 1
+				pnl.backfaceCullingEnabled := 0
+			}
+		}else{
+			pnl.backfaceCullingX := bckCullX1
+			pnl.backfaceCullingY := bckCullY1
+			pnl.backfaceCullingOn := 0
+			pnl.backfaceCullingEnabled := 1
+		}
+	}else{
+		pnl.backfaceCullingX := bckCullX
+		pnl.backfaceCullingY := bckCullY
+		pnl.backfaceCullingOn := 1
+		pnl.backfaceCullingEnabled := 1
+	}
+	return pnl
+}
+
+getThePropWindow(){
+
+	WinGet, WinList, List, ahk_exe Substance Painter.exe,,,
+	Loop %WinList%
+	{
+		WinID := WinList%A_Index%
+		WinGetClass, WinClass, ahk_id %WinID%
+		
+		if(WinClass == "Qt5QWindowToolSaveBits"){
+			WinGetTitle, WinTitle, ahk_id %WinID%
+			;bcm_splashInfo(WinTitle)
+			If (WinTitle = "Substance Painter")
+			{
+				;bcm_splashInfo("foundddddddd")
+				WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+				break
+			}
+		}
+	}
+
+	prop := {}
+	prop.bLeft := aX
+	prop.bTop := aY
+	prop.bRight := aX + aW
+	prop.bBottom := aY + aH
+	prop.bWidth := aW
+	prop.bHeight := aH
+	return prop
+}
+
+
 setBrushSpacingTo( myObj ){
+	global brushSpacingDefault
 	CoordMode, Mouse, Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed = 0.000001
 	pnl := getPanel("Properties")
 	pnl := getScroll(pnl)
-	;bcm_msgBObj(pnl)
+	;bcm_msgBObj(pnl)x
 	pnl := searchForBrushShortcut(pnl)
 
 	if(pnl.brushShortcutX){
@@ -173,6 +458,8 @@ setBrushSpacingTo( myObj ){
 		;click on the surface nera the scroller up to make it active
 
 		BlockInput, on
+		myClick( pnl.bleft + 2, pnl.brushShortcutY + 2, "left")
+		Sleep, 200
 		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
 
 		; navigate with tabs to spacing : 2 tabs
@@ -183,7 +470,8 @@ setBrushSpacingTo( myObj ){
 		;Sleep, 1000
 
 		spp := myObj.var
-		;bcm_splashInfo(spp)1
+		;bcm_splashInfo(spp)
+
 		Send, {%spp%}
 		
 		if(pnl.IconX){
@@ -223,6 +511,8 @@ setBrushAlignement(myObj){
 		;click on the surface nera the scroller up to make it active
 
 		BlockInput, on
+		myClick( pnl.bleft + 2, pnl.brushShortcutY + 2, "left")
+		Sleep, 200
 		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
 
 		; navigate with tabs to alignment : 7 tabs
@@ -245,16 +535,24 @@ setBrushAlignement(myObj){
 
 		;;set to camera first with the arrow up keys
 		Send, {Up}
+		;Sleep, 1000
 		Send, {Up}
+		;Sleep, 1000
 		Send, {Up}
+		;Sleep, 1000
 		Send, {Up}
+		;Sleep, 1000
 		Send, {Up}
+		;Sleep, 1000
 
 		if(myObj.var = "UV"){
 			; chose with the arrow keys
-			Send, {Down}1
 			Send, {Down}
+			;Sleep, 1000
 			Send, {Down}
+			;Sleep, 1000
+			Send, {Down}
+			Sleep, 200
 
 		}else if (myObj.var = "Tangent_Wrap"){
 			Send, {Down}
@@ -288,7 +586,19 @@ setBrushAlignement(myObj){
 		CornerNotify(1, "!!! Can't set brush to " . myObj.var . ". You need to be on the Properties for a Brush!!!", "", "r hc", 1)
 	}
 }
-
+searchForBrushShortcutWhenRightClick( pnl){
+	CoordMode, Pixel
+	ImageSearch, brshPropX, brshPropY, pnl.rightClickX - 3, pnl.rightClickY - 15, pnl.rightClickX + 30, pnl.rightClickY + 30, %A_ScriptDir%\images\brushPropertiesShortcutSelected2.png
+	if(ErrorLevel = 2){
+		bcm_splashInfo("eereeeeeeeeeee")
+	}
+	else if(ErrorLevel = 1){
+	}else{
+		pnl.brushShortcutX := brshPropX
+		pnl.brushShortcutY := brshPropY
+	}
+	return pnl
+}
 
 searchForBrushShortcut( pnl){
 	CoordMode, Pixel
@@ -814,6 +1124,36 @@ shelfSearchAndSelect( myOb ){
 		BlockInput, Off
 	}
 }
+
+getViewport(){
+	;;
+	pntr := findPainterWindow( )
+	vp := {}
+	CoordMode, Pixel
+	ImageSearch, vX, vY, pntr.bLeft, pntr.bTop, pntr.bRight, pntr.bBottom, %A_ScriptDir%\images\upperViewportCamera.png
+	if (ErrorLevel = 1){
+			CornerNotify(1, "!!! Couldn't find the viewport's upper camera !!!", "", "r hc", 1)
+
+	}else{
+		vp.bRight := vX + 68
+		vp.bTop := vY + 27
+
+		ImageSearch, bX, bY, vp.bRight - 4v, vp.bTop, vp.bRight + 1, pntr.bBottom, %A_ScriptDir%\images\bottomPanel.png
+		if (ErrorLevel = 1){
+			CornerNotify(1, "!!! Couldn't find the viewport's bottom border  !!!", "", "r hc", 1)
+		}else{
+			vp.bBottom := bY - 7
+			ImageSearch, cX, cY, pntr.bLeft, vp.bBottom + 4 , vp.bRight, vp.bBottom + 10, %A_ScriptDir%\images\viewportLeftBorder.png
+			if (ErrorLevel = 1){
+				CornerNotify(1, "!!! Couldn't find the viewport's left border  !!!", "", "r hc", 1)
+			}else{
+				vp.bLeft := cX + 1
+			}
+		}
+	}
+	;getBrushUppOptions( "Size" )
+}
+
 
 getPanel( typ ){
 	global bcm_workArea
@@ -2424,7 +2764,7 @@ getScroll(tr){
  	}
 	return tr
 }
-moveScrollAt( scrollInfo, offset  ){
+moveScrollAt(  offset  ){
 	if (scrollInfo.visible == 1){
 		CoordMode, Mouse, Screen
 		;move scroll bar upp
@@ -2739,79 +3079,261 @@ findPainterWindow( ){
 		return winW
 
 }	
-disableChannels( mobj ){
-	; this works only for the properties panel that  doesn't have scrollers
-	;the ones with scrollers have unpreictable errors when clicking on the 
-	;channels 
-	;if allegorithmic will repair the scroller juming
-	;then it will work
 
-	pr := getPanel("Properties")
-	;msgBObj(pr)
-	pr := getScroll( pr )
-	pr := getPropsMatIcon( pr )
+doChannels( mobj ){
+	;second atempt by using right click like in the bacface culling
+	CoordMode, Mouse, Screen
+	CoordMode, Pixel
 	MouseGetPos, xpos, ypos 
-	mSpeed = 0.000001
-	if( pr.matIconX) 
-	{
-		;BlockInput, On
-		;cx := pr.matIconX
-		;cy := pr.matIconY
-		;myClick( cx , cy, "left")
-		;pr := getPropsChannels( pr )
+	mSpeed := 0.000001
 
 
-		;for k,v in pr.channels{
-		;	;msgBObj( v )
-		;	if( v.isOn =  1){
-		;			cx1 := v.X
-		;			cy1 := v.Y
-		;			myClick( cx , cy, "left")
-		;			Sleep, 500
-		;			myClick( cx1 , cy1, "left")
+	;maybe the right clikc window was already opened
+	prop := getThePropWindow()
+	propAlreadyOpened := 0
+	if(prop.bLeft){
+		;search for material shortcut
+		prop := searchForMaterialShortcut( prop )
+		propAlreadyOpened := 1
+		;bcm_msgBObj(prop)
+		if(prop.materialShortcutX){
+			;calculate the right click just to get the brush shortcut
+			prop.wasRightClickOpened := 1
+			prop.rightClickX := prop.bLeft + 5
+			prop.rightClickY := prop.materialShortcutY
+		}
+		BlockInput, On
+	}else{
 
-		;		;pr2 := getScroll( pr )
-		;		}
-		;	}
-
-		;	MouseMove, xpos, ypos, mSpeed
-		;	BlockInput, Off
+		list1 := findPainterWindow()
+		winMenuX := list1.bLeft + 161
+		winMenuY := list1.bTop + 29 
+		BlockInput, On
+		;click on the window menu
+		myClick(winMenuX, winMenuY, "left")
+		Sleep, 200
+		;search for ckeck for HideUI to see if the UI's are already hidden
+		isAlreadyHiddenUI := 0
+		CoordMode, Pixel
+		ImageSearch, ckX, ckY, list1.bLeft + 110, list1.bTop + 90, list1.bLeft + 146, list1.bTop + 112, %A_ScriptDir%\images\checkMenu.png
+		if (ErrorLevel = 2){
+			;bcm_splashInfo("errrrrrrr")
+		}
+		else if (ErrorLevel = 1){
+			isAlreadyHiddenUI := 0
 		}else{
-			pr := getPropsChannels( pr )
-			BlockInput, On
-			for k,v in pr.channels{
-				if( v.isOn =  1){
-					cx1 := v.X
-					cy1 := v.Y
-
-					if( pr.IconX and k > 1){
-					; this means that the window last opened was the over one
-					; the coordinates were changed
-						cx1 := cx1 - pr.bLeft 
-						cy1 := cy1 - pr.bTop 
-					}
-					myClick( cx1 , cy1, "left")
-
-				}
-			}
-
-			if( pr.IconXWasClicked = 1){
-				;the panel was opend dynamicaly by the script
-				;it should be closed
-				cx2 := pr.IconX - pr.bLeft 
-				cy2 := pr.IconY - pr.bTop 
-				myClick( cx2 , cy2, "left")
-			}
-			;if( pr.IconX ){
-			;	xpos := xpos - pr.bLeft 
-			;	ypos := ypos - pr.bTop
-			;}	
-			MouseMove, xpos, ypos, mSpeed
-			BlockInput, Off
+			isAlreadyHiddenUI := 1
 		}
 
-	Return
+		if( isAlreadyHiddenUI = 0){
+			;hide all the UI
+			myClick(list1.bLeft + 171, list1.bTop + 104, "left")
+			;Sleep,100
+		}
+
+
+		;now to open the properties right click in the upper corner of painter
+		; I think for the right click to work with the tablet, Painter should not have the focus
+		WinClose, Program Manager
+		WinActivate, Program Manager
+		myClick(list1.bLeft + 53, list1.bTop + 89, "right")
+		Sleep, 100
+		;WinActivate, Substance Painter
+
+		;find the propertiesWindow
+		prop := getThePropWindow()
+		CoordMode, Mouse, Screen
+		prop.wasRightClickOpened := 1
+		prop.rightClickX := list1.bLeft + 53
+		prop.rightClickY := list1.bTop + 89
+		
+
+		;see if there is materialShortcut
+		prop := searchForMaterialShortcutWhenRightClick( prop )
+
+	}
+	
+
+	if(prop.materialShortcutX){
+		;;se if the properties are for brush or not, this is faster then to press the material shortcut
+		;prop := searchForBrushShortcutWhenRightClick( prop )
+
+		;now claculate the scroll
+		prop.scrollerLeft := prop.bRight - 16
+		;prop.scrollerTop  := prop.bTop + 168
+		;prop.scrollerRight := prop.bRight - 4
+		;prop.scrollerBottom := prop.bBottom - 4
+		;prop.scrollerCenterY := prop.scrollerTop + 18
+		;prop.scrollerCenterX := prop.scrollerLeft + 6
+
+		;ImageSearch, scrlBeginX, scrlBeginY, prop.scrollerLeft-1, prop.scrollerTop, prop.scrollerRight + 1, prop.scrollerBottom, %A_ScriptDir%\images\scollUp.png
+		;if(ErrorLevel =  1){
+
+		;}else{
+		;	prop.scrollUppY := scrlBeginY
+		;}
+
+		;if(prop.brushShortcutX){
+		;	;if it's a brush put it to 194
+		;	CoordMode, Mouse, Screen
+		;	ofsssetQ := 194 - (prop.scrollUppY - prop.scrollerTop)
+		;	if(Abs(ofsssetQ) > 1){
+		;		MouseMove, prop.scrollerCenterX, prop.scrollUppY + 3, 0.0000001
+		;		Click, down
+		;		Sleep, 50
+		;		MouseMove,  0, ofsssetQ , 1, R
+		;		Click, up
+		;	}
+		;}else{
+
+		;click on the material icon
+		myClick(prop.materialShortcutX, prop.materialShortcutY, "left")
+		Sleep, 500
+
+
+			;;if it's a fill put it to 0
+			;CoordMode, Mouse, Screen
+			;ofsssetQ := 0 - (prop.scrollUppY - prop.scrollerTop)
+			;if(Abs(ofsssetQ) > 5){
+			;	MouseMove, prop.scrollerCenterX, prop.scrollUppY + 3, 0.0000001
+			;	Click, down
+			;	Sleep, 50
+			;	MouseMove,  0, ofsssetQ , 1, R
+			;	Click, up
+			;}	
+
+
+	
+		;get the channels
+		prop := getPropsChannels( prop )
+		;bcm_msgBObj(prop)
+		
+		;now click on each channel to disable it
+		if(prop.avChannels){
+			for k,v in prop.channels{
+				if(mObj.var = "disableAll"){
+					if( v.isOn =  1){
+						myClick( v.X , v.Y, "left")
+					}
+				}else if(mObj.var = "toggleAll"){
+					myClick( v.X , v.Y, "left")
+				}else if(mObj.var = "enableAll"){
+					if( v.isOn =  0){
+						myClick( v.X , v.Y, "left")
+					}
+				}
+			}
+		}
+
+		;close the righjt cliked properties
+		if(propAlreadyOpened = 0){
+			Send, {Esc}
+		}
+
+	}else{
+		;close the rightclicked porperties
+		if(propAlreadyOpened = 0){
+			Send, {Esc}
+		}
+		CornerNotify(1, "You need to be on the Properties that has materials !!!", "", "r hc", 1)
+	}
+
+	if( isAlreadyHiddenUI = 0){
+		;clic on the window menu
+		myClick(winMenuX, winMenuY, "left")
+		Sleep, 100
+		;show all the UI
+		myClick(list1.bLeft + 171, list1.bTop + 104, "left")
+	}
+
+
+
+	MouseMove, xpos, ypos ,0.0000001
+	BlockInput, Off
+
+	;WinClose, Program Manager
+	;;give info after the script finished
+	;if(prop.backfaceCullingX){
+	;	if(prop.backfaceCullingEnabled = 1){
+	;		if(prop.backfaceCullingOn = 1){
+	;			CornerNotify(1, "Backface Culling OFF", "", "r hc", 0)
+	;		}else{
+	;			CornerNotify(1, "Backface Culling ON", "", "r hc", 0)
+	;		}
+	;	}else{
+	;		CornerNotify(1, "Backface Culling can't be chnaged because it's disabled", "", "r hc", 0)
+	;	}
+	;}
 }
+
+searchForMaterialShortcutWhenRightClick( pnl){
+	CoordMode, Pixel
+	ImageSearch, matX, matY, pnl.rightClickX, pnl.rightClickY - 15, pnl.bRight, pnl.rightClickY + 40, %A_ScriptDir%\images\MaterialShortcut_off.png
+	if(ErrorLevel = 2){
+	}
+	else if(ErrorLevel = 1){
+		ImageSearch, matX1, matY1, pnl.rightClickX, pnl.rightClickY - 15, pnl.bRight, pnl.rightClickY + 40, %A_ScriptDir%\images\MaterialShortcut_on.png
+		if(ErrorLevel = 1){
+			
+		}else{
+			pnl.materialShortcutX := matX1
+			pnl.materialShortcutY := matY1
+			pnl.materialShortcutOn := 1
+		}
+	}else{
+		pnl.materialShortcutX := matX
+		pnl.materialShortcutY := matY
+		pnl.materialShortcutOn := 0
+	}
+	return pnl
+}
+
+searchForMaterialShortcut( pnl){
+	CoordMode, Pixel
+	ImageSearch, matX, matY, pnl.bLeft, pnl.bTop, pnl.bRight, pnl.bBottom, %A_ScriptDir%\images\MaterialShortcut_off.png
+	if(ErrorLevel = 2){
+		;bcm_splashInfo("errrrror")
+	}
+	else if(ErrorLevel = 1){
+		ImageSearch, matX1, matY1, pnl.bLeft, pnl.bTop, pnl.bRight, pnl.bBottom, %A_ScriptDir%\images\MaterialShortcut_on.png
+		if(ErrorLevel = 1){
+			
+		}else{
+			pnl.materialShortcutX := matX1
+			pnl.materialShortcutY := matY1
+			pnl.materialShortcutOn := 1
+		}
+	}else{
+		pnl.materialShortcutX := matX
+		pnl.materialShortcutY := matY
+		pnl.materialShortcutOn := 0
+	}
+	return pnl
+}
+
+getPropsMatIconWhenRightClicked( pr ){
+	;getting the small materials icon from the properties panel
+	ImageSearch, aX, aY, rightClickX - 4, rightClickY - 4, rightClickX + 4, pr.bBottom, %A_ScriptDir%\images\propsMaterial.png
+  	if (ErrorLevel = 1)
+	{
+		ImageSearch, aX, aY, pr.bLeft, pr.bTop + 14, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsMaterialSel.png
+		if (ErrorLevel = 1)
+		{
+			;CornerNotify(1, "!!! can't see the material icon !!!", "", "r hc", 1)	
+
+		}else{
+			pr.matIconX := aX
+			pr.matIconY := aY
+		}
+	}else{
+		pr.matIconX := aX
+		pr.matIconY := aY
+	}
+
+	Return pr
+}
+
+
 
 getPropsMatIcon( pr ){
 	;getting the small materials icon from the properties panel
@@ -2838,8 +3360,9 @@ getPropsMatIcon( pr ){
 getPropsChannels( pr ){
 	;getting the small channels from the properties panel
 	aw := 0
-	theYStart := pr.matIconY + 46
 	theXStart := pr.bLeft
+	theYStart := pr.materialShortcutY
+	;bcm_msgBObj(pr)
 	ac := 1 
 		if(pr.scrollerLeft){
 			qwe := pr.scrollerLeft
@@ -2848,14 +3371,14 @@ getPropsChannels( pr ){
 		}
 	while 1{
 
-		;splashInfo( theXStart . " ||| " . theYStart )
+		;bcm_splashInfo( theXStart . " ||| " . theYStart )
 		if (theXStart > qwe){
 			theXStart := pr.bLeft
 			theYStart := aY + 22
 		}
-		ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannelSel.png
+		ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannelSelBtm.png
 		if (ErrorLevel = 1){
-			ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannel.png
+			ImageSearch, aX, aY, theXStart, theYStart, pr.bRight, pr.bBottom, %A_ScriptDir%\images\propsChannelBtm.png
 			if (ErrorLevel = 1){
 				break
 			}else{
@@ -2863,11 +3386,11 @@ getPropsChannels( pr ){
 				chann := {}
 				chann.isOn := 0
 				chann.X := aX + 21
-				chann.Y := aY + 12
+				chann.Y := aY - 2
 				pr.channels[ac] := chann
 				pr.avChannels := ac
 
-				theXStart := aX + 62
+				theXStart := aX + 50
 				ac := ac + 1
 			}
 		}else{
@@ -2875,11 +3398,11 @@ getPropsChannels( pr ){
 				chann := {}
 				chann.isOn := 1
 				chann.X := aX + 21
-				chann.Y := aY + 12
+				chann.Y := aY - 2
 				pr.channels[ac] := chann
 				pr.avChannels := ac
 
-				theXStart := aX + 62
+				theXStart := aX + 50
 				ac := ac + 1
 		}
 
@@ -3190,6 +3713,26 @@ buttonPress( myObj ){
 			myObj.var := myObj.var ? myObj.var : "5"
 			setBrushSpacingTo( myObj )
 		}
+		else if(myObj.command = "toogle_Flow_Pressure"){
+			;putting defaults
+			toogleBrushFlowPressure(  )
+		}
+
+		else if(myObj.command = "toogle_Size_Pressure"){
+			;putting defaults
+			toogleBrushSizePressure(  )
+		}
+
+		else if(myObj.command = "toogle_Backface_Culling"){
+			;putting defaults
+			toogleBrushBackfaceCulling(  )
+		}
+
+		else if(myObj.command = "doChannels"){
+			;putting defaults
+			myObj.var := myObj.var ? myObj.var : "disableAll"
+			doChannels( myObj )
+		}
 
 	}else{
 		CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
@@ -3208,11 +3751,49 @@ getMMCreated(){
 }
 
 
+;======================Tray
 
+addTrayMenus(){
+	I_Icon = ico_hZW_icon.ico
+	Menu, Tray, Icon, %I_Icon%
+	Menu, Tray, NoStandard ; remove standard Menu items
+	Menu, Tray, Add , &Help, HelpBtn ;add a item named Change that goes to the Change label
+	Menu, Tray, Add , &About Me, AboutAuthorBtn ;add a item named Change that goes to the Change label
+	Menu, Tray, Add , &Edit Pie Menus, EditMMM ;add a item named Change that goes to the Change label
+	Menu, Tray, Add , &Reload, ReloadBtn ;add a item named Exit that goes to the ButtonExit label
+	Menu, Tray, Add , &Exit, ButtonExit ;add a item named Exit that goes to the ButtonExit label
+	Return
+}
 
+AboutAuthorBtn:
+{
+	Run, https://www.artstation.com/cbuliarca
+	Return
+}
 
+HelpBtn:
+{	
+	bcm_helpWin()
+	Return
+}
 
+ReloadBtn:
+{
+	Reload
+	Return
+}
 
+ButtonExit:
+{
+	ExitApp
+	Return
+}
+
+EditMMM:
+{
+	editMMWin()
+	Return
+}
 
 
 
@@ -3231,33 +3812,7 @@ getMMCreated(){
 #IfWinActive, ahk_exe Substance Painter.exe
 !^s::
 {
-	pressSize := getBrushUppOptions("Size")
-	CoordMode, Mouse, Screen
-	if(pressSize.X){
-		MouseGetPos, xpos, ypos 
-		mSpeed := 0.000001
-		BlockInput, On
-		clX := pressSize.DropDownX
-		clY := pressSize.DropDownY
-		myClick( clX , clY, "left")
-		Sleep 100
-		if(pressSize.penPressure = 1){
-			clX1 := pressSize.DropDownX
-			clY1 := pressSize.noPressureD
-
-			myClick( clX1 , clY1, "left")
-			CornerNotify(1, " Brush Size set to NO pen pressure ", "", "r hc", 0)
-		}else{
-			clX1 := pressSize.DropDownX
-			clY1 := pressSize.penPressureD
-			myClick( clX1 , clY1, "left")		
-			CornerNotify(1, " Brush Size set to PEN PRESSURE ", "", "r hc", 0)	
-		}
-		CoordMode, Mouse, Screen
-		MouseMove, xpos, ypos, mSpeed  
-		BlockInput, Off
-	}
-	Send {Ctrl}{Alt}
+	toogleBrushSizePressure()
 	Return
 }
 
@@ -3265,34 +3820,7 @@ getMMCreated(){
 #IfWinActive, ahk_exe Substance Painter.exe
 !^a::
 {
-	pressFlow := getBrushUppOptions("Flow")
-	CoordMode, Mouse, Screen
-	if(pressFlow.X){
-		MouseGetPos, xpos, ypos 
-		mSpeed := 0.000001
-		BlockInput, On
-		clX := pressFlow.DropDownX
-		clY := pressFlow.DropDownY
-		myClick( clX , clY, "left")
-		Sleep 100
-		if(pressFlow.penPressure = 1){
-			clX1 := pressFlow.DropDownX
-			clY1 := pressFlow.noPressureD
-						;splashInfo( clX )
-			myClick( clX , clY1, "left")
-			CornerNotify(1, " Brush Flow set to NO pen pressure ", "", "r hc", 0)
-		}else{
-			clX1 := pressFlow.DropDownX
-			clY1 := pressFlow.penPressureD
-						;splashInfo( clX )
-			myClick( clX , clY1, "left")		
-			CornerNotify(1, " Brush Flow set to PEN PRESSURE ", "", "r hc", 0)	
-		}
-		CoordMode, Mouse, Screen
-		MouseMove, xpos, ypos, mSpeed  
-		BlockInput, Off
-	}
-	Send {Ctrl}{Alt}
+	toogleBrushFlowPressure()
 	Return
 }
 
@@ -3477,7 +4005,7 @@ getMMCreated(){
 ;ahk_exe AutoHotkey.exe
 
 ;#IfWinActive, BCM_substancePainter_shortcuts.ahk BCM_substancePainter_shortcuts.exe 
-#if WinActive("BCM_substancePainter_shortcuts.ahk") or WinActive("BCM_substancePainter_shortcuts.exe")
+#if WinActive("qAct.ahk") or WinActive("qAct.exe")
 Esc::
 {
 	;destroy the gui with the esc key
@@ -3520,13 +4048,13 @@ Esc::
 ;}
 
 ;ctrl+F7 clciks on the channels
-#IfWinActive, ahk_exe Substance Painter.exe
-^F7::
-{
+;#IfWinActive, ahk_exe Substance Painter.exe
+;^F7::
+;{
 
-	disableChannels( obj )
-	Return
-}
+;	doChannels( obj )
+;	Return
+;}
 
 ;`F7
 #IfWinActive, ahk_exe Substance Painter.exe
@@ -3541,16 +4069,33 @@ F7::
 	;selectUppMainLayStack()
 	;myObj.var := "noMask"
 	;createLayer( myObj )
-	myObj := {}
-	myObj.var := "UV"
-	setBrushAlignement(myObj)
+	;myObj := {}
+	;myObj.var := "UV"
+	;setBrushAlignement(myObj)
+	;editMMWin()
+	;bcm_helpWin()
+	;getViewport()
+	;toogleBrushBackfaceCulling()
+
+	WinGet, WinList, List, ahk_exe osdHotkey.exe,,,
+	Loop %WinList%
+	{
+		WinID := WinList%A_Index%
+		bcm_splashInfo(WinID)
+		Winset, AlwaysOnTop, On, ahk_id %WinID%
+		;WinSet, Style, +0x80000000	, ahk_id %WinID%
+		WinSet, Style, -0xC00000, ahk_id %WinID%
+	}
 	Return
 }
 
 #IfWinActive, ahk_exe Substance Painter.exe
 ~MButton::
 {
-	theMM()
+	global AllowMM
+	;if( AllowMM = 1){
+		theMM()
+	;}
 	Return
 }
 

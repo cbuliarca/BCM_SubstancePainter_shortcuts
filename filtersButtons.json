@@ -2,12 +2,12 @@
 	"buttonsA": [
 		{
 			"clearAfter": "False",
-			"click": 1,
+			"click": "1",
 			"command": "filterSearchAndCreate",
 			"name": "Blur Create",
 			"selectFirst": "True",
 			"shortcut": "b",
-			"toSearch": "u:filter blur! -BCM",
+			"toSearch": "u:filter blur! -BCM ",
 			"var": "FxAddFilter"
 		},
 		{
@@ -65,9 +65,9 @@
 			"shortcut": "d"
 		},
 		{
-			"btToEdit": "0x42b1970",
-			"btToEditVar": "bVar8",
+			"cIndex": 8,
 			"command": "createEffects",
+			"mode": "edit",
 			"name": "Filter - fill",
 			"shortcut": "",
 			"var": "FxAddFill"
@@ -91,7 +91,9 @@
 			"var": "FxAddLevels"
 		},
 		{
+			"cIndex": 12,
 			"command": "createEffects",
+			"mode": "edit",
 			"name": "Paint",
 			"shortcut": "p",
 			"var": "FxAddPaint"

@@ -1,0 +1,23 @@
+{
+	"buttonsA": [
+		{
+			"clearAfter": "True",
+			"click": "1",
+			"command": "shelfSearchAndSelect",
+			"name": "bullet",
+			"selectFirst": "True",
+			"shortcut": "",
+			"toSearch": "tool Bulet"
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		},
+		{
+			"command": "",
+			"name": ".",
+			"shortcut": ""
+		}
+	]
+}

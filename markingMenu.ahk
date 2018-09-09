@@ -330,7 +330,24 @@ createGUI(){
    Gui, testLine:Hide
 }
 
-
+theShowMM(){
+      CoordMode, Mouse, Screen
+      MouseGetPos, p_x1, p_y1
+      showGui2(p_x1,p_y1)
+      SysGet, XVirtualScreen, 76
+      SysGet, YVirtualScreen, 77
+      SysGet, CXVirtualScreen, 78
+      SysGet, CYVirtualScreen, 79
+      hDC := DllCall("GetDC", UInt, GuiHwnd)
+      DllCall("SetViewportOrgEx", "uint", hDC, "int", -XVirtualScreen, "int", -YVirtualScreen, "uint", 0)
+      ; Show the trail canvas over the entire virtual screen (all monitors).
+      Gui, testLine:Show, X-30000 Y-30000 W%CXVirtualScreen% H%CYVirtualScreen% NA
+      ; Showing the Gui initially off-screen may help reduce "screen flash".
+      Gui, testLine:Show, X%XVirtualScreen% Y%YVirtualScreen% NA
+      GuiControl, Focus, ChosenHotkeyMM
+      hCurrPen := DllCall("CreatePen", UInt, 0, UInt, 5, UInt, "0x232323")
+      DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
+}
 
 theMM(){
    ; THIS IS THE FUNCTION THAT'S CALLED when the Middle mouse is pressed
@@ -344,6 +361,24 @@ theMM(){
    if(!GuiHwnd){
       createGUI2()
       createGUI()
+
+      CoordMode, Mouse, Screen
+      MouseGetPos, p_x1, p_y1
+      showGui2(p_x1,p_y1)
+      SysGet, XVirtualScreen, 76
+      SysGet, YVirtualScreen, 77
+      SysGet, CXVirtualScreen, 78
+      SysGet, CYVirtualScreen, 79
+      hDC := DllCall("GetDC", UInt, GuiHwnd)
+      DllCall("SetViewportOrgEx", "uint", hDC, "int", -XVirtualScreen, "int", -YVirtualScreen, "uint", 0)
+      ; Show the trail canvas over the entire virtual screen (all monitors).
+      Gui, testLine:Show, X-30000 Y-30000 W%CXVirtualScreen% H%CYVirtualScreen% NA
+      ; Showing the Gui initially off-screen may help reduce "screen flash".
+      Gui, testLine:Show, X%XVirtualScreen% Y%YVirtualScreen% NA
+      GuiControl, Focus, ChosenHotkeyMM
+      hCurrPen := DllCall("CreatePen", UInt, 0, UInt, 5, UInt, "0x232323")
+      DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
+      
    }else{
       CoordMode, Mouse, Screen
       MouseGetPos, p_x1, p_y1
@@ -572,30 +607,40 @@ MMHotkeyPressedLabel:
    
    ;this varible is checking if the MM was on
    global MMOn
+   global AllowMM
 
    ;geting the hotkey pressed, we know that it has a $ in front so we need to strip it
    ;we know that because it was added when the key was registered, it means that it has a hook
    myKey1 := A_ThisHotkey
    StringTrimLeft, myKey, myKey1, 1
 
-   Keywait, %myKey%, t2 ;<- see if key is being held down for 2 seconds::
    
-   err := Errorlevel
-   if (err) ;<- if key was held for that long 
+   err := Errorlevel1
+   Keywait, %myKey%, t4 ;<- see if key is being held down for 2 seconds::
+   if (ErrorLevel = 1) ;<- if key was held for that long 
    {
-      ;MsgBox, , , %myKey%, 1 
+      MsgBox, , , %myKey%, 0.1
+
       ;bcm_splashInfo("ssss")
-   }
-   if(MMOn = 1){
-      ;if the MM was on, don't sent the key
-      MMOn := 0
+      ;MMOn := 1
+      ;AllowMM := 1
    }else{
-      ;if the key was released right away then send that key back, 
-      ;working like it suposed to work in SP
-      MMOn := 0
-      ControlSend,, %myKey%, ahk_exe Substance Painter.exe
-      ;Send, %myKey%
-      
+      ;AllowMM := 0
+      ;bcm_splashInfo(MMOn)
+      if(MMOn = 1){
+         ;if the MM was on, don't sent the key
+         MMOn := 0
+      }else{
+         ;bcm_splashInfo("send:")
+         ;if the key was released right away then send that key back, 
+         ;working like it suposed to work in SP
+        
+         MMOn := 0
+         ;Send, {%myKey%}
+         ControlSend,, %myKey%, ahk_exe Substance Painter.exe
+         ;Send, %myKey%
+
+      }
    }
    return
 }

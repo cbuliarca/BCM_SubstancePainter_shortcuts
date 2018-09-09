@@ -2,12 +2,12 @@
 	"buttonsA": [
 		{
 			"clearAfter": "True",
-			"click": 1,
+			"click": "1",
 			"command": "shelfSearchAndSelect",
 			"name": "Tool Default",
 			"selectFirst": "True",
 			"shortcut": "1",
-			"toSearch": "tool myDefault!"
+			"toSearch": "tool myDefault"
 		},
 		{
 			"clearAfter": "True",
@@ -19,11 +19,11 @@
 			"toSearch": "Brush Dirt 1 -Cement"
 		},
 		{
-			"btToEdit": "0xc01c92",
-			"btToEditVar": "bVar3",
+			"cIndex": 3,
 			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
+			"mode": "edit",
 			"name": "Ark_hair",
 			"selectFirst": "True",
 			"shortcut": "3",
@@ -93,11 +93,14 @@
 			"toSearch": "transform with mask"
 		},
 		{
-			"command": "SH_GroupUI",
-			"file": "masksButtons.json",
-			"name": "{Commands}",
+			"clearAfter": "True",
+			"click": "1",
+			"command": "filterSearchAndCreate",
+			"name": "grayscale",
+			"selectFirst": "True",
 			"shortcut": "`",
-			"title": "BCM_Commands"
+			"toSearch": "u:generator grayscale",
+			"var": "FxAddGenerator"
 		},
 		{
 			"clearAfter": "False",
