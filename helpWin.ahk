@@ -150,6 +150,7 @@ bcm_helpWin(){
 
 	Gui qAHelp:Add, ActiveX, w980 h640 vWB, Shell.Explorer  ; The final parameter is the name of the ActiveX component.
 	WB.Navigate(A_ScriptDir . "\help\help.html")  ; This is specific to the web browser control.
+	;WB.Navigate("https://gammy-balances.000webhostapp.com/qAct/help.html")  ; This is specific to the web browser control.
 	Gui, qAHelp:Show, Center
   	WinActivate, winEditMM_hwnd
 }
