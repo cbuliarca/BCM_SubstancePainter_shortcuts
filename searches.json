@@ -66,13 +66,13 @@
 			"toSearch": "Smart BCM_RGB"
 		},
 		{
-			"clearAfter": "False",
+			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"name": "BCM smart",
-			"selectFirst": "False",
+			"name": "my Rust",
+			"selectFirst": "True",
 			"shortcut": "b",
-			"toSearch": "Smart BCM"
+			"toSearch": "my_rust"
 		},
 		{
 			"clearAfter": "False",

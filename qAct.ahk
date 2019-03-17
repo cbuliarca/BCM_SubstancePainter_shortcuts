@@ -277,8 +277,10 @@ toogleBrushBackfaceCulling(){
 
 	;now to open the properties right clikc in the upper corner of painter
 	; I think for the right click to work with the tablet, Painter should not have the focus
-	WinClose, Program Manager
-	WinActivate, Program Manager
+	winTT()
+
+	;WinClose, Program Manager
+	;WinActivate, Program Manager
 	myClick(list1.bLeft + 53, list1.bTop + 89, "right")
 	Sleep, 100
 
@@ -293,6 +295,9 @@ toogleBrushBackfaceCulling(){
 	;BlockInput, Off
 	;bcm_msgBObj(prop)
 	;see if there is a brush selected
+
+	Gui, qWinTest:Destroy
+
 	prop := searchForBrushShortcutWhenRightClick( prop )
 
 	if(prop.brushShortcutX){
@@ -517,20 +522,22 @@ setBrushAlignement(myObj){
 
 		; navigate with tabs to alignment : 7 tabs
 		;ControlSend, {Tab}, ahk_exe Substance Painter.exe
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
-		Send, {Tab}
-		;Sleep, 1000
+
+
+		Loop, 7{
+			Send, {Tab}
+		}
+		;Loop, 40{
+		;	Send, +{Tab}
+		;}
+
+
+
+
+
+
+
+
 
 
 		;;set to camera first with the arrow up keys
@@ -3080,6 +3087,22 @@ findPainterWindow( ){
 
 }	
 
+winTT(){
+	global qWinTest_hwnd
+
+	Gui, qWinTest:Destroy
+	Gui, qWinTest:+AlwaysOnTop +LastFound
+	qWinTest_hwnd := WinExist()
+	;WinSet, Transparent, 230
+	Gui, qWinTest:Color, 2c2c2c ;background color
+	Gui, qWinTest:Show, Center w100 h100
+  	WinActivate, qWinTest_hwnd
+  	Sleep, 300
+  	WinClose, qWinTest_hwnd
+  	;Gui, qWinTest:Destroy
+}
+
+
 doChannels( mobj ){
 	;second atempt by using right click like in the bacface culling
 	CoordMode, Mouse, Screen
@@ -3134,8 +3157,9 @@ doChannels( mobj ){
 
 		;now to open the properties right click in the upper corner of painter
 		; I think for the right click to work with the tablet, Painter should not have the focus
-		WinClose, Program Manager
-		WinActivate, Program Manager
+		winTT()
+		;WinClose, Program Manager
+		;WinActivate, Program Manager
 		myClick(list1.bLeft + 53, list1.bTop + 89, "right")
 		Sleep, 100
 		;WinActivate, Substance Painter
@@ -3150,6 +3174,9 @@ doChannels( mobj ){
 
 		;see if there is materialShortcut
 		prop := searchForMaterialShortcutWhenRightClick( prop )
+
+		;this is the window that was opened when wanted to do the right click
+		Gui, qWinTest:Destroy
 
 	}
 	
@@ -4090,6 +4117,23 @@ F7::
 }
 
 #IfWinActive, ahk_exe Substance Painter.exe
++F9::
+{
+   ListHotkeys
+   return
+}
+
+
+;on shift + F1 setup
+#IfWinActive, ahk_exe Substance Painter.exe
++F1::
+{
+	pnlP := findFloatPanel( "Properties" )
+	bcm_msgBObj(pnlP)
+	;Run, SnippingTool.exe, "FullScreen"
+}
+
+#IfWinActive, ahk_exe Substance Painter.exe
 ~MButton::
 {
 	global AllowMM
@@ -4098,7 +4142,4 @@ F7::
 	;}
 	Return
 }
-
-
-
 

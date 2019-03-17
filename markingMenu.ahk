@@ -589,7 +589,7 @@ MMKeyListenSubroutine:
 ;  Reload
 ;}
 ;return
-
+#IfWinActive, ahk_exe Substance Painter.exe
 F9::
 {
    ListHotkeys
