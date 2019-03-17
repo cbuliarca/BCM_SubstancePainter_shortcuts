@@ -9,7 +9,7 @@ Or I can just change the brush Flow Pressure just by pressing **Ctrl+Alt+A**, an
 
 
 If you find that these are helpful and you have some more suggestions please leave a comment here.
-
+https://gammy-balances.000webhostapp.com/qAct/help.html
 ## Installation ##
 * #### You don't need Autohotkey to be installed on your computer, you just have to run the BCM_substancePainter_shortcuts.exe after you downloaded and unzipped the folder. Just make sure you keep all the stuff and don't move the BCM_substancePainter_shortcuts.exe in another place. ####
 
