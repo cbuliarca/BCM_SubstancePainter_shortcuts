@@ -1,10 +1,10 @@
 # BCM_substancePainter_shortcuts
 Some custom shortcuts in Substance Painter 2018.
 
-These are some Autohotkey scripts that are searching custom pixels on your screen and automaticaly moves and clicks your mouse in order to do some tasks faster. It only works with Substance Painter 2018
+These are some AutoHotKey scripts that are searching custom pixels on your screen and automatically moves and clicks your mouse in order to do some tasks faster. It only works with Substance Painter 2018
 
 I was getting tired to go with the mouse everywhere in the interface, so I've created these scripts. 
-With these I can now change the current layer Blending Mode just by pressing **Alt+\`** followed by **1** to PassThrough without the need to go with the mouse and look for it in the long popup window.... 
+With these I can now change the current layer Blending Mode just by pressing **Alt+\`** followed by **1** to pass through without the need to go with the mouse and look for it in the long popup window.... 
 Or I can just change the brush Flow Pressure just by pressing **Ctrl+Alt+A**, and the script will do the job for me, faster then I could ever be with my mouse.
 
 
@@ -13,7 +13,7 @@ https://gammy-balances.000webhostapp.com/qAct/help.html
 ## Installation ##
 * #### You don't need Autohotkey to be installed on your computer, you just have to run the BCM_substancePainter_shortcuts.exe after you downloaded and unzipped the folder. Just make sure you keep all the stuff and don't move the BCM_substancePainter_shortcuts.exe in another place. ####
 
-* #### You can adjust the acripts as well but for this you need the Autohotkey to be installed. I've used Autohotkey 1.1.28.00 build ####
+* #### You can adjust the scripts as well but for this you need the Autohotkey to be installed. I've used Autohotkey 1.1.28.00 build ####
 
 ## Features in the scripts:
 
