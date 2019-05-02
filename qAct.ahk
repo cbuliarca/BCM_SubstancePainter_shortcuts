@@ -2,6 +2,10 @@ bcm_workArea := {}
 bcm_workArea := getAllPixelsMonitors()
 addTrayMenus()
 
+
+
+
+
 #Include %A_ScriptDir%              ; Set working directory for #Include.
 #Include *i Jxon22.ahk
 #Include *i pbuttons_class.ahk
@@ -30,7 +34,7 @@ brushSpacingDefault := 5
 CoordMode, Mouse, Screen
 CoordMode Pixel
 
-
+#IfWinActive
 ;https://autohotkey.com/board/topic/122-automatic-reload-of-changed-script/page-2
 ~^s::
 SetTitleMatchMode, 2	;--- works in ANYTHING displaying scripts name as ANY part of the window title
@@ -1200,17 +1204,18 @@ getPanel( typ ){
 			else
 			{
 				;the main title image found, set the top and left
-				qPanel.bLeft :=  propFoundX - 6
+				qPanel.bLeft :=  propFoundX - 9
 				qPanel.bTop := propFoundY - 14  
+				; bcm_msgBObj(qPanel)
 				;now find the bottom
-				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft, qPanel.bTop + 4, qPanel.bLeft + 100, bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
+				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
 				if (ErrorLevel = 1)
 				{
 				    CornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
 				}
-				else{
+				else{ 
 					;the bottom found
-					qPanel.bBottom := propEndPanelDownY + 1
+					qPanel.bBottom := propEndPanelDownY + 3
 					;now search for the "x" close
 					ImageSearch, propClosePanelX, propClosePanelY, qPanel.bLeft, qPanel.bTop + 8, bcm_workArea.endX , qPanel.bTop + 26, %A_ScriptDir%\images\closePanel.png
 					if (ErrorLevel = 1)
@@ -2031,6 +2036,7 @@ removeEffect(){
  }
 
 getSelectedLayerP(lp){
+	; bcm_msgBObj(lp)
  	ImageSearch, activeLayerUpX, activeLayerUpY, lp.bRight - 25, lp.bTop + 72, lp.bRight - 11, lp.bBottom, %A_ScriptDir%\images\activeLayerUp.png
  	if (ErrorLevel = 1)
 	{
@@ -2042,7 +2048,7 @@ getSelectedLayerP(lp){
 		;	;search for a anchor filter active
 		;	ImageSearch, activeAnchorUpX, activeAnchorUpY, lp.bRight - 25, lp.bTop-48, lp.bRight - 11, lp.bBottom, %A_ScriptDir%\images\activeAnchorUp.png
 		;	if (ErrorLevel = 1)
-		;	{
+		;	{ 
 		;		CornerNotify(1, "!!! Can't see any layer or active stack !!!", "", "r hc", 1)
 		;	}else{
 		;		lp.activeStackIsAnchor := 1
@@ -2377,10 +2383,11 @@ getEffectsButton( layersP ){
 	layersP.FxAddPaint := layersP.addFxButtonY + 53
 	layersP.FxAddFill := layersP.addFxButtonY + 77
 	layersP.FxAddLevels := layersP.addFxButtonY + 102
-	layersP.FxAddFilter := layersP.addFxButtonY + 126
-	layersP.FxAddColorSelection := layersP.addFxButtonY + 150
-	layersP.FxAddAnchorPoint := layersP.addFxButtonY + 173
-	;layersP.FxRemove := layersP.addFxButtonY + 262
+	layersP.FxAddCompareMask := layersP.addFxButtonY + 126
+	layersP.FxAddFilter := layersP.addFxButtonY + 150
+	layersP.FxAddColorSelection := layersP.addFxButtonY + 173
+	layersP.FxAddAnchorPoint := layersP.addFxButtonY + 200
+	;layersP.FxRemove := layersP.addFxButtonY + 262 
 	return layersP
 }
 
@@ -2503,22 +2510,27 @@ getBlendingsWindow( lp ){
 	oos.y := aY
 	oos.w := aW
 	oos.h := aH
-	;msgBObj()lp
+
 	;splashInfo(" ax: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
 	
 	if (aClass = "Qt5QWindowPopupDropShadowSaveBits"){
+		; bcm_splashInfo( "Qt5QWindowPopupDropShadowSaveBits")
+		; bcm_splashInfo(" ax: " . aX . " y: " . aY . " w: " . aW . " h: " . aH . " class: " . aClass)
 		if( aX = 0 AND aY = 0){
+			; bcm_splashInfo( "ax este 0")
 			lp.blendingsWinTop := 0
 			lp.blendingsWinLeft := 0
 			lp.blendingsWinRight := lp.blendingsWinLeft + aW
 			lp.blendingsWinBottom := lp.blendingsWinTop + aH
 			if(qr.swaped = 1){
-				;splashInfo( "swaped sssss")
-				lp.blendingsWinLeft := A_ScreenWidth 
+				; bcm_splashInfo( "swaped sssss")
+				; lp.blendingsWinLeft := A_ScreenWidth 
+				lp.blendingsWinLeft := 0
 				lp.blendingsWinRight := lp.blendingsWinLeft - aW
 			}
 			;the error happend
 		}else{
+
 			if( lp.activeStackDown){
 				;this means that it was a stack triggered for change blending
 				lp.blendingsWinTop := lp.activeStackDown - 1
@@ -2534,6 +2546,7 @@ getBlendingsWindow( lp ){
 					lp.blendingsWinLeft := lp.blendingsWinRight - aW
 				}
 			}else if( lp.activeLayDown ){
+				; bcm_splashInfo("nowwwwwww")
 				lp.blendingsWinTop := lp.activeLayUp + 23
 				lp.blendingsWinLeft := lp.bRight - 54
 				lp.blendingsWinRight := lp.blendingsWinLeft + aW
@@ -2550,9 +2563,16 @@ getBlendingsWindow( lp ){
 					lp.blendingsWinRight := A_ScreenWidth
 					lp.blendingsWinLeft := lp.blendingsWinRight - aW
 				}
+			}else{
+				; bcm_splashInfo( "swaped 000")
+				lp.blendingsWinTop := aY
+				lp.blendingsWinLeft := aX
+				lp.blendingsWinRight := lp.blendingsWinLeft + aW
+				lp.blendingsWinBottom := lp.blendingsWinTop + aH
 			}
 		}	
 	}
+	; bcm_msgBObj(lp)
 	Return lp
 }
 
@@ -2570,7 +2590,8 @@ getLayContextWindow( lp ){
 			lp.actvLayContextWinBottom := lp.actvLayContextWinTop + 716
 			if(qr.swaped = 1){
 				;splashInfo( "swaped sssss")
-				lp.actvLayContextWinLeft := A_ScreenWidth 
+				lp.actvLayContextWinLeft := 0 
+				; lp.actvLayContextWinLeft := A_ScreenWidth 
 				lp.actvLayContextWinRight := lp.actvLayContextWinLeft - 271
 			}
 			;the error happend

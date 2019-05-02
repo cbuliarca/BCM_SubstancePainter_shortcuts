@@ -596,7 +596,7 @@ F9::
    return
 }
 
-
+#IfWinActive
 
 MMHotkeyPressedLabel:
 {
