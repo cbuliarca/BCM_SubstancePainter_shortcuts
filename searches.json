@@ -19,15 +19,13 @@
 			"toSearch": "Brush Dirt 1 -Cement"
 		},
 		{
-			"cIndex": 3,
 			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"mode": "edit",
-			"name": "Ark_hair",
+			"name": "ark_paint",
 			"selectFirst": "True",
-			"shortcut": "3",
-			"toSearch": "Tool bcm_hair"
+			"shortcut": "!p",
+			"toSearch": "tool ark_jitterPaint"
 		},
 		{
 			"clearAfter": "False",
@@ -39,31 +37,31 @@
 			"toSearch": "Project Texture"
 		},
 		{
-			"clearAfter": "False",
+			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"name": "Project",
-			"selectFirst": "False",
-			"shortcut": "p",
-			"toSearch": "Project"
-		},
-		{
-			"clearAfter": "False",
-			"click": 1,
-			"command": "shelfSearchAndSelect",
-			"name": "Alpha Shape",
+			"name": "my_stainsSkin Tool",
 			"selectFirst": "True",
-			"shortcut": "a",
-			"toSearch": "alphas shape! -circle"
+			"shortcut": "p",
+			"toSearch": "Tools my_stain_skin"
 		},
 		{
 			"clearAfter": "False",
+			"click": 1,
+			"command": "shelfSearchAndSelect",
+			"name": "chr_trans_RGB",
+			"selectFirst": "False",
+			"shortcut": "a",
+			"toSearch": "chr_transformationRGB"
+		},
+		{
+			"clearAfter": "True",
 			"click": 2,
 			"command": "shelfSearchAndSelect",
-			"name": "BCM RGB",
-			"selectFirst": "False",
+			"name": "my_wet",
+			"selectFirst": "True",
 			"shortcut": "r",
-			"toSearch": "Smart BCM_RGB"
+			"toSearch": "my_wet"
 		},
 		{
 			"clearAfter": "True",
@@ -95,12 +93,11 @@
 		{
 			"clearAfter": "True",
 			"click": "1",
-			"command": "filterSearchAndCreate",
-			"name": "grayscale",
+			"command": "shelfSearchAndSelect",
+			"name": "my_skinJitter",
 			"selectFirst": "True",
 			"shortcut": "`",
-			"toSearch": "u:generator grayscale",
-			"var": "FxAddGenerator"
+			"toSearch": "tools my_skinJitter"
 		},
 		{
 			"clearAfter": "False",
@@ -110,6 +107,15 @@
 			"selectFirst": "False",
 			"shortcut": "!b",
 			"toSearch": "blur"
+		},
+		{
+			"clearAfter": "True",
+			"click": "1",
+			"command": "shelfSearchAndSelect",
+			"name": "Ark_hair",
+			"selectFirst": "True",
+			"shortcut": "3",
+			"toSearch": "Tool bcm_hair"
 		}
 	]
 }

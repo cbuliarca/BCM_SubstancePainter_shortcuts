@@ -1,0 +1,14 @@
+{
+	"buttonsA": [
+		{
+			"clearAfter": "True",
+			"click": "1",
+			"command": "filterSearchAndCreate",
+			"name": "MaskShift",
+			"selectFirst": "True",
+			"shortcut": "s",
+			"toSearch": "MaskShift",
+			"var": "FxAddFilter"
+		}
+	]
+}

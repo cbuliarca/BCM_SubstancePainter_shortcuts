@@ -1422,7 +1422,7 @@ getFilterTab( pr ){
 getSBSField(pr){
 	CoordMode, Pixel
 	CoordMode, Mouse, Screen
-
+	; bcm_msgBObj(pr)
 	ImageSearch, sbsFoundX, sbsFoundY, pr.bLeft + 7, pr.bTop + 31, pr.bLeft + 11, pr.bBottom, %A_ScriptDir%\images\SBSFieldLeft.png
 	if(ErrorLevel = 1){
 		CornerNotify(1, "!!! Filter loading area could not be found on the screen !!!", "", "r hc", 1)
@@ -1512,7 +1512,7 @@ filterSearchAndSelect( myObj ){
 }
 getFilterSearch(){
 	pr := getPanel("Properties")
-	;bcm_msgBObj(pr)
+	; bcm_msgBObj(pr)
 	if(pr.bRight) prSc := getScroll( pr )
 	return pr
 }
@@ -2614,29 +2614,30 @@ getLayContextWindow( lp ){
 					lp.actvLayContextWinLeft := lp.actvLayContextWinRight - 271
 				}
 			}
-		}	
+		}
 	}
 
 	lp.actvLayCtxAddWhiteMask := lp.actvLayContextWinTop + 12
 	lp.actvLayCtxAddBlackMask := lp.actvLayContextWinTop + 35
 	lp.actvLayCtxAddBitmapMask := lp.actvLayContextWinTop + 54
 	lp.actvLayCtxAddCSMask := lp.actvLayContextWinTop + 75
-	lp.actvLayCtxToggleMask := lp.actvLayContextWinTop + 105
-	lp.actvLayCtxInvMaskBck := lp.actvLayContextWinTop + 127
-	lp.actvLayCtxInvMask := lp.actvLayContextWinTop + 157
-	lp.actvLayCtxClearMask := lp.actvLayContextWinTop + 176
-	lp.actvLayCtxRemoveMask := lp.actvLayContextWinTop + 198
-	lp.actvLayCtxExpMask := lp.actvLayContextWinTop + 228
-	lp.actvLayCtxExpMaskClip := lp.actvLayContextWinTop + 249
-	lp.actvLayCtxSmartMask := lp.actvLayContextWinTop + 270
-	lp.actvLayCtxCutLayer := lp.actvLayContextWinTop + 300
-	lp.actvLayCtxCopyLayer := lp.actvLayContextWinTop + 322
-	lp.actvLayCtxPasteLayer := lp.actvLayContextWinTop + 343
-	lp.actvLayCtxPasteAsInstance := lp.actvLayContextWinTop + 363
-	lp.actvLayCtxDupLayer := lp.actvLayContextWinTop + 383
-	lp.actvLayCtxInstAccrosTxtSets := lp.actvLayContextWinTop + 407
-	lp.actvLayCtxRmvLayer := lp.actvLayContextWinTop + 427
-	lp.actvLayCtxGrpLayer := lp.actvLayContextWinTop + 448
+	lp.actvLayCtxAddMaskWithHeigh := lp.actvLayContextWinTop + 96
+	lp.actvLayCtxToggleMask := lp.actvLayContextWinTop + 127
+	lp.actvLayCtxInvMaskBck := lp.actvLayContextWinTop + 148
+	lp.actvLayCtxInvMask := lp.actvLayContextWinTop + 176
+	lp.actvLayCtxClearMask := lp.actvLayContextWinTop + 198
+	lp.actvLayCtxRemoveMask := lp.actvLayContextWinTop + 220
+	lp.actvLayCtxExpMask := lp.actvLayContextWinTop + 250
+	lp.actvLayCtxExpMaskClip := lp.actvLayContextWinTop + 270
+	lp.actvLayCtxSmartMask := lp.actvLayContextWinTop + 292
+	lp.actvLayCtxCutLayer := lp.actvLayContextWinTop + 322
+	lp.actvLayCtxCopyLayer := lp.actvLayContextWinTop + 343
+	lp.actvLayCtxPasteLayer := lp.actvLayContextWinTop + 363
+	lp.actvLayCtxPasteAsInstance := lp.actvLayContextWinTop + 383
+	lp.actvLayCtxDupLayer := lp.actvLayContextWinTop + 407
+	lp.actvLayCtxInstAccrosTxtSets := lp.actvLayContextWinTop + 427
+	lp.actvLayCtxRmvLayer := lp.actvLayContextWinTop + 448
+	lp.actvLayCtxGrpLayer := lp.actvLayContextWinTop + 469
 
 
 
@@ -3782,9 +3783,10 @@ buttonPress( myObj ){
 			doChannels( myObj )
 		}
 
-	}else{
-		CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
 	}
+	; else{
+	; 	CornerNotify(1, "!!! No .commad specifyed in the json file for this button !!!", "", "r hc", 1)
+	; }
 }
 
 getMMCreated(){
@@ -3808,6 +3810,7 @@ addTrayMenus(){
 	Menu, Tray, Add , &Help, HelpBtn ;add a item named Change that goes to the Change label
 	Menu, Tray, Add , &About Me, AboutAuthorBtn ;add a item named Change that goes to the Change label
 	Menu, Tray, Add , &Edit Pie Menus, EditMMM ;add a item named Change that goes to the Change label
+	Menu, Tray, Add , &Pause        ( Shift + F12 ), PauseBtn ;add a item named Exit that goes to the ButtonExit label
 	Menu, Tray, Add , &Reload, ReloadBtn ;add a item named Exit that goes to the ButtonExit label
 	Menu, Tray, Add , &Exit, ButtonExit ;add a item named Exit that goes to the ButtonExit label
 	Return
@@ -3837,6 +3840,11 @@ ButtonExit:
 	Return
 }
 
+PauseBtn:
+{
+	Suspend
+	Return
+}
 EditMMM:
 {
 	editMMWin()
@@ -4144,6 +4152,7 @@ F7::
    return
 }
 
++F12::Suspend
 
 ;on shift + F1 setup
 #IfWinActive, ahk_exe Substance Painter.exe

@@ -637,8 +637,8 @@ MMHotkeyPressedLabel:
         
          MMOn := 0
          ;Send, {%myKey%}
-         ControlSend,, %myKey%, ahk_exe Substance Painter.exe
-         ;Send, %myKey%
+         ; ControlSend,, %myKey%, ahk_exe Substance Painter.exe
+         Send, %myKey%
 
       }
    }

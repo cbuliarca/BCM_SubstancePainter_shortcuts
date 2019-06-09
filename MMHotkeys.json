@@ -1,9 +1,14 @@
 {
 	"markingMenus": [
 		{
-			"file": "MMButtons_1.json",
+			"file": "def2.json",
 			"shortcut": "c",
 			"title": "defaulf"
+		},
+		{
+			"file": "MMButtons_1.json",
+			"shortcut": "a",
+			"title": "firstMenu"
 		},
 		{
 			"file": "blendingModesButtons.json",
@@ -24,6 +29,11 @@
 			"file": "brushMM.json",
 			"shortcut": "1",
 			"title": "brushMM"
+		},
+		{
+			"file": "filters2.json",
+			"shortcut": "r",
+			"title": "filters2"
 		}
 	]
 }
