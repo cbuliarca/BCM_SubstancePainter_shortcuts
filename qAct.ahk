@@ -115,7 +115,7 @@ toogleSizePressure0( bTabX, bTabY ){
 	theSizeXS := bTabX - 32
 	theSizeYS := bTabY + 1
 	thePressPos = 40
-	ImageSearch, theSizeImgY, theSizeImgY, theSizeXS, theSizeYS, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\hasPressure.png
+	ImageSearch, theSizeImgY, theSizeImgY, theSizeXS, theSizeYS, %A_ScreenWidth%, %A_ScreenHeight%, *10 %A_ScriptDir%\images\hasPressure.png
 	if ErrorLevel = 1 ; no presure set to pressure
 	{
 		CornerNotify(1, "Size pressure ON", "", "r hc", 0)
@@ -1190,7 +1190,7 @@ getPanel( typ ){
 
 		}else{
 			linkITitle := A_ScriptDir . "\images\" . typ . ".png"
-			ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, %linkITitle%
+			ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, *20 %linkITitle%
 			if (ErrorLevel = 2)
 			{
 			    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
@@ -1211,7 +1211,7 @@ getPanel( typ ){
 				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
 				if (ErrorLevel = 1)
 				{
-				    CornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
+				    ; qqqCornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
 				}
 				else{ 
 					;the bottom found
@@ -1425,7 +1425,14 @@ getSBSField(pr){
 	; bcm_msgBObj(pr)
 	ImageSearch, sbsFoundX, sbsFoundY, pr.bLeft + 7, pr.bTop + 31, pr.bLeft + 11, pr.bBottom, %A_ScriptDir%\images\SBSFieldLeft.png
 	if(ErrorLevel = 1){
-		CornerNotify(1, "!!! Filter loading area could not be found on the screen !!!", "", "r hc", 1)
+		ImageSearch, sbsFoundX, sbsFoundY, pr.bLeft + 7, pr.bTop + 31, pr.bLeft + 11, pr.bBottom, %A_ScriptDir%\images\SBSFieldLeftOver.png
+		if(ErrorLevel = 1){
+			CornerNotify(1, "!!! Filter loading area could not be found on the screen !!!", "", "r hc", 1)
+		}
+		else{
+			pr.sbsFieldTop := sbsFoundY
+			pr.sbsFieldLeft := sbsFoundX
+		}	
 	}else{
 		pr.sbsFieldTop := sbsFoundY
 		pr.sbsFieldLeft := sbsFoundX
@@ -2037,10 +2044,10 @@ removeEffect(){
 
 getSelectedLayerP(lp){
 	; bcm_msgBObj(lp)
- 	ImageSearch, activeLayerUpX, activeLayerUpY, lp.bRight - 25, lp.bTop + 72, lp.bRight - 11, lp.bBottom, %A_ScriptDir%\images\activeLayerUp.png
+ 	ImageSearch, activeLayerUpX, activeLayerUpY, lp.bRight - 25, lp.bTop + 72, lp.bRight - 11, lp.bBottom, *TransBlack *10 %A_ScriptDir%\images\activeLayerUp.png
  	if (ErrorLevel = 1)
 	{
-		CornerNotify(1, "!!! Can't see any layer or active stack !!!", "", "r hc", 1)
+		CornerNotify(1, "!!! Can't see any layer or active stack 0 !!!", "", "r hc", 1)
 		;;search for a stack filter active
 		;ImageSearch, activeStackUpX, activeStackUpY, lp.bRight - 25, lp.bTop-48, lp.bRight - 11, lp.bBottom, %A_ScriptDir%\images\activeStackUp.png
 		;if (ErrorLevel = 1)
@@ -2067,10 +2074,10 @@ getSelectedLayerP(lp){
 		lp.activeLayUp := activeLayerUpY
 		;lp.activeLayDown := activeLayerUpY + 42
 
-		ImageSearch, activeLayerDownX, activeLayerDownY, lp.bRight - 25, lp.activeLayUp + 18, lp.bRight - 11, lp.activeLayUp + 47, %A_ScriptDir%\images\activeLayerDown.png
+		ImageSearch, activeLayerDownX, activeLayerDownY, lp.bRight - 25, lp.activeLayUp + 18, lp.bRight - 11, lp.activeLayUp + 47, *TransBlack *10 %A_ScriptDir%\images\activeLayerDown.png
 		if (ErrorLevel = 1)
 		{
-			CornerNotify(1, "!!! Can't see any layer or active stack !!!", "", "r hc", 1)
+			CornerNotify(1, "!!! Can't see any layer or active stack 1 !!!", "", "r hc", 1)
 		}else{
 			lp.activeLayDown := activeLayerDownY + 3
 			if( lp.activeLayDown - lp.activeLayUp < 40){
@@ -2882,7 +2889,7 @@ getBrushUppOptions( whatOp ){
 	tr := {}
 	linkITitle := A_ScriptDir . "\images\Brush" . whatOp . "Upp.png"
 
-	ImageSearch, FoundX, FoundY, bcm_workArea.painterStartX, bcm_workArea.painterStartY , bcm_workArea.painterEndX, bcm_workArea.painterStartY + 95 , %linkITitle%
+	ImageSearch, FoundX, FoundY, bcm_workArea.painterStartX, bcm_workArea.painterStartY , bcm_workArea.painterEndX, bcm_workArea.painterStartY + 95 , *10 %linkITitle%
 	if (ErrorLevel = 2)
 	{
 		CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)

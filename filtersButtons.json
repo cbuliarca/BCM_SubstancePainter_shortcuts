@@ -65,18 +65,16 @@
 			"shortcut": "d"
 		},
 		{
-			"cIndex": 8,
-			"command": "createEffects",
-			"mode": "edit",
-			"name": "Filter - fill",
-			"shortcut": "",
-			"var": "FxAddFill"
-		},
-		{
 			"command": "createEffects",
 			"name": "anchorPoint",
 			"shortcut": "",
 			"var": "FxAddAnchorPoint"
+		},
+		{
+			"command": "createEffects",
+			"name": "Filter - fill",
+			"shortcut": "",
+			"var": "FxAddFill"
 		},
 		{
 			"command": "createEffects",
@@ -86,17 +84,15 @@
 		},
 		{
 			"command": "createEffects",
-			"name": "levels",
-			"shortcut": "l",
-			"var": "FxAddLevels"
-		},
-		{
-			"cIndex": 12,
-			"command": "createEffects",
-			"mode": "edit",
 			"name": "Paint",
 			"shortcut": "p",
 			"var": "FxAddPaint"
+		},
+		{
+			"command": "createEffects",
+			"name": "levels",
+			"shortcut": "l",
+			"var": "FxAddLevels"
 		}
 	]
 }
