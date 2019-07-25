@@ -1,6 +1,7 @@
 #include "layerIdAM.jsxinc"
 main();
 
+
 function saveImageFromLayerName( id ){
 	multiSelectByIDs(id);
 

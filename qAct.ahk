@@ -1052,7 +1052,7 @@ getShelfTab( sh ){
 	ImageSearch, ShelfTabX, ShelfTabY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\shelfActive.png
 	if (ErrorLevel = 1)
 	{
-		ImageSearch, ShelfTabX, ShelfTabY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %A_ScriptDir%\images\shelfInactive.png
+		ImageSearch, ShelfTabX, ShelfTabY, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, q%A_ScriptDir%\images\shelfInactive.png
 		if (ErrorLevel = 1)
 		{
 		;shelf tab could not be found
@@ -1190,7 +1190,8 @@ getPanel( typ ){
 
 		}else{
 			linkITitle := A_ScriptDir . "\images\" . typ . ".png"
-			ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, *20 %linkITitle%
+			; ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, *20 %linkITitle%
+			ImageSearch, propFoundX, propFoundY, bcm_workArea.painterStartX , bcm_workArea.painterStartY, bcm_workArea.painterEndX, bcm_workArea.painterEndY, *20 %linkITitle%
 			if (ErrorLevel = 2)
 			{
 			    CornerNotify(1, "!!! Could not conduct the search !!!", "", "r hc", 1)
@@ -1208,12 +1209,26 @@ getPanel( typ ){
 				qPanel.bTop := propFoundY - 14  
 				; bcm_msgBObj(qPanel)
 				;now find the bottom
+				bottomFound := 0
 				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
 				if (ErrorLevel = 1)
 				{
-				    ; qqqCornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
+					ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel2.png
+					if (ErrorLevel = 1)
+					{
+						; CornerNotify(1, "!!! end of " . typ . " panel could not be found on the screen !!!", "", "r hc", 1)
+
+					}else{ 
+						bottomFound := 1
+
+					}
 				}
 				else{ 
+					bottomFound := 1
+
+				}
+				
+				if( bottomFound == 1){
 					;the bottom found
 					qPanel.bBottom := propEndPanelDownY + 3
 					;now search for the "x" close
@@ -3472,6 +3487,137 @@ getPropsChannels( pr ){
 }
 
 
+
+
+tglColorSelectorWindow( state ){
+	;play with vis for the last uesd color selector window
+	DetectHiddenWindows, On
+	WinGet, allWIN, list ;get allWIN hwnd
+	myWin := {}
+	myWin.hwnd := ""
+	;MsgBox, %ssss%
+	Loop, %allWIN%
+   {
+       WinGetClass, WClass, % "ahk_id " allWIN%A_Index%
+       if (WClass = "Qt5QWindowPopupDropShadowSaveBits"){
+			WinGet, WinProc, ProcessName, % "ahk_id " allWIN%A_Index%
+			; bcm_splashInfo(WinProc)
+			if(WinProc == "Substance Painter.exe"){
+		       	
+		       	WinGetPos, X, Y, Width, Height, % "ahk_id " allWIN%A_Index%
+		       	if(Width == 285 and Height == 251){
+		       		myWin.hwnd := allWIN%A_Index%
+		       		myWin.x := X
+		       		myWin.y := Y
+		       		myWin.w := Width
+		       		myWin.h := Height
+		       		; bcm_splashInfo( Style )
+			       	WinGet, Style, Style, % "ahk_id " allWIN%A_Index%
+			       	Transform, IsVis, BitAnd, %Style%, 0x10000000 ; 0x10000000 is WS_VISIBLE.
+
+					;WinActivate, % "ahk_id " allWIN%A_Index%
+			       	if(IsVis <> 0 ){
+			       		; the window is visible
+			       		if(state == "hide" or state == "tgl"){
+				       		WinHide, % "ahk_id " allWIN%A_Index%
+				       		myWin.vis := 0
+			       		}
+			       		Break
+				    }else{
+				    	; the window is hidden
+				    	if(state == "show" or state == "tgl"){
+					       	WinRestore, % "ahk_id " allWIN%A_Index%
+					       	WinShow, % "ahk_id " allWIN%A_Index%
+					       	; WinSet, Style, +0x80000000 +0x80880000 +0x40000 +0x10000000, % "ahk_id " allWIN%A_Index%
+					       	myWin.vis := 1
+				    	}
+				       	Break
+				    }
+		       	}
+		    }
+		}
+   }
+   return myWin
+}
+tglLastUsedColor(){
+	CoordMode, Mouse, Screen
+	CoordMode, Pixel
+	MouseGetPos, xpos, ypos 
+	mSpeed := 0.000001
+	sColWin := tglColorSelectorWindow( "show" )
+	rgbColor := [0.0, 0.0, 0.0]
+
+	BlockInput, on
+	lx := sColWin.x + 48
+	ly := sColWin.y + 232
+
+	oldClip := Clipboard
+	
+	for k, v in rgbColor{
+		myClick( lx , ly, "left")
+		Send, +{Home}
+		clipboard =  ; Start off empty to allow ClipWait to detect when the text has arrived.
+		Send ^c
+		ClipWait  ; Wait for the clipboard to contain text.
+		cl := Clipboard ;got the current color for r g b
+		; MsgBox, , , %cl%,0.7
+		
+		SetFormat, FloatFast, 6.3
+		newCl := 1 - cl ;invert the curent color
+
+		; MsgBox, , , %newCl%,.7
+		Clipboard := newCl
+		Send, +{Home}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, ^v
+		
+		lx := lx + 39
+	}
+
+	Clipboard := oldClip
+	MouseMove, xpos, ypos, mSpeed  
+	BlockInput, off
+	
+	
+	sColWin := tglColorSelectorWindow( "hide" )
+}
+changeLastUsedColor( rgbColor ){
+	; this will make the last used color selector visible
+	; and change it's color
+	CoordMode, Mouse, Screen
+	CoordMode, Pixel
+	MouseGetPos, xpos, ypos 
+	mSpeed := 0.000001
+	sColWin := tglColorSelectorWindow( "show" )
+
+	BlockInput, on
+	lx := sColWin.x + 48
+	ly := sColWin.y + 232
+
+	oldClip := Clipboard
+	for k, v in rgbColor{
+		myClick( lx , ly, "left")
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Send, {BackSpace}
+		Clipboard := v
+		Send, ^v
+		lx := lx + 39
+	}
+	Clipboard := oldClip
+	MouseMove, xpos, ypos, mSpeed  
+	BlockInput, off
+	
+	
+	sColWin := tglColorSelectorWindow( "hide" )
+	return
+}
 ;--------------------------------------------------------------------------------------------------------------------------------
 ;--------------------------------------------------------------------------------------------------------------------------------
 
@@ -4078,79 +4224,23 @@ Esc::
 	Return
 }
 
-;F7::
-;{
-	
-;	DetectHiddenWindows, On
-;	WinGet, allWIN, list ;get allWIN hwnd
-;	as := 1
-;	myWin := {}
-;	ssss := allWIN1
-;	;MsgBox, %ssss%
-;	Loop, %allWIN%
-;    {
-;        WinGetClass, WClass, % "ahk_id " allWIN%A_Index%
-;        if (WClass = "Qt5QWindowPopupDropShadowSaveBits"){
-
-;        	myWin[as] := allWIN%A_Index%
-;        	WinGet, Style, Style, % "ahk_id " allWIN%A_Index%
-;        	;WinGetPos, X, Y, Width, Height, 
-;        	;splashinfo( Style )
-;        	;WinActivate, % "ahk_id " allWIN%A_Index%
-;        	WinRestore, % "ahk_id " allWIN%A_Index%
-;        	WinShow, % "ahk_id " allWIN%A_Index%
-;        	;WinSet, Style, +0x80000000 +0x80880000 +0x40000 +0x10000000, % "ahk_id " allWIN%A_Index%
-;        	as := as + 1
-;        }
-;    }
-
-;    ;MsgBox, %cs%
-;    ;msgBObj(myWin)
-;	;splashInfo( spWin )
-;	Return
-;}
-
-;ctrl+F7 clciks on the channels
-;#IfWinActive, ahk_exe Substance Painter.exe
-;^F7::
-;{
-
-;	doChannels( obj )
-;	Return
-;}
-
-;`F7
 #IfWinActive, ahk_exe Substance Painter.exe
 F7::
 {
-	
-	;getAllPixelsMonitors()
-	;bcm_msgBObj(getPanel( "Shelf" ))
-	;findFloatPanel( "Properties" )
-	;bcm_splashInfo( "tttttttt")
-
-	;selectUppMainLayStack()
-	;myObj.var := "noMask"
-	;createLayer( myObj )
-	;myObj := {}
-	;myObj.var := "UV"
-	;setBrushAlignement(myObj)
-	;editMMWin()
-	;bcm_helpWin()
-	;getViewport()
-	;toogleBrushBackfaceCulling()
-
-	WinGet, WinList, List, ahk_exe osdHotkey.exe,,,
-	Loop %WinList%
-	{
-		WinID := WinList%A_Index%
-		bcm_splashInfo(WinID)
-		Winset, AlwaysOnTop, On, ahk_id %WinID%
-		;WinSet, Style, +0x80000000	, ahk_id %WinID%
-		WinSet, Style, -0xC00000, ahk_id %WinID%
-	}
+	; :these are just tests
+	; changeLastUsedColor([0.2, 0.6, 0.7])
+	tglLastUsedColor()
+	; tglColorSelectorWindow( "tgl" )
+	; sCo := tglColorSelectorWindow( "tgl")
+	; bcm_msgBObj(sCo)
+   ;MsgBox, %cs%
+   ;msgBObj(myWin)
+	;splashInfo( spWin )
 	Return
 }
+
+
+
 
 #IfWinActive, ahk_exe Substance Painter.exe
 +F9::
