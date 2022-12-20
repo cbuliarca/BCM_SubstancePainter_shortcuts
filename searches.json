@@ -31,10 +31,10 @@
 			"clearAfter": "False",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"name": "Proj Texture",
+			"name": "bcm_color",
 			"selectFirst": "False",
 			"shortcut": "t",
-			"toSearch": "Project Texture"
+			"toSearch": "bcm_color"
 		},
 		{
 			"clearAfter": "True",
@@ -46,13 +46,13 @@
 			"toSearch": "Tools my_stain_skin"
 		},
 		{
-			"clearAfter": "False",
+			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"name": "chr_trans_RGB",
-			"selectFirst": "False",
+			"name": "chr_paintstroke_B",
+			"selectFirst": "True",
 			"shortcut": "a",
-			"toSearch": "chr_transformationRGB"
+			"toSearch": "chr_paintstroke_B"
 		},
 		{
 			"clearAfter": "True",
@@ -73,13 +73,13 @@
 			"toSearch": "my_rust"
 		},
 		{
-			"clearAfter": "False",
+			"clearAfter": "True",
 			"click": 1,
 			"command": "shelfSearchAndSelect",
-			"name": "BCM",
-			"selectFirst": "False",
+			"name": "my_scratches",
+			"selectFirst": "True",
 			"shortcut": "q",
-			"toSearch": "BCM!"
+			"toSearch": "my_scratches!"
 		},
 		{
 			"clearAfter": "False",
@@ -100,13 +100,13 @@
 			"toSearch": "tools my_skinJitter"
 		},
 		{
-			"clearAfter": "False",
-			"click": 0,
+			"clearAfter": "True",
+			"click": "1",
 			"command": "shelfSearchAndSelect",
-			"name": "blur",
-			"selectFirst": "False",
+			"name": "chr_paintStrokeX",
+			"selectFirst": "True",
 			"shortcut": "!b",
-			"toSearch": "blur"
+			"toSearch": "chr_paintStrokeX"
 		},
 		{
 			"clearAfter": "True",

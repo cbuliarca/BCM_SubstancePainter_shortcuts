@@ -1,5 +1,5 @@
 ;create window
-
+#Include *i Jxon22.ahk
 winPrecision( title ) {
   qq := findPainterWindow( )
   aX := qq.bLeft
@@ -107,6 +107,12 @@ ButSSSS:
 
   GuiControlGet, pa ,, MyPrecisionEditQ
   precisionAdd := pa
+
+  precisFile := "precision.json"
+  jStr := Jxon_Dump( precisionAdd, "`t")
+  FileDelete, %precisFile%
+  FileAppend, %jStr% , %precisFile%
+
   winPrecision_Destroy(1)
   Return
 }

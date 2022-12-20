@@ -17,7 +17,7 @@
 			"name": "Hue Create",
 			"selectFirst": "True",
 			"shortcut": "h",
-			"toSearch": "u:filter HUE",
+			"toSearch": "u:filter HSL Per",
 			"var": "FxAddFilter"
 		},
 		{

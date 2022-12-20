@@ -1,3 +1,10 @@
+#SingleInstance Force
+; this will start the script in administartor mode, it needs that for blocking input 
+SetWorkingDir %A_ScriptDir%
+if not A_IsAdmin
+	Run *RunAs "%A_ScriptFullPath%" ; (A_AhkPath is usually optional if the script has the .ahk extension.) You would typically check  first.
+
+
 bcm_workArea := {}
 bcm_workArea := getAllPixelsMonitors()
 addTrayMenus()
@@ -44,6 +51,7 @@ IfWinActive,%A_ScriptName%
   Sleep,750
   SplashImage, Off
   Reload
+
 }
 return
 
@@ -54,7 +62,7 @@ return
 
 
 bcm_splashInfo( sq ){
-	WinGet, WinID1, ID, ahk_exe Substance Painter.exe,,,
+	WinGet, WinID1, ID, ahk_exe Adobe Substance 3D Painter,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID1%
 	w := 500
 	bX := aX + ((aW * 0.5) - (w*0.5))
@@ -183,13 +191,18 @@ toogleBrushSizePressure(){
 		if(pressSize.penPressure = 1){
 			clX1 := pressSize.DropDownX
 			clY1 := pressSize.noPressureD
-
+			; MouseMove %clX1%, %clY1%, 0.1
+			; Sleep 2000
 			myClick( clX1 , clY1, "left")
+			; myClick( clX1 , clY1, "left")1111
 			CornerNotify(1, " Brush Size set to NO pen pressure ", "", "r hc", 0)
 		}else{
 			clX1 := pressSize.DropDownX
 			clY1 := pressSize.penPressureD
+			; MouseMove %clX1%, %clY1%, 0.111
+			; Sleep 2000
 			myClick( clX1 , clY1, "left")		
+			; myClick( clX1 , clY1, "left")	1	
 			CornerNotify(1, " Brush Size set to PEN PRESSURE ", "", "r hc", 0)	
 		}
 		CoordMode, Mouse, Screen
@@ -423,16 +436,16 @@ getBakfaceCulling( pnl ){
 
 getThePropWindow(){
 
-	WinGet, WinList, List, ahk_exe Substance Painter.exe,,,
+	WinGet, WinList, List, ahk_exe Adobe Substance 3D Painter,,,
 	Loop %WinList%
 	{
 		WinID := WinList%A_Index%
 		WinGetClass, WinClass, ahk_id %WinID%
-		
+		bcm_splashInfo(WinClass)
 		if(WinClass == "Qt5QWindowToolSaveBits"){
 			WinGetTitle, WinTitle, ahk_id %WinID%
-			;bcm_splashInfo(WinTitle)
-			If (WinTitle = "Substance Painter")
+			
+			If (WinTitle = "Adobe Substance 3D Painter")
 			{
 				;bcm_splashInfo("foundddddddd")
 				WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
@@ -472,7 +485,7 @@ setBrushSpacingTo( myObj ){
 		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
 
 		; navigate with tabs to spacing : 2 tabs
-		;ControlSend, {Tab}, ahk_exe Substance Painter.exe
+		;ControlSend, {Tab}, ahk_exe Adobe Substance 3D Painter
 		Send, {Tab}
 		;Sleep, 1000
 		Send, {Tab}
@@ -525,7 +538,7 @@ setBrushAlignement(myObj){
 		myClick( pnl.bleft + 15, pnl.brushShortcutY + 18, "left")
 
 		; navigate with tabs to alignment : 7 tabs
-		;ControlSend, {Tab}, ahk_exe Substance Painter.exe
+		;ControlSend, {Tab}, ahk_exe Adobe Substance 3D Painter
 
 
 		Loop, 7{
@@ -708,7 +721,7 @@ setChannelsToPassthrough(){
 getLayersPanel(){
 
 	layersPanel := getPanel("Layers")
-
+	; bcm_msgBObj(layersPanel)
 
 	if(layersPanel.bRight){ 
 		layersPanel.binButtonX := layersPanel.bRight - 18
@@ -905,9 +918,12 @@ getCurrentLayers( layersPanel ){
 getShelf(){
 	shelf :={}
 	shelf := getPanel( "Shelf" )
-	shelf := getShelfFolder( shelf )
+	; shelf := getShelfFolder( shelf )
 	shelf := getShelfFilter( shelf )
-	shelf := getShelfSerchesEndX( shelf )
+	; shelf := getShelfSerchesEndX( shelf )
+	shelf := getShelfListsStart( shelf )
+
+
 	CoordMode, Mouse, Screen
 	if(shelf.shelfSearchEndX = 1){
 		sT1X := shelf.shelfSearchEndXX + 9
@@ -918,10 +934,11 @@ getShelf(){
 		Sleep, 50
 	}
 	shelf := getShelfSearch( shelf )
+	; bcm_msgBObj(shelf)
 	if (shelf.shelfSearchX){
 		shelf := getShelfSearchX( shelf )
 	}
-	;msgBObj(shelf)
+	; bcm_msgBObj(shelf)
 	return shelf
 }
 
@@ -955,22 +972,23 @@ getShelfFilter( sh ){
 		shStartY := sh.bTop
 		shEndY := sh.bBottom
 	}
+
 	CoordMode, Pixel
-	ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 100, %A_ScriptDir%\images\filerActive.png
+	ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 200, %A_ScriptDir%\images\filerActive.png
 	if (ErrorLevel = 1)
 	{
 		CoordMode, Pixel
-		ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 100, %A_ScriptDir%\images\filerInactive.png
+		ImageSearch, ShelfFilterX, ShelfFilterY, sh.bLeft, sh.bTop, sh.bRight, sh.bTop + 200, %A_ScriptDir%\images\filerInactive.png
 		if (ErrorLevel = 1)
 		{
-		;shelf Filter could not be found
-			CornerNotify(1, "!!! The shelf Filter is not visible !!!", "", "r hc", 1)
+		;shelf Filter could not be foundq
+			; CornerNotify(1, "!!! The shelf Filter is not visible !!!", "", "r hc", 1)
 		}Else{
 			sh.shelfFilterX := ShelfFilterX
 			sh.shelfFilterY := ShelfFilterY
 			sh.shelfFilterActive := 0
 			;return tr
-		}	
+		}
 	}Else{
 			sh.shelfFilterX := ShelfFilterX
 			sh.shelfFilterY := ShelfFilterY
@@ -1010,7 +1028,19 @@ getShelfSerchesEndX( sh ){
 	}
 	return sh
 }
-
+getShelfListsStart( sh ){
+	CoordMode, Pixel
+	; bcm_msgBObj(bcm_workArea)
+	ImageSearch, ShelfListStartX, ShelfListStartY, sh.bLeft, sh.bTop + 40, sh.bRight, sh.bTop + 200, %A_ScriptDir%\images\shelfListStart.png
+	if (ErrorLevel = 1)
+	{
+		CornerNotify(1, "!!! The shelf List Area is not visible !!!", "", "r hc", 1)
+	}else{
+		sh.shelfListStartX := ShelfListStartX + 1
+		sh.shelfListStartY := ShelfListStartY + 1
+	}
+	return sh
+}
 getShelfSearchX( sh ){
 	CoordMode, Pixel
 	ImageSearch, ShelfSearchFilterOnX, ShelfSearchFilterOnY, sh.shelfSearchX - 35 , sh.shelfSearchY , sh.shelfSearchX, sh.shelfSearchY + 27, %A_ScriptDir%\images\searchFilterX.png
@@ -1026,21 +1056,22 @@ getShelfSearchX( sh ){
 }
 
 getShelfSearch( sh ){
+	; bcm_msgBObj(shqqqqqq)
 	CoordMode, Pixel
-	ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStart.png
+	ImageSearch, ShelfSearchX, ShelfSearchY, sh.bLeft, sh.bTop + 40, sh.bRight, sh.bTop + 300, %A_ScriptDir%\images\searchStart.png
 	if (ErrorLevel = 1)
 	{
-		ImageSearch, ShelfSearchX, ShelfSearchY, sh.shelfFilterX + 12, sh.shelfFilterY - 7, sh.bRight, sh.shelfFilterY + 24, %A_ScriptDir%\images\searchStartOn.png
+		ImageSearch, ShelfSearchX, ShelfSearchY, sh.bLeft, sh.bTop + 40, sh.bRight, sh.bTop + 300, %A_ScriptDir%\images\searchStartOn.png
 		if (ErrorLevel = 1){
 			CornerNotify(1, "!!! The shelf Search is not visible !!!", "", "r hc", 1)
 		}Else{
-			sh.shelfSearchX := ShelfSearchX + 1
-			sh.shelfSearchY := ShelfSearchY + 1
+			sh.shelfSearchX := ShelfSearchX + 31
+			sh.shelfSearchY := ShelfSearchY + 10
 			sh.shelfSearchOn := 1
 		}
 	}Else{
-			sh.shelfSearchX := ShelfSearchX + 1
-			sh.shelfSearchY := ShelfSearchY + 1
+			sh.shelfSearchX := ShelfSearchX + 31
+			sh.shelfSearchY := ShelfSearchY + 10
 			sh.shelfSearchOn := 0
 	}
 	return sh
@@ -1104,18 +1135,22 @@ shelfSearchAndSelect( myOb ){
 		Send, ^v
 		;Send {Text} %myText%
 
-		;bcm_msgBObj(shelfA)
+		; bcm_msgBObj(shelfA)
 		;select result
 		if( myOb.selectFirst = "True"){
-			selX := shelfA.shelfFolderX + 10
-			selY := shelfA.shelfFolderY + 35
-			if(shelfA.shelfFolderActive = 1){
-				selX := shelfA.shelfFolderEndX + 10
-			}
-			if( shelfA.shelfFilterActive = 1){
-				selX := shelfA.shelfFilterEndX + 10
+			; selX := shelfA.shelfFolderX + 10
+			; selY := shelfA.shelfFolderY + 35
+			; if(shelfA.shelfFolderActive = 1){
+			; 	selX := shelfA.shelfFolderEndX + 10
+			; }
+			; if( shelfA.shelfFilterActive = 1){
+			; 	selX := shelfA.shelfFilterEndX + 10
 
-			}
+			; }
+
+			selX := shelfA.shelfListStartX + 10
+			selY := shelfA.shelfListStartY + 10
+
 			Sleep, 100
 			clk := myOb.click
 			Loop, %clk%{
@@ -1172,15 +1207,16 @@ getPanel( typ ){
 
 	qPanel := {}
 	qPanel := findFloatPanel( typ )
+	; bcm_msgBObj(qPanel)
 	CoordMode, Pixel
-	if(qPanel.bLeft){
+	if(qPanel.bRight){
 		;the panel is floating so we don't need to search with image search
-		;bcm_msgBObj(qPanel)
+		; bcm_msgBObj(qPanel)
 	}else{
 		;first seach for docker image
 
 		prIc := getDockedIcon( typ )
-		;bcm_msgBObj(prIc)
+
 		if( prIc.isOn = 0){
 
 			qPanel.IconX := prIc.dockedIconX + 10
@@ -1190,6 +1226,7 @@ getPanel( typ ){
 
 		}else{
 			linkITitle := A_ScriptDir . "\images\" . typ . ".png"
+			; bcm_msgBObj(bcm_workArea)
 			; ImageSearch, propFoundX, propFoundY, bcm_workArea.startX , bcm_workArea.startY, bcm_workArea.endX, bcm_workArea.endY, *20 %linkITitle%
 			ImageSearch, propFoundX, propFoundY, bcm_workArea.painterStartX , bcm_workArea.painterStartY, bcm_workArea.painterEndX, bcm_workArea.painterEndY, *20 %linkITitle%
 			if (ErrorLevel = 2)
@@ -1205,13 +1242,14 @@ getPanel( typ ){
 			else
 			{
 				;the main title image found, set the top and left
+
 				qPanel.bLeft :=  propFoundX - 9
 				qPanel.bTop := propFoundY - 14  
 				; bcm_msgBObj(qPanel)
 				;now find the bottom
 				bottomFound := 0
 				ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel.png
-				if (ErrorLevel = 1)
+				if (ErrorLevel = 1)w
 				{
 					ImageSearch, propEndPanelDownX, propEndPanelDownY, qPanel.bLeft-1, qPanel.bTop + 4, qPanel.bLeft + 5 , bcm_workArea.endY, %A_ScriptDir%\images\bottomPanel2.png
 					if (ErrorLevel = 1)
@@ -1253,6 +1291,7 @@ getPanel( typ ){
 			}
 		}
 	}
+	; bcm_msgBObj(qPanel)
 	return qPanel
 
 }
@@ -1348,7 +1387,7 @@ recursiveToFindLastX( startX, startY , endx, endY , img, imgWidth){
 getWindowTest( ){
 	pr := {}
 
-	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+	WinGet, WinID, ID, ahk_exe Adobe Substance 3D Painter,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 	WinGetClass, aClass, ahk_id %WinID%
 	qr := GetMonitorUnderMouse2()
@@ -1394,7 +1433,7 @@ getWindowUnDocked( pr, typ ){
 		pr.bBottom := flP.bBottom
 		
 	}
-	;WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+	;WinGet, WinID, ID, ahk_exe Adobe Substance 3D Painter,,,
 	;WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 	;WinGetClass, aClass, ahk_id %WinID%
 	;;qr := GetMonitorUnderMouse2()
@@ -1457,6 +1496,7 @@ getSBSField(pr){
 filterSearchAndCreate( myObj ){
 	ob := createEffects( myObj )
 	sleep 100
+	; bcm_splashInfo( "fltr" )
 	if(ob.bTop){
 		;it means that the layers was found in the createEffects()
 		filterSearchAndSelect( myObj )
@@ -1466,6 +1506,7 @@ filterSearchAndCreate( myObj ){
 
 filterSearchAndSelect( myObj ){
 	flr := getFilterSearch()
+	; bcm_msgBObj(flr)
 	CoordMode, Mouse, Screen
 	MouseGetPos, xpos, ypos 
 	mSpeed = 0.000001
@@ -1477,7 +1518,7 @@ filterSearchAndSelect( myObj ){
 
 		flr := getSBSField(flr)
 
-		;bcm_msgBObj(flr)
+		
 		if( flr.sbsFieldTop){
 
 			sx1 := flr.sbsFieldLeft + 19
@@ -2089,7 +2130,7 @@ getSelectedLayerP(lp){
 		lp.activeLayUp := activeLayerUpY
 		;lp.activeLayDown := activeLayerUpY + 42
 
-		ImageSearch, activeLayerDownX, activeLayerDownY, lp.bRight - 25, lp.activeLayUp + 18, lp.bRight - 11, lp.activeLayUp + 47, *TransBlack *10 %A_ScriptDir%\images\activeLayerDown.png
+		ImageSearch, activeLayerDownX, activeLayerDownY, lp.bRight - 18, lp.activeLayUp + 18, lp.bRight - 11, lp.activeLayUp + 47, %A_ScriptDir%\images\activeLayerDown.png
 		if (ErrorLevel = 1)
 		{
 			CornerNotify(1, "!!! Can't see any layer or active stack 1 !!!", "", "r hc", 1)
@@ -2423,28 +2464,35 @@ setBlendMode( myObj ){
 	 if(lay.bRight){
 	 	lay := getSelectedLayerP( lay )
 	 }
-	 ;msgBobj(lay)
+	 ; bcm_msgBObj(lay)
 	 if( lay.activeLayUp ){
 	 	if(lay.activeStackUp){
 	 		mx := lay.bRight - 76
 	 		my := lay.activeStackUp + 12
+	 		; MsgBox, ,,"qq" . %mx% . " || " . %my%,
 	 	}else{
 	 		mx := lay.bRight - 25
 	 		my := lay.activeLayUp + 15 
+
+	 		; MsgBox, ,,%mx% . " || " . %my%,
 	 	}
+
+
 	 		CoordMode, Mouse, Screen
 	 		MouseGetPos, xpos, ypos 
 			mSpeed = 0.000001
 			BlockInput, on
-			;MsgBox,,, %mx% || %my%
+			;MsgBox,,, %mx% || %my%wwww
 			myClick( mx , my, "left")
 			Sleep, 100	
 
 			
 			lay := getBlendingsWindow( lay )
+
 			if (lay.blendingsWinBottom){
 	 			mx1 := lay.blendingsWinLeft + 72
-	 			;splashInfo(myObj.blendMode)
+	 			; splashInfo(myObj.blendMode)
+
 	 			if(myObj.blendMode = "Normal"){
 	 				my1 := lay.blendingsWinTop + 11	 			
 	 			}else if( myObj.blendMode = "Passthrough" ){
@@ -2512,6 +2560,7 @@ setBlendMode( myObj ){
 	 			}
 	 			lay.my1 := my1
 	 			lay.mx1 := mx1
+	 			
 	 			myClick( mx1 , my1, "left")
 	 		}
 	 		CoordMode, Mouse, Screen
@@ -2523,10 +2572,10 @@ setBlendMode( myObj ){
 }
 
 getBlendingsWindow( lp ){
-	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+	WinGet, WinID, ID, ahk_exe Adobe Substance 3D Painter.exe,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 	WinGetClass, aClass, ahk_id %WinID%
-	qr := GetMonitorUnderMouse2()
+	qr := GetMonitorUnderMouse2()wwwww
 	oos := {}
 	oos.x := aX
 	oos.y := aY
@@ -2599,7 +2648,7 @@ getBlendingsWindow( lp ){
 }
 
 getLayContextWindow( lp ){
-	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+	WinGet, WinID, ID, ahk_exe Adobe Substance 3D Painter,,,
 	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 	WinGetClass, aClass, ahk_id %WinID%
 	qr := GetMonitorUnderMouse2()
@@ -2992,7 +3041,7 @@ toggleDocked( whStr ){
 		myClick( clX , clY, "left")	
 		;Sleep 200
 		;if(st.isOn = 1){
-		;	WinGet, WinID, ID, ahk_exe Substance Painter.exe,,,
+		;	WinGet, WinID, ID, ahk_exe Adobe Substance 3D Painter,,,
 		;	WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 		;	WinGetClass, aClass, ahk_id %WinID%
 		;}
@@ -3067,20 +3116,26 @@ getAllPixelsMonitors(){
 
 
 findFloatPanel( typ ){
-
+		; bcm_splashInfo( typ )
 		WinGet, WinList, List, ahk_class Qt5QWindowToolSaveBits,,,
-		;WinGet, WinList, List, ahk_exe Substance Painter.exe,,,]
+		; WinGet, WinList, List, ahk_exe Adobe Substance 3D Painter,,,]
 
 		Loop %WinList%
 		{
 			WinID := WinList%A_Index%
 			WinGet, WinProc, ProcessName, ahk_id %WinID%
-			if(WinProc == "Substance Painter.exe"){
+			; bcm_splashInfo(WinProc)
+			if(WinProc == "Adobe Substance 3D Painter.exe"){
 				WinGetTitle, WinTitle, ahk_id %WinID%
-				;bcm_splashInfo(WinTitle)
+				; bcm_splashInfo(WinTitle)
 				If InStr(WinTitle, typ)
 				{
 					WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
+					; bcm_splashInfo( typ )
+					; MsgBox, found . %aX%
+					; MsgBox, found . %aY%
+					; MsgBox, found . %aW%
+
 				}
 			}
 		}
@@ -3092,7 +3147,7 @@ findFloatPanel( typ ){
 		winW.bBottom := aY + aH
 		winW.isFloat := 1
 
-		;bcm_msgBObj(winW)
+		; bcm_msgBObj(winW)
 		return winW
 
 }	
@@ -3101,7 +3156,7 @@ findFloatPanel( typ ){
 
 findPainterWindow( ){
 
-		WinGet, WinList, List, ahk_exe Substance Painter.exe,,,
+		WinGet, WinList, List, ahk_exe Adobe Substance 3D Painter.exe,,,
 
 		Loop %WinList%
 		{
@@ -3109,8 +3164,8 @@ findPainterWindow( ){
 			WinGetClass, WinClass, ahk_id %WinID%
 			if(WinClass == "Qt5QWindowIcon"){
 				WinGetTitle, WinTitle, ahk_id %WinID%
-				;bcm_splashInfo(WinTitle)
-				If InStr(WinTitle, "Substance Painter")
+				; bcm_splashInfo(WinTitle)
+				If InStr(WinTitle, "Adobe Substance 3D Painter")
 				{
 					WinGetPos, aX, aY, aW, aH, ahk_id %WinID%
 				}
@@ -3502,7 +3557,7 @@ tglColorSelectorWindow( state ){
        if (WClass = "Qt5QWindowPopupDropShadowSaveBits"){
 			WinGet, WinProc, ProcessName, % "ahk_id " allWIN%A_Index%
 			; bcm_splashInfo(WinProc)
-			if(WinProc == "Substance Painter.exe"){
+			if(WinProc == "Adobe Substance 3D Painter.exe"){
 		       	
 		       	WinGetPos, X, Y, Width, Height, % "ahk_id " allWIN%A_Index%
 		       	if(Width == 285 and Height == 251){
@@ -4018,7 +4073,9 @@ EditMMM:
 ;--------------------------------------------------------------------------------------------------------------------------------
 
 ;the ctrl+alt+s ---- toogle pressure for size
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!^s::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !^s::
 {
 	toogleBrushSizePressure()
@@ -4026,7 +4083,9 @@ EditMMM:
 }
 
 ;the ctrl+alt+a ---- toogle pressure for flow
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!^a::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !^a::
 {
 	toogleBrushFlowPressure()
@@ -4036,7 +4095,9 @@ EditMMM:
 
 
 ;shift + alt + p --- set all channels to passthrough
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
++!p::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 +!p::
 {
 	toPerformAfterInfoGet := "setChannelsToPassthrough"
@@ -4047,7 +4108,9 @@ EditMMM:
 
 
 ;alt+1 do a shelf search
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!1::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !1::
 {
 
@@ -4064,7 +4127,9 @@ EditMMM:
 
 
 ;alt` open the mask window`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+`::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 `::
 {
 	myMObjUI := {}
@@ -4079,7 +4144,9 @@ EditMMM:
 }
 
 ;ctrl` open the filters window`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+^`::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 ^`::
 {
 	myMObjUI := {}
@@ -4094,7 +4161,9 @@ EditMMM:
 	Return
 }
 ;alt] select upper`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!]::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !]::
 {
 	selectUpperLayStack()
@@ -4102,7 +4171,9 @@ EditMMM:
 }
 
 ;alt[ down upper`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+![::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 ![::
 {
 	selectDownLayStack()
@@ -4110,7 +4181,9 @@ EditMMM:
 }
 
 ;altc view mask`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!c::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !c::
 {
 	viewMask()
@@ -4118,7 +4191,9 @@ EditMMM:
 }
 
 ;altc view mask`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!`::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !`::
 {	
 
@@ -4133,38 +4208,48 @@ EditMMM:
 	Return
 }
 ;alt + Up add increment by precision `
-#IfWinActive, ahk_exe Substance Painter.exe
-!Right::
-{	
-	accOp("add")
-	Return	
-}
+; #IfWinActive, ahk_exe Adobe Substance 3D Painter
+; !Right::
+; #IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
+; !Right::
+; {	
+; 	accOp("add")
+; 	Return	
+; }
 
-;alt + Down substract increment by precision `
-#IfWinActive, ahk_exe Substance Painter.exe
-!Left::
-{	
-	accOp("minus")
-	Return	
-}
+; ;alt + Down substract increment by precision `
+; #IfWinActive, ahk_exe Adobe Substance 3D Painter
+; !Left::
+; #IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
+; !Left::
+; {	
+; 	accOp("minus")
+; 	Return	
+; }
 
 
 ;shift + alt + right open the precision window`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
++!Right::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 +!Right::
 {
 	openPrecisionW()
 	Return
 }
 ;shift + alt + left open the precision window`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
++!Left::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 +!Left::
 {
 	openPrecisionW()
 	Return
 }
 ;alt + F1 click on the docked texture Sets button`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!F1::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !F1::
 {
 
@@ -4172,7 +4257,9 @@ EditMMM:
 	Return
 }
 ;alt + F1 click on the docked texture Sets button`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!F2::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !F2::
 {
 
@@ -4182,7 +4269,9 @@ EditMMM:
 
 
 ;alt + F1 click on the docked Properties button`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!F3::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !F3::
 {
 
@@ -4190,7 +4279,9 @@ EditMMM:
 	Return
 }
 ;alt + F1 click on the docked Properties button`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!F4::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !F4::
 {
 
@@ -4199,7 +4290,9 @@ EditMMM:
 }
 
 ;alt + F1 click on the docked Properties button`
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!F5::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 !F5::
 {
 
@@ -4224,8 +4317,10 @@ Esc::
 	Return
 }
 
-#IfWinActive, ahk_exe Substance Painter.exe
-F7::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+!+F7::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
+!+F7::
 {
 	; :these are just tests
 	; changeLastUsedColor([0.2, 0.6, 0.7])
@@ -4242,7 +4337,9 @@ F7::
 
 
 
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
++F9::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 +F9::
 {
    ListHotkeys
@@ -4252,15 +4349,19 @@ F7::
 +F12::Suspend
 
 ;on shift + F1 setup
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
++F1::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 +F1::
 {
 	pnlP := findFloatPanel( "Properties" )
-	bcm_msgBObj(pnlP)
+	; bcm_msgBObj(pnlP)
 	;Run, SnippingTool.exe, "FullScreen"
 }
 
-#IfWinActive, ahk_exe Substance Painter.exe
+#IfWinActive, ahk_exe Adobe Substance 3D Painter
+~MButton::
+#IfWinActive, ahk_exe Adobe Substance 3D Painter.exe
 ~MButton::
 {
 	global AllowMM
